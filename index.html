@@ -177,24 +177,80 @@
         }
 
         /* Typography */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
         .title {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-align: center;
             margin-bottom: 1rem;
-            line-height: 1.2;
+            line-height: 1.1;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .subtitle {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
+            font-size: 1.4rem;
+            color: var(--text-primary);
             text-align: center;
             margin-bottom: 2rem;
-            font-weight: 400;
+            font-weight: 500;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .welcome-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-bubble {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .stat-bubble:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 1.2rem;
+        }
+
+        .stat-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
         }
 
         /* Button styles */
@@ -341,6 +397,66 @@
             box-shadow: var(--shadow-xl);
             border-color: var(--primary-color);
         }
+
+        .quiz-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .speed-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(245, 101, 101, 0.1));
+        }
+
+        .study-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1));
+        }
+
+        .mode-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .mode-badge.exciting {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+
+        .mode-badge.learn {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mode-card {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .mode-card:nth-child(1) { animation-delay: 0.1s; }
+        .mode-card:nth-child(2) { animation-delay: 0.2s; }
+        .mode-card:nth-child(3) { animation-delay: 0.3s; }
 
         .mode-icon {
             width: 80px;
@@ -949,26 +1065,46 @@
         <!-- Home Screen -->
         <div class="screen active" id="homeScreen">
             <div class="glass-card">
-                <h1 class="title">Welcome to Landform Explorer!</h1>
-                <p class="subtitle">Embark on an epic journey to master Earth's incredible landforms</p>
+                <div class="hero-section">
+                    <div class="hero-icon">🌎</div>
+                    <h1 class="title">Landform Adventure!</h1>
+                    <p class="subtitle">🏔️ Explore amazing mountains, valleys, and more! 🏝️</p>
+                    <div class="welcome-stats">
+                        <div class="stat-bubble">
+                            <span class="stat-icon">🎓</span>
+                            <span class="stat-text">Learn & Play</span>
+                        </div>
+                        <div class="stat-bubble">
+                            <span class="stat-icon">🏆</span>
+                            <span class="stat-text">Earn Rewards</span>
+                        </div>
+                        <div class="stat-bubble">
+                            <span class="stat-icon">⚡</span>
+                            <span class="stat-text">Level Up</span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mode-grid">
-                    <div class="mode-card" onclick="showDifficultySelection()">
-                        <div class="mode-icon">🎯</div>
+                    <div class="mode-card quiz-card" onclick="showDifficultySelection()">
+                        <div class="mode-icon quiz-icon">🧩</div>
                         <h3 class="mode-title">Quiz Challenge</h3>
-                        <p class="mode-description">Test your knowledge with interactive quizzes and earn achievements</p>
+                        <p class="mode-description">🎯 Answer questions and become a landform expert!</p>
+                        <div class="mode-badge">Most Popular!</div>
                     </div>
 
-                    <div class="mode-card" onclick="startTimeChallenge()">
-                        <div class="mode-icon">⚡</div>
+                    <div class="mode-card speed-card" onclick="startTimeChallenge()">
+                        <div class="mode-icon speed-icon">🚀</div>
                         <h3 class="mode-title">Speed Challenge</h3>
-                        <p class="mode-description">Race against time in this thrilling rapid-fire quiz mode</p>
+                        <p class="mode-description">⏱️ How fast can you answer? Beat the clock!</p>
+                        <div class="mode-badge exciting">Exciting!</div>
                     </div>
 
-                    <div class="mode-card" onclick="startStudyMode()">
-                        <div class="mode-icon">📚</div>
-                        <h3 class="mode-title">Study Mode</h3>
-                        <p class="mode-description">Explore beautiful landforms with stunning images and fascinating facts</p>
+                    <div class="mode-card study-card" onclick="startStudyMode()">
+                        <div class="mode-icon study-icon">🔍</div>
+                        <h3 class="mode-title">Explore Mode</h3>
+                        <p class="mode-description">🏞️ Discover amazing facts about Earth's landforms!</p>
+                        <div class="mode-badge learn">Learn!</div>
                     </div>
                 </div>
 
