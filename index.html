@@ -261,6 +261,33 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .submit-container {
+            margin-top: 2rem;
+            text-align: center;
+            animation: slideInUp 0.3s ease;
+        }
+
+        .submit-btn {
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .btn-ghost {
             background: rgba(255, 255, 255, 0.1);
             color: white;
@@ -504,6 +531,9 @@
             padding: 1.25rem 1.5rem;
             text-align: left;
             cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            cursor: pointer;
             transition: var(--transition);
             font-size: 1.1rem;
             font-weight: 500;
@@ -528,6 +558,13 @@
         }
 
         .option-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
             border-color: var(--primary-color);
             transform: translateX(8px);
             box-shadow: var(--shadow-md);
@@ -1559,6 +1596,7 @@
 
         function loadQuestion() {
             game.answered = false;
+            selectedAnswerIndex = -1; // Reset selected answer
             const questions = getQuestionsByDifficulty();
             const question = questions[game.currentQuestion % questions.length];
             
@@ -1581,14 +1619,47 @@
                     <h3 class="question-text">${question.question}</h3>
                     <div class="options-grid">
                         ${question.options.map((option, index) => `
-                            <button class="option-btn" onclick="checkAnswer(${index}, ${question.correct}, '${question.explanation}', '${question.funFact || ''}')">
+                            <button class="option-btn" data-index="${index}">
                                 ${option}
                             </button>
                         `).join('')}
                     </div>
+                    <div class="submit-container" id="submitContainer" style="display: none;">
+                        <button class="btn btn-primary submit-btn" id="submitBtn">Submit Answer</button>
+                    </div>
                     <div id="feedbackArea"></div>
                 </div>
             `;
+            
+            // Add event listeners for iOS compatibility
+            setTimeout(() => {
+                const optionButtons = document.querySelectorAll('.option-btn');
+                optionButtons.forEach((button, index) => {
+                    // Remove any existing listeners
+                    button.replaceWith(button.cloneNode(true));
+                });
+                
+                // Re-select buttons after cloning
+                const newButtons = document.querySelectorAll('.option-btn');
+                newButtons.forEach((button) => {
+                    const index = parseInt(button.getAttribute('data-index'));
+                    
+                    // Add both click and touchend for iOS compatibility
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        selectAnswer(index);
+                    });
+                    
+                    button.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        selectAnswer(index);
+                    });
+                    
+                    // Add cursor pointer for better UX
+                    button.style.cursor = 'pointer';
+                    button.style.webkitTapHighlightColor = 'transparent';
+                });
+            }, 10);
         }
 
         function startTimer() {
@@ -1605,14 +1676,64 @@
                 
                 if (game.timeLeft <= 0) {
                     clearInterval(game.timer);
-                    // Auto-select wrong answer when time runs out
-                    checkAnswer(-1, 0, 'Time\'s up!', 'Try to answer faster next time!');
+                    // Auto-submit when time runs out
+                    selectedAnswerIndex = -1;
+                    const question = game.questions[game.currentQuestion];
+                    checkAnswer(-1, question.correct, 'Time\'s up!', 'Try to answer faster next time!');
+                    document.getElementById('submitContainer').style.display = 'none';
                 }
             }, 1000);
         }
 
         function updateTimerDisplay() {
             document.getElementById('timerValue').textContent = game.timeLeft;
+        }
+
+        let selectedAnswerIndex = -1;
+
+        function selectAnswer(index) {
+            if (game.answered) return;
+            
+            // Remove previous selection
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Select new answer
+            selectedAnswerIndex = index;
+            buttons[index].classList.add('selected');
+            
+            // Show submit button
+            const submitContainer = document.getElementById('submitContainer');
+            submitContainer.style.display = 'block';
+            
+            // Add iOS-compatible event listeners to submit button
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn && !submitBtn.hasAttribute('data-listeners-added')) {
+                submitBtn.setAttribute('data-listeners-added', 'true');
+                
+                submitBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    submitAnswer();
+                });
+                
+                submitBtn.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    submitAnswer();
+                });
+                
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.webkitTapHighlightColor = 'transparent';
+            }
+        }
+
+        function submitAnswer() {
+            if (selectedAnswerIndex === -1 || game.answered) return;
+            
+            const question = game.questions[game.currentQuestion];
+            checkAnswer(selectedAnswerIndex, question.correct, question.explanation, question.funFact || '');
+            
+            // Hide submit button after submission
+            document.getElementById('submitContainer').style.display = 'none';
         }
 
         function checkAnswer(selected, correct, explanation, funFact) {
