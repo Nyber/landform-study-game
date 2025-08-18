@@ -1560,6 +1560,7 @@
             game.streak = 0;
             game.totalAnswered = 0;
             game.correctAnswers = 0;
+            game.questions = null; // Reset questions array so it gets refreshed
             if (game.timer) clearInterval(game.timer);
             updateStats();
         }
@@ -1576,8 +1577,14 @@
         function loadQuestion() {
             game.answered = false;
             selectedAnswerIndex = -1; // Reset selected answer
-            const questions = getQuestionsByDifficulty();
-            const question = questions[game.currentQuestion % questions.length];
+            
+            // Ensure we have the questions array stored in game object
+            if (!game.questions) {
+                game.questions = getQuestionsByDifficulty();
+            }
+            
+            const question = game.questions[game.currentQuestion % game.questions.length];
+            console.log('Loading question:', game.currentQuestion, question.question);
             
             // Start timer for challenge mode
             if (game.gameMode === 'challenge') {
@@ -1656,8 +1663,10 @@
                     clearInterval(game.timer);
                     // Auto-submit when time runs out
                     selectedAnswerIndex = -1;
-                    const question = game.questions[game.currentQuestion];
-                    checkAnswer(-1, question.correct, 'Time\'s up!', 'Try to answer faster next time!');
+                    if (game.questions && game.questions[game.currentQuestion]) {
+                        const question = game.questions[game.currentQuestion];
+                        checkAnswer(-1, question.correct, 'Time\'s up!', 'Try to answer faster next time!');
+                    }
                     document.getElementById('submitContainer').style.display = 'none';
                 }
             }, 1000);
@@ -1722,13 +1731,16 @@
         }
 
         function submitAnswer() {
-            console.log('submitAnswer called, selectedAnswerIndex:', selectedAnswerIndex); // Debug log
+            console.log('submitAnswer called, selectedAnswerIndex:', selectedAnswerIndex);
+            console.log('game.answered:', game.answered);
+            
             if (selectedAnswerIndex === -1 || game.answered) {
                 console.log('Submit blocked - no answer selected or already answered');
                 return;
             }
             
             const question = game.questions[game.currentQuestion];
+            console.log('Calling checkAnswer with:', selectedAnswerIndex, question.correct);
             checkAnswer(selectedAnswerIndex, question.correct, question.explanation, question.funFact || '');
             
             // Hide submit button after submission
@@ -1736,9 +1748,14 @@
         }
 
         function checkAnswer(selected, correct, explanation, funFact) {
-            if (game.answered) return;
+            console.log('checkAnswer called with:', selected, correct, explanation);
+            if (game.answered) {
+                console.log('checkAnswer blocked - already answered');
+                return;
+            }
             game.answered = true;
             game.totalAnswered++;
+            console.log('Answer processed, setting answered to true');
             
             // Clear timer
             if (game.timer) {
@@ -1794,7 +1811,14 @@
             });
             
             // Show next button
-            document.getElementById('nextBtn').style.display = 'block';
+            const nextBtn = document.getElementById('nextBtn');
+            console.log('Trying to show next button, element found:', !!nextBtn);
+            if (nextBtn) {
+                nextBtn.style.display = 'block';
+                console.log('Next button display set to block');
+            } else {
+                console.error('Next button not found!');
+            }
             updateStats();
         }
 
