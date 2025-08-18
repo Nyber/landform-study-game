@@ -1299,30 +1299,33 @@
                     
                     <!-- Name Input -->
                     <div id="nameSetup" class="name-setup" style="display: none;">
-                        <p style="margin-bottom: 1rem; color: var(--text-primary);">What's your name, young explorer?</p>
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🚀</div>
+                        <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">Ready for Adventure?</h3>
+                        <p style="margin-bottom: 1.5rem; color: var(--text-primary);">First, tell us your name so we can track your amazing progress!</p>
                         <div class="name-input-container">
-                            <input type="text" id="playerName" class="name-input" placeholder="Enter your name" maxlength="20">
-                            <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Start Exploring!</button>
+                            <input type="text" id="playerName" class="name-input" placeholder="Your name here" maxlength="20">
+                            <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Let's Go!</button>
                         </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Your name helps us save your scores and track your learning journey 🏆</p>
                     </div>
                 </div>
 
-                <div class="mode-grid">
-                    <div class="mode-card quiz-card" onclick="showDifficultySelection()">
+                <div class="mode-grid" id="gameModesGrid">
+                    <div class="mode-card quiz-card" onclick="checkNameAndStart('showDifficultySelection')">
                         <div class="mode-icon quiz-icon">🧩</div>
                         <h3 class="mode-title">Quiz Challenge</h3>
                         <p class="mode-description">🎯 Answer questions and become a landform expert!</p>
                         <div class="mode-badge">Most Popular!</div>
                     </div>
 
-                    <div class="mode-card speed-card" onclick="startTimeChallenge()">
+                    <div class="mode-card speed-card" onclick="checkNameAndStart('startTimeChallenge')">
                         <div class="mode-icon speed-icon">🚀</div>
                         <h3 class="mode-title">Speed Challenge</h3>
                         <p class="mode-description">⏱️ How fast can you answer? Beat the clock!</p>
                         <div class="mode-badge exciting">Exciting!</div>
                     </div>
 
-                    <div class="mode-card study-card" onclick="startStudyMode()">
+                    <div class="mode-card study-card" onclick="checkNameAndStart('startStudyMode')">
                         <div class="mode-icon study-icon">🔍</div>
                         <h3 class="mode-title">Explore Mode</h3>
                         <p class="mode-description">🏞️ Discover amazing facts about Earth's landforms!</p>
@@ -1410,7 +1413,7 @@
             <div class="glass-card">
                 <div style="text-align: center;">
                     <h2 class="title">📈 Practice Scoreboard</h2>
-                    <p class="subtitle">Track your learning progress and achievements!</p>
+                    <p class="subtitle" id="scoreboardSubtitle">Track your learning progress and achievements!</p>
                     
                     <!-- Summary Stats -->
                     <div class="scoreboard-summary">
@@ -2510,11 +2513,19 @@
         // Scoreboard Functions
         function showScoreboard() {
             showScreen('scoreboardScreen');
+            
+            // Update subtitle with player name
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                document.getElementById('scoreboardSubtitle').textContent = `${playerName}'s learning progress and achievements!`;
+            }
+            
             updateScoreboardDisplay();
             game.playSound('button');
         }
 
         function saveGameSession(mode, score, totalQuestions, difficulty = null) {
+            const playerName = localStorage.getItem('playerName');
             const sessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
             const session = {
                 mode: mode,
@@ -2522,9 +2533,12 @@
                 totalQuestions: totalQuestions,
                 percentage: Math.round((score / totalQuestions) * 100),
                 difficulty: difficulty,
+                playerName: playerName,
                 date: new Date().toISOString(),
                 timestamp: Date.now()
             };
+            
+            console.log('Saving game session:', session); // Debug log
             
             sessions.unshift(session); // Add to beginning
             
@@ -2538,6 +2552,7 @@
 
         function updateScoreboardDisplay() {
             const sessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+            console.log('Loading scoreboard, found sessions:', sessions.length); // Debug log
             
             // Calculate summary stats
             const quizSessions = sessions.filter(s => s.mode === 'quiz');
@@ -2625,8 +2640,72 @@
             if (playerName) {
                 updateWelcomeMessage(playerName);
                 document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
             } else {
                 document.getElementById('nameSetup').style.display = 'block';
+                disableGameModes();
+            }
+        }
+        
+        function enableGameModes() {
+            const modeGrid = document.getElementById('gameModesGrid');
+            modeGrid.style.opacity = '1';
+            modeGrid.style.pointerEvents = 'auto';
+            
+            // Enable scoreboard access
+            const scoreboardBtns = document.querySelectorAll('[onclick*="showScoreboard"]');
+            scoreboardBtns.forEach(btn => {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function disableGameModes() {
+            const modeGrid = document.getElementById('gameModesGrid');
+            modeGrid.style.opacity = '0.5';
+            modeGrid.style.pointerEvents = 'none';
+            
+            // Disable scoreboard access
+            const scoreboardBtns = document.querySelectorAll('[onclick*="showScoreboard"]');
+            scoreboardBtns.forEach(btn => {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            });
+        }
+        
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                // Scroll to name input and highlight it
+                document.getElementById('playerName').focus();
+                document.getElementById('nameSetup').style.animation = 'shake 0.5s ease';
+                
+                // Add shake animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        25% { transform: translateX(-5px); }
+                        75% { transform: translateX(5px); }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                setTimeout(() => {
+                    document.getElementById('nameSetup').style.animation = '';
+                    style.remove();
+                }, 500);
+                
+                return;
+            }
+            
+            // Call the actual function
+            if (functionName === 'showDifficultySelection') {
+                showDifficultySelection();
+            } else if (functionName === 'startTimeChallenge') {
+                startTimeChallenge();
+            } else if (functionName === 'startStudyMode') {
+                startStudyMode();
             }
         }
         
@@ -2638,6 +2717,7 @@
                 localStorage.setItem('playerName', name);
                 updateWelcomeMessage(name);
                 document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
                 game.playSound('button');
                 
                 // Show a welcome achievement
