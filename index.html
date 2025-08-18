@@ -1224,9 +1224,9 @@
         .celebration-particle {
             position: fixed;
             pointer-events: none;
-            z-index: 1000;
-            font-size: 1.5rem;
-            animation: celebrate 3s ease-out forwards;
+            z-index: 100;
+            font-size: 1.2rem;
+            animation: celebrate 2s ease-out forwards;
         }
 
         @keyframes celebrate {
@@ -1656,25 +1656,26 @@
                 this.save();
                 this.updateProgressDisplay();
                 
-                // Create achievement popup
+                // Create achievement popup (non-blocking)
                 const popup = document.createElement('div');
-                popup.className = 'glass-card';
+                popup.className = 'glass-card achievement-toast';
                 popup.style.cssText = `
                     position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%) scale(0);
-                    z-index: 1000;
+                    top: 20px;
+                    right: 20px;
+                    transform: translateX(400px);
+                    z-index: 500;
                     text-align: center;
-                    animation: achievement-popup 0.5s ease forwards;
-                    max-width: 400px;
+                    animation: slideInAchievement 0.5s ease forwards;
+                    max-width: 300px;
+                    pointer-events: none;
                 `;
                 
                 popup.innerHTML = `
-                    <div style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
-                    <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Achievement Unlocked!</h3>
-                    <h4 style="margin-bottom: 1rem;">${title}</h4>
-                    <p style="color: var(--text-secondary);">${description}</p>
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+                    <h4 style="color: var(--primary-color); margin-bottom: 0.25rem; font-size: 1rem;">Achievement!</h4>
+                    <p style="margin-bottom: 0.25rem; font-size: 0.9rem; font-weight: 600;">${title}</p>
+                    <p style="color: var(--text-secondary); font-size: 0.8rem;">${description}</p>
                 `;
                 
                 document.body.appendChild(popup);
@@ -1682,8 +1683,16 @@
                 // Add achievement popup animation
                 const style = document.createElement('style');
                 style.textContent = `
-                    @keyframes achievement-popup {
-                        to { transform: translate(-50%, -50%) scale(1); }
+                    @keyframes slideInAchievement {
+                        0% { transform: translateX(400px); opacity: 0; }
+                        20% { transform: translateX(0); opacity: 1; }
+                        80% { transform: translateX(0); opacity: 1; }
+                        100% { transform: translateX(400px); opacity: 0; }
+                    }
+                    .achievement-toast {
+                        backdrop-filter: blur(10px) !important;
+                        border: 2px solid var(--primary-color) !important;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
                     }
                 `;
                 document.head.appendChild(style);
@@ -1691,26 +1700,37 @@
                 this.playSound('achievement');
                 this.createCelebration();
                 
+                // Auto-remove after animation completes (3 seconds)
                 setTimeout(() => {
-                    popup.remove();
-                    style.remove();
+                    if (popup.parentNode) {
+                        popup.remove();
+                    }
+                    if (style.parentNode) {
+                        style.remove();
+                    }
                 }, 3000);
                 
                 this.updateAchievementsDisplay();
             }
 
             createCelebration() {
-                const emojis = ['🎉', '🎊', '⭐', '✨', '🌟', '🎈', '🏆'];
-                for (let i = 0; i < 30; i++) {
+                const emojis = ['🎉', '🎊', '⭐', '✨', '🌟'];
+                // Reduced particles to avoid UI interference
+                for (let i = 0; i < 15; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'celebration-particle';
                     particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                    particle.style.left = Math.random() * 100 + '%';
+                    // Keep particles more to the edges
+                    particle.style.left = (Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30) + '%';
                     particle.style.top = Math.random() * 100 + '%';
-                    particle.style.animationDelay = Math.random() * 0.5 + 's';
+                    particle.style.animationDelay = Math.random() * 0.3 + 's';
                     document.body.appendChild(particle);
                     
-                    setTimeout(() => particle.remove(), 3000);
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.remove();
+                        }
+                    }, 2000);
                 }
             }
 
