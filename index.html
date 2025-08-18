@@ -1613,26 +1613,28 @@
             // Add event listeners for iOS compatibility
             setTimeout(() => {
                 const optionButtons = document.querySelectorAll('.option-btn');
-                optionButtons.forEach((button, index) => {
-                    // Remove any existing listeners
-                    button.replaceWith(button.cloneNode(true));
-                });
-                
-                // Re-select buttons after cloning
-                const newButtons = document.querySelectorAll('.option-btn');
-                newButtons.forEach((button) => {
+                optionButtons.forEach((button) => {
                     const index = parseInt(button.getAttribute('data-index'));
                     
-                    // Add both click and touchend for iOS compatibility
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        selectAnswer(index);
-                    });
+                    // Use a single unified event handler to prevent double-firing
+                    let eventFired = false;
                     
-                    button.addEventListener('touchend', (e) => {
+                    const handleSelection = (e) => {
                         e.preventDefault();
+                        e.stopPropagation();
+                        
+                        if (eventFired) return; // Prevent double execution
+                        eventFired = true;
+                        
                         selectAnswer(index);
-                    });
+                        
+                        // Reset flag after a short delay
+                        setTimeout(() => { eventFired = false; }, 100);
+                    };
+                    
+                    // Add event listeners with unified handler
+                    button.addEventListener('click', handleSelection);
+                    button.addEventListener('touchstart', handleSelection);
                     
                     // Add cursor pointer for better UX
                     button.style.cursor = 'pointer';
@@ -1673,13 +1675,17 @@
         function selectAnswer(index) {
             if (game.answered) return;
             
+            console.log('selectAnswer called with index:', index); // Debug log
+            
             // Remove previous selection
             const buttons = document.querySelectorAll('.option-btn');
             buttons.forEach(btn => btn.classList.remove('selected'));
             
             // Select new answer
             selectedAnswerIndex = index;
-            buttons[index].classList.add('selected');
+            if (buttons[index]) {
+                buttons[index].classList.add('selected');
+            }
             
             // Show submit button
             const submitContainer = document.getElementById('submitContainer');
@@ -1690,15 +1696,23 @@
             if (submitBtn && !submitBtn.hasAttribute('data-listeners-added')) {
                 submitBtn.setAttribute('data-listeners-added', 'true');
                 
-                submitBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    submitAnswer();
-                });
+                let submitEventFired = false;
                 
-                submitBtn.addEventListener('touchend', (e) => {
+                const handleSubmit = (e) => {
                     e.preventDefault();
+                    e.stopPropagation();
+                    
+                    if (submitEventFired) return; // Prevent double execution
+                    submitEventFired = true;
+                    
                     submitAnswer();
-                });
+                    
+                    // Reset flag after a short delay
+                    setTimeout(() => { submitEventFired = false; }, 100);
+                };
+                
+                submitBtn.addEventListener('click', handleSubmit);
+                submitBtn.addEventListener('touchstart', handleSubmit);
                 
                 submitBtn.style.cursor = 'pointer';
                 submitBtn.style.webkitTapHighlightColor = 'transparent';
@@ -1706,7 +1720,11 @@
         }
 
         function submitAnswer() {
-            if (selectedAnswerIndex === -1 || game.answered) return;
+            console.log('submitAnswer called, selectedAnswerIndex:', selectedAnswerIndex); // Debug log
+            if (selectedAnswerIndex === -1 || game.answered) {
+                console.log('Submit blocked - no answer selected or already answered');
+                return;
+            }
             
             const question = game.questions[game.currentQuestion];
             checkAnswer(selectedAnswerIndex, question.correct, question.explanation, question.funFact || '');
@@ -1974,9 +1992,14 @@
             }
         }, { passive: false });
 
-        // Prevent double-tap zoom on iOS
+        // Prevent double-tap zoom on iOS (but not on buttons)
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function(e) {
+            // Don't interfere with button touches
+            if (e.target.classList.contains('option-btn') || e.target.classList.contains('submit-btn')) {
+                return;
+            }
+            
             const now = (new Date()).getTime();
             if (now - lastTouchEnd <= 300) {
                 e.preventDefault();
