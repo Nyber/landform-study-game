@@ -252,6 +252,42 @@
             color: var(--text-primary);
             font-size: 0.9rem;
         }
+        
+        .name-setup {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .name-input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .name-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .name-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
 
         /* Button styles */
         .btn {
@@ -1244,8 +1280,8 @@
             <div class="glass-card">
                 <div class="hero-section">
                     <div class="hero-icon">🌎</div>
-                    <h1 class="title">Landform Adventure!</h1>
-                    <p class="subtitle">🏔️ Explore amazing mountains, valleys, and more! 🏝️</p>
+                    <h1 class="title" id="welcomeTitle">Welcome, Explorer!</h1>
+                    <p class="subtitle">Ready to explore amazing landforms? Let's learn about mountains, valleys, and more! 🏝️</p>
                     <div class="welcome-stats">
                         <div class="stat-bubble">
                             <span class="stat-icon">🎓</span>
@@ -1258,6 +1294,15 @@
                         <div class="stat-bubble">
                             <span class="stat-icon">⚡</span>
                             <span class="stat-text">Level Up</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Name Input -->
+                    <div id="nameSetup" class="name-setup" style="display: none;">
+                        <p style="margin-bottom: 1rem; color: var(--text-primary);">What's your name, young explorer?</p>
+                        <div class="name-input-container">
+                            <input type="text" id="playerName" class="name-input" placeholder="Enter your name" maxlength="20">
+                            <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Start Exploring!</button>
                         </div>
                     </div>
                 </div>
@@ -1583,6 +1628,7 @@
             
             getAchievementData(id) {
                 const achievements = {
+                    'welcome': { name: 'Welcome Explorer', desc: 'Welcome to your landform adventure!', emoji: '🌎' },
                     'first_correct': { name: 'First Success', desc: 'Got your first answer right!', emoji: '🎯' },
                     'streak_5': { name: 'On Fire', desc: '5 correct answers in a row!', emoji: '🔥' },
                     'streak_10': { name: 'Unstoppable', desc: '10 answers streak!', emoji: '🚀' },
@@ -1916,6 +1962,8 @@
             game.updateXPDisplay();
             game.updateProgressDisplay();
             updateHighScores();
+            checkPlayerName();
+            setupNameInput();
         }
 
         function createBackgroundParticles() {
@@ -2549,6 +2597,50 @@
             // Go to home screen
             showScreen('homeScreen');
             game.playSound('button');
+        }
+
+        // Name management functions
+        function checkPlayerName() {
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                updateWelcomeMessage(playerName);
+                document.getElementById('nameSetup').style.display = 'none';
+            } else {
+                document.getElementById('nameSetup').style.display = 'block';
+            }
+        }
+        
+        function saveName() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            
+            if (name.length > 0) {
+                localStorage.setItem('playerName', name);
+                updateWelcomeMessage(name);
+                document.getElementById('nameSetup').style.display = 'none';
+                game.playSound('button');
+                
+                // Show a welcome achievement
+                setTimeout(() => {
+                    game.showAchievement('welcome', 'Welcome Explorer!', `Welcome to Landform Explorer, ${name}!`);
+                }, 500);
+            } else {
+                nameInput.focus();
+            }
+        }
+        
+        function updateWelcomeMessage(name) {
+            document.getElementById('welcomeTitle').textContent = `Welcome, ${name}!`;
+        }
+        
+        // Allow Enter key to save name
+        function setupNameInput() {
+            const nameInput = document.getElementById('playerName');
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveName();
+                }
+            });
         }
 
         // Initialize the app when page loads
