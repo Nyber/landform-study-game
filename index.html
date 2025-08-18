@@ -912,23 +912,6 @@
         }
 
         /* Theme variations */
-        .theme-nature {
-            --primary-color: #059669;
-            --secondary-color: #0d9488;
-            --accent-color: #06b6d4;
-        }
-
-        .theme-volcano {
-            --primary-color: #dc2626;
-            --secondary-color: #ea580c;
-            --accent-color: #f59e0b;
-        }
-
-        .theme-ocean {
-            --primary-color: #0ea5e9;
-            --secondary-color: #0284c7;
-            --accent-color: #06b6d4;
-        }
     </style>
 </head>
 <body>
@@ -960,7 +943,6 @@
                     </div>
                     <span id="xpText">65/100 XP</span>
                 </div>
-                <button class="btn btn-ghost" onclick="toggleTheme()">🎨</button>
             </div>
         </nav>
 
@@ -1143,7 +1125,6 @@
                 this.xp = parseInt(localStorage.getItem('xp') || '65');
                 this.level = Math.floor(this.xp / 100) + 1;
                 this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-                this.theme = localStorage.getItem('theme') || 'default';
                 this.achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
                 this.highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
             }
@@ -1151,7 +1132,6 @@
             save() {
                 localStorage.setItem('xp', this.xp.toString());
                 localStorage.setItem('soundEnabled', this.soundEnabled.toString());
-                localStorage.setItem('theme', this.theme);
                 localStorage.setItem('achievements', JSON.stringify(this.achievements));
                 localStorage.setItem('highScores', JSON.stringify(this.highScores));
             }
@@ -1487,7 +1467,6 @@
             game.updateXPDisplay();
             game.updateAchievementsDisplay();
             updateHighScores();
-            applyTheme();
         }
 
         function createBackgroundParticles() {
@@ -1949,27 +1928,10 @@
 
         function showSettings() {
             // Could implement settings panel
-            alert('⚙️ Settings coming soon! For now, use the sound toggle and theme buttons.');
+            alert('⚙️ Settings coming soon! For now, use the sound toggle button.');
             game.playSound('button');
         }
 
-        function toggleTheme() {
-            const themes = ['default', 'nature', 'volcano', 'ocean'];
-            const currentIndex = themes.indexOf(game.theme);
-            const nextIndex = (currentIndex + 1) % themes.length;
-            game.theme = themes[nextIndex];
-            applyTheme();
-            game.save();
-            game.playSound('button');
-        }
-
-        function applyTheme() {
-            const body = document.body;
-            body.className = body.className.replace(/theme-\w+/g, '');
-            if (game.theme !== 'default') {
-                body.classList.add(`theme-${game.theme}`);
-            }
-        }
 
         // Home button function
         function goHome() {
