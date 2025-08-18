@@ -458,6 +458,120 @@
         .mode-card:nth-child(2) { animation-delay: 0.2s; }
         .mode-card:nth-child(3) { animation-delay: 0.3s; }
 
+        /* Scoreboard Styles */
+        .scoreboard-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .summary-icon {
+            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            color: white;
+        }
+
+        .summary-text {
+            flex: 1;
+        }
+
+        .summary-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .sessions-list {
+            max-height: 400px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.5);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+        }
+
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: white;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .session-mode {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .session-mode.quiz {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .session-mode.speed {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+
+        .session-score {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .session-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .no-sessions {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
         .mode-icon {
             width: 80px;
             height: 80px;
@@ -1108,6 +1222,13 @@
                     </div>
                 </div>
 
+                <!-- Quick Actions -->
+                <div style="text-align: center; margin: 2rem 0;">
+                    <button class="btn btn-accent" onclick="showScoreboard()" style="margin: 0 0.5rem;">
+                        📈 View Practice Scores
+                    </button>
+                </div>
+
                 <!-- Achievements Section -->
                 <div class="achievements-section">
                     <h2 class="achievements-title">🏆 Your Achievements</h2>
@@ -1139,6 +1260,58 @@
                 </div>
                 <div style="text-align: center; margin-top: 2rem;">
                     <button class="btn btn-ghost" onclick="showScreen('homeScreen')">← Back to Home</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoreboard Screen -->
+        <div class="screen" id="scoreboardScreen">
+            <div class="glass-card">
+                <div style="text-align: center;">
+                    <h2 class="title">📈 Practice Scoreboard</h2>
+                    <p class="subtitle">Track your learning progress and achievements!</p>
+                    
+                    <!-- Summary Stats -->
+                    <div class="scoreboard-summary">
+                        <div class="summary-card">
+                            <div class="summary-icon">🎯</div>
+                            <div class="summary-text">
+                                <div class="summary-number" id="totalQuizzes">0</div>
+                                <div class="summary-label">Quiz Sessions</div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon">⚡</div>
+                            <div class="summary-text">
+                                <div class="summary-number" id="totalSpeedRuns">0</div>
+                                <div class="summary-label">Speed Challenges</div>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon">💯</div>
+                            <div class="summary-text">
+                                <div class="summary-number" id="averageScore">0%</div>
+                                <div class="summary-label">Average Score</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Sessions -->
+                    <div style="margin-top: 3rem;">
+                        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">📅 Recent Practice Sessions</h3>
+                        <div id="recentSessionsList" class="sessions-list">
+                            <div class="no-sessions">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                                <p>No practice sessions yet! Start playing to see scores here.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="showScreen('homeScreen')">🏠 Back to Home</button>
+                        <button class="btn btn-ghost" onclick="clearScoreHistory()">🗑️ Clear History</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1234,6 +1407,7 @@
     <!-- Control Buttons -->
     <div class="controls">
         <button class="control-btn" id="soundToggle" onclick="toggleSound()" title="Toggle Sound">🔊</button>
+        <button class="control-btn" onclick="showScoreboard()" title="Scoreboard">📈</button>
         <button class="control-btn" onclick="showHints()" title="Hints">💡</button>
         <button class="control-btn" onclick="showSettings()" title="Settings">⚙️</button>
     </div>
@@ -2006,6 +2180,10 @@
             const percentage = Math.round((game.score / game.totalQuestions) * 100);
             document.getElementById('finalScoreDisplay').textContent = `${game.score}/${game.totalQuestions}`;
             
+            // Save the game session for scoreboard tracking
+            const mode = game.gameMode === 'challenge' ? 'speed' : 'quiz';
+            saveGameSession(mode, game.score, game.totalQuestions, game.difficulty);
+            
             // Determine message
             let message = '';
             if (percentage === 100) {
@@ -2110,6 +2288,101 @@
             // Could implement settings panel
             alert('⚙️ Settings coming soon! For now, use the sound toggle button.');
             game.playSound('button');
+        }
+
+        // Scoreboard Functions
+        function showScoreboard() {
+            showScreen('scoreboardScreen');
+            updateScoreboardDisplay();
+            game.playSound('button');
+        }
+
+        function saveGameSession(mode, score, totalQuestions, difficulty = null) {
+            const sessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+            const session = {
+                mode: mode,
+                score: score,
+                totalQuestions: totalQuestions,
+                percentage: Math.round((score / totalQuestions) * 100),
+                difficulty: difficulty,
+                date: new Date().toISOString(),
+                timestamp: Date.now()
+            };
+            
+            sessions.unshift(session); // Add to beginning
+            
+            // Keep only last 50 sessions
+            if (sessions.length > 50) {
+                sessions.splice(50);
+            }
+            
+            localStorage.setItem('gameSessions', JSON.stringify(sessions));
+        }
+
+        function updateScoreboardDisplay() {
+            const sessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+            
+            // Calculate summary stats
+            const quizSessions = sessions.filter(s => s.mode === 'quiz');
+            const speedSessions = sessions.filter(s => s.mode === 'speed');
+            
+            const totalQuizzes = quizSessions.length;
+            const totalSpeedRuns = speedSessions.length;
+            
+            let averageScore = 0;
+            if (sessions.length > 0) {
+                const totalPercentage = sessions.reduce((sum, s) => sum + s.percentage, 0);
+                averageScore = Math.round(totalPercentage / sessions.length);
+            }
+            
+            // Update summary display
+            document.getElementById('totalQuizzes').textContent = totalQuizzes;
+            document.getElementById('totalSpeedRuns').textContent = totalSpeedRuns;
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            
+            // Update recent sessions list
+            const sessionsList = document.getElementById('recentSessionsList');
+            
+            if (sessions.length === 0) {
+                sessionsList.innerHTML = `
+                    <div class="no-sessions">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                        <p>No practice sessions yet! Start playing to see scores here.</p>
+                    </div>
+                `;
+            } else {
+                const recentSessions = sessions.slice(0, 10); // Show last 10 sessions
+                sessionsList.innerHTML = recentSessions.map(session => {
+                    const date = new Date(session.date);
+                    const dateStr = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const modeIcon = session.mode === 'quiz' ? '🎯' : '⚡';
+                    const modeClass = session.mode === 'quiz' ? 'quiz' : 'speed';
+                    const difficultyText = session.difficulty ? ` (${session.difficulty})` : '';
+                    
+                    return `
+                        <div class="session-item">
+                            <div class="session-info">
+                                <span style="font-size: 1.5rem;">${modeIcon}</span>
+                                <div>
+                                    <div class="session-mode ${modeClass}">${session.mode === 'quiz' ? 'Quiz Challenge' : 'Speed Challenge'}${difficultyText}</div>
+                                    <div class="session-date">${dateStr}</div>
+                                </div>
+                            </div>
+                            <div class="session-score" style="color: ${session.percentage >= 80 ? 'var(--success-color)' : session.percentage >= 60 ? 'var(--warning-color)' : 'var(--error-color)'}">
+                                ${session.score}/${session.totalQuestions} (${session.percentage}%)
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function clearScoreHistory() {
+            if (confirm('Are you sure you want to clear all practice history? This cannot be undone.')) {
+                localStorage.removeItem('gameSessions');
+                updateScoreboardDisplay();
+                game.playSound('button');
+            }
         }
 
 
