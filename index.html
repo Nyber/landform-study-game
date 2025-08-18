@@ -825,9 +825,87 @@
             20%, 40%, 60%, 80% { transform: translateX(4px); }
         }
 
-        /* Achievements */
-        .achievements-section {
+        /* Progress Section */
+        .progress-section {
             margin: 2rem 0;
+        }
+        
+        .progress-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .progress-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .progress-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        
+        .progress-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+        
+        .recent-achievement {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: achievementGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .achievement-emoji {
+            font-size: 1.5rem;
+        }
+        
+        .achievement-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .achievement-desc {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        @keyframes achievementGlow {
+            0% { box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+            100% { box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4); }
         }
 
         .achievements-title {
@@ -838,21 +916,6 @@
             margin-bottom: 1.5rem;
         }
 
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1rem;
-        }
-
-        .achievement-badge {
-            background: var(--bg-secondary);
-            border-radius: var(--border-radius);
-            padding: 1.5rem 1rem;
-            text-align: center;
-            transition: var(--transition);
-            border: 2px solid #e2e8f0;
-            cursor: pointer;
-        }
 
         .achievement-badge.earned {
             background: linear-gradient(135deg, #fef3c7, #fde68a);
@@ -1229,10 +1292,43 @@
                     </button>
                 </div>
 
-                <!-- Achievements Section -->
-                <div class="achievements-section">
-                    <h2 class="achievements-title">🏆 Your Achievements</h2>
-                    <div class="achievements-grid" id="achievementsGrid"></div>
+                <!-- Progress Section -->
+                <div class="progress-section">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🎆 Your Journey</h3>
+                    <div class="progress-cards">
+                        <div class="progress-card">
+                            <div class="progress-icon">🏆</div>
+                            <div class="progress-info">
+                                <div class="progress-number" id="achievementCount">0</div>
+                                <div class="progress-label">Achievements</div>
+                            </div>
+                        </div>
+                        <div class="progress-card">
+                            <div class="progress-icon">🔥</div>
+                            <div class="progress-info">
+                                <div class="progress-number" id="bestStreak">0</div>
+                                <div class="progress-label">Best Streak</div>
+                            </div>
+                        </div>
+                        <div class="progress-card">
+                            <div class="progress-icon">🎓</div>
+                            <div class="progress-info">
+                                <div class="progress-number" id="totalCorrect">0</div>
+                                <div class="progress-label">Correct Answers</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Achievement -->
+                    <div id="recentAchievement" class="recent-achievement" style="display: none;">
+                        <div class="achievement-badge">
+                            <span class="achievement-emoji">🎆</span>
+                            <div class="achievement-text">
+                                <div class="achievement-name">Latest Achievement</div>
+                                <div class="achievement-desc">Keep exploring!</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1451,9 +1547,10 @@
                 const newLevel = Math.floor(this.xp / 100) + 1;
                 if (newLevel > this.level) {
                     this.level = newLevel;
-                    this.showAchievement('level_up', `Level ${this.level} Reached!`);
+                    this.showAchievement('level_up', `Level ${this.level} Explorer!`, `You've reached level ${this.level}!`);
                 }
                 this.updateXPDisplay();
+                this.updateProgressDisplay();
                 this.save();
             }
 
@@ -1465,11 +1562,53 @@
                 document.querySelector('.user-level span').textContent = `Level ${this.level}`;
             }
 
+            updateProgressDisplay() {
+                // Update achievement count
+                document.getElementById('achievementCount').textContent = this.achievements.length;
+                
+                // Update best streak (track it in localStorage)
+                const bestStreak = parseInt(localStorage.getItem('bestStreak') || '0');
+                document.getElementById('bestStreak').textContent = bestStreak;
+                
+                // Update total correct answers
+                const totalCorrect = parseInt(localStorage.getItem('totalCorrect') || '0');
+                document.getElementById('totalCorrect').textContent = totalCorrect;
+                
+                // Show most recent achievement
+                if (this.achievements.length > 0) {
+                    const recentAchievementData = this.getAchievementData(this.achievements[this.achievements.length - 1]);
+                    this.displayRecentAchievement(recentAchievementData);
+                }
+            }
+            
+            getAchievementData(id) {
+                const achievements = {
+                    'first_correct': { name: 'First Success', desc: 'Got your first answer right!', emoji: '🎯' },
+                    'streak_5': { name: 'On Fire', desc: '5 correct answers in a row!', emoji: '🔥' },
+                    'streak_10': { name: 'Unstoppable', desc: '10 answers streak!', emoji: '🚀' },
+                    'perfect_score': { name: 'Perfect Explorer', desc: '100% quiz score!', emoji: '⭐' },
+                    'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
+                    'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
+                    'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
+                    'level_up': { name: 'Level Up', desc: 'Reached a new level!', emoji: '🆙' }
+                };
+                return achievements[id] || { name: 'Achievement', desc: 'Well done!', emoji: '🏆' };
+            }
+            
+            displayRecentAchievement(achievement) {
+                const recentDiv = document.getElementById('recentAchievement');
+                recentDiv.style.display = 'block';
+                recentDiv.querySelector('.achievement-emoji').textContent = achievement.emoji;
+                recentDiv.querySelector('.achievement-name').textContent = achievement.name;
+                recentDiv.querySelector('.achievement-desc').textContent = achievement.desc;
+            }
+
             showAchievement(id, title, description = '') {
                 if (this.achievements.includes(id)) return;
                 
                 this.achievements.push(id);
                 this.save();
+                this.updateProgressDisplay();
                 
                 // Create achievement popup
                 const popup = document.createElement('div');
@@ -1775,7 +1914,7 @@
         function initializeApp() {
             createBackgroundParticles();
             game.updateXPDisplay();
-            game.updateAchievementsDisplay();
+            game.updateProgressDisplay();
             updateHighScores();
         }
 
@@ -2096,6 +2235,16 @@
                 if (game.correctAnswers === 1) {
                     game.showAchievement('first_correct', 'First Steps!', 'You got your first answer correct!');
                 }
+                
+                // Update best streak tracking
+                const bestStreak = parseInt(localStorage.getItem('bestStreak') || '0');
+                if (game.streak > bestStreak) {
+                    localStorage.setItem('bestStreak', game.streak.toString());
+                }
+                
+                // Update total correct answers
+                const totalCorrect = parseInt(localStorage.getItem('totalCorrect') || '0');
+                localStorage.setItem('totalCorrect', (totalCorrect + 1).toString());
                 
                 // Check for streak achievements
                 if (game.streak === 5) {
