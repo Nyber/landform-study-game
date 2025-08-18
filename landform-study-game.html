@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landform Study Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #5a67d8;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .start-screen {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .quiz-screen {
+            display: none;
+        }
+
+        .progress-bar {
+            background: #e2e8f0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #48bb78, #38a169);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .question-container {
+            background: #f7fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            font-size: 1.3em;
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #cbd5e0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 1.1em;
+            color: #4a5568;
+        }
+
+        .option-btn:hover {
+            background: #edf2f7;
+            border-color: #5a67d8;
+            transform: translateX(5px);
+        }
+
+        .option-btn.correct {
+            background: #c6f6d5;
+            border-color: #48bb78;
+            animation: correctPulse 0.5s;
+        }
+
+        .option-btn.incorrect {
+            background: #fed7d7;
+            border-color: #f56565;
+            animation: shake 0.5s;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .matching-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .matching-column {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .matching-item {
+            background: #f7fafc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .matching-item:hover {
+            background: #edf2f7;
+            border-color: #5a67d8;
+        }
+
+        .matching-item.selected {
+            background: #bee3f8;
+            border-color: #4299e1;
+        }
+
+        .matching-item.matched {
+            background: #c6f6d5;
+            border-color: #48bb78;
+            cursor: default;
+        }
+
+        .next-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            display: none;
+            float: right;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.2em;
+            color: #5a67d8;
+            margin-bottom: 20px;
+        }
+
+        .result-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .result-score {
+            font-size: 3em;
+            color: #5a67d8;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .result-message {
+            font-size: 1.5em;
+            color: #4a5568;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+        }
+
+        .feedback.incorrect {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #f56565;
+        }
+
+        .instruction-text {
+            color: #718096;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>🏔️ Landform Study Game 🌋</h1>
+        
+        <div class="start-screen" id="startScreen">
+            <h2>Welcome to the Landform Study Game!</h2>
+            <p style="margin: 20px 0; color: #4a5568; font-size: 1.1em;">
+                Test your knowledge about landforms, valleys, volcanoes, and more!
+            </p>
+            <button class="start-btn" onclick="startGame()">Start Game</button>
+        </div>
+
+        <div class="quiz-screen" id="quizScreen">
+            <div class="score-display" id="scoreDisplay">Score: 0</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar">0%</div>
+            </div>
+            <div class="question-container" id="questionContainer">
+                <div class="question" id="questionText"></div>
+                <div id="answersContainer"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <h2>Game Complete!</h2>
+            <div class="result-score" id="finalScore"></div>
+            <div class="result-message" id="resultMessage"></div>
+            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let totalQuestions = 0;
+        let answered = false;
+
+        const questions = [
+            // Part 1: Multiple Choice Questions
+            {
+                type: 'multiple-choice',
+                question: 'Which landform is a tall, steep mountain that can erupt with lava?',
+                options: ['Mesa', 'Plateau', 'Hill', 'Volcano'],
+                correct: 3,
+                explanation: 'A volcano is a tall landform that can erupt with lava!'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Which is a deep, narrow area between cliffs, often carved by a river?',
+                options: ['Mountain', 'Canyon', 'Plateau', 'Valley'],
+                correct: 1,
+                explanation: 'A canyon is a deep, narrow area between cliffs, often carved by rivers.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Which landform is flat and found at high elevations?',
+                options: ['Hill', 'Valley', 'Plateau', 'Volcano'],
+                correct: 2,
+                explanation: 'A plateau is a flat area of land at high elevation.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'What landform is wide, flat, and good for farming?',
+                options: ['Mountain', 'Plain', 'Canyon', 'Volcano'],
+                correct: 1,
+                explanation: 'Plains are wide, flat areas that are excellent for farming.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Which landform is lower land between two mountains or hills?',
+                options: ['Plateau', 'Hill', 'Valley', 'Volcano'],
+                correct: 2,
+                explanation: 'A valley is the lower land found between mountains or hills.'
+            },
+            // Part 2: Matching Questions
+            {
+                type: 'matching',
+                question: 'Match each landform with its description:',
+                pairs: [
+                    {term: 'Mountain', definition: 'Raised area with a flat top and steep sides'},
+                    {term: 'Hill', definition: 'Gentler, rounded land that is higher than the land around it'},
+                    {term: 'Plateau', definition: 'Very tall and rocky, often with snow on top'},
+                    {term: 'Volcano', definition: 'A mountain that can erupt with lava'},
+                    {term: 'Plain', definition: 'Large, flat area of land with few trees'},
+                    {term: 'Valley', definition: 'Low area between hills or mountains'},
+                    {term: 'Canyon', definition: 'A deep, narrow area between hills or mountains, often formed by rivers'}
+                ]
+            },
+            // Part 3: Fill in the Blank Questions
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a tall landform that can erupt with lava.',
+                options: ['Volcano', 'Canyon', 'Valley', 'Plain'],
+                correct: 0,
+                explanation: 'A volcano is a tall landform that can erupt with lava.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a deep, narrow landform often formed by rivers.',
+                options: ['Hill', 'Plateau', 'Canyon', 'Mountain'],
+                correct: 2,
+                explanation: 'A canyon is a deep, narrow landform often formed by rivers.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a flat area of land at a high elevation.',
+                options: ['Valley', 'Plain', 'Hill', 'Plateau'],
+                correct: 3,
+                explanation: 'A plateau is a flat area of land at a high elevation.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a low area between hills or mountains.',
+                options: ['Valley', 'Mountain', 'Plateau', 'Plain'],
+                correct: 0,
+                explanation: 'A valley is a low area between hills or mountains.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a tall, rocky landform, often with snow on top.',
+                options: ['Canyon', 'Mountain', 'Valley', 'Hill'],
+                correct: 1,
+                explanation: 'A mountain is a tall, rocky landform that often has snow on top.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a small, rounded rise in the land.',
+                options: ['Mountain', 'Plain', 'Hill', 'Plateau'],
+                correct: 2,
+                explanation: 'A hill is a small, rounded rise in the land.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Fill in the blank: A _______ is a flat area of land, good for farming.',
+                options: ['Hill', 'Mountain', 'Canyon', 'Plain'],
+                correct: 3,
+                explanation: 'A plain is a flat area of land that is good for farming.'
+            },
+            // Additional review questions
+            {
+                type: 'multiple-choice',
+                question: 'Which landform is shaped like a bowl and found between mountains or hills?',
+                options: ['Valley', 'Plateau', 'Mesa', 'Canyon'],
+                correct: 0,
+                explanation: 'A valley is shaped like a bowl and found between mountains or hills.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'What landform is formed when lava cools and hardens after an eruption?',
+                options: ['Hill', 'Plain', 'Volcano', 'Valley'],
+                correct: 2,
+                explanation: 'Volcanoes are formed when lava cools and hardens after eruptions.'
+            },
+            {
+                type: 'multiple-choice',
+                question: 'Which landform would be best for farming?',
+                options: ['Mountain', 'Canyon', 'Plain', 'Volcano'],
+                correct: 2,
+                explanation: 'Plains are the best landforms for farming due to their flat, fertile land.'
+            }
+        ];
+
+        let matchingState = {
+            selectedLeft: null,
+            matches: [],
+            shuffledDefinitions: []
+        };
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'block';
+            currentQuestionIndex = 0;
+            score = 0;
+            totalQuestions = questions.length;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const question = questions[currentQuestionIndex];
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            updateProgress();
+            updateScore();
+
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = '';
+
+            if (question.type === 'multiple-choice') {
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'option-btn';
+                    button.textContent = option;
+                    button.onclick = () => checkAnswer(index, question.correct, question.explanation);
+                    optionsDiv.appendChild(button);
+                });
+                
+                container.appendChild(optionsDiv);
+            } else if (question.type === 'matching') {
+                container.innerHTML = '<p class="instruction-text">Click on a term on the left, then click on its matching definition on the right.</p>';
+                
+                const matchingDiv = document.createElement('div');
+                matchingDiv.className = 'matching-container';
+                
+                const leftColumn = document.createElement('div');
+                leftColumn.className = 'matching-column';
+                leftColumn.innerHTML = '<h3 style="margin-bottom: 10px; color: #5a67d8;">Terms</h3>';
+                
+                const rightColumn = document.createElement('div');
+                rightColumn.className = 'matching-column';
+                rightColumn.innerHTML = '<h3 style="margin-bottom: 10px; color: #5a67d8;">Definitions</h3>';
+                
+                // Reset matching state
+                matchingState = {
+                    selectedLeft: null,
+                    matches: [],
+                    shuffledDefinitions: shuffleArray(question.pairs.map(p => p.definition))
+                };
+                
+                // Create term items
+                question.pairs.forEach((pair, index) => {
+                    const termItem = document.createElement('div');
+                    termItem.className = 'matching-item';
+                    termItem.textContent = pair.term;
+                    termItem.dataset.term = pair.term;
+                    termItem.onclick = () => selectTerm(termItem, pair.term);
+                    leftColumn.appendChild(termItem);
+                });
+                
+                // Create definition items (shuffled)
+                matchingState.shuffledDefinitions.forEach(definition => {
+                    const defItem = document.createElement('div');
+                    defItem.className = 'matching-item';
+                    defItem.textContent = definition;
+                    defItem.dataset.definition = definition;
+                    defItem.onclick = () => selectDefinition(defItem, definition, question.pairs);
+                    rightColumn.appendChild(defItem);
+                });
+                
+                matchingDiv.appendChild(leftColumn);
+                matchingDiv.appendChild(rightColumn);
+                container.appendChild(matchingDiv);
+            }
+        }
+
+        function selectTerm(element, term) {
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous selection
+            document.querySelectorAll('.matching-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            matchingState.selectedLeft = term;
+        }
+
+        function selectDefinition(element, definition, pairs) {
+            if (element.classList.contains('matched')) return;
+            if (!matchingState.selectedLeft) {
+                showFeedback(false, 'Please select a term first!');
+                return;
+            }
+            
+            const correctPair = pairs.find(p => p.term === matchingState.selectedLeft);
+            
+            if (correctPair.definition === definition) {
+                // Correct match
+                document.querySelector(`[data-term="${matchingState.selectedLeft}"]`).classList.add('matched');
+                element.classList.add('matched');
+                matchingState.matches.push(matchingState.selectedLeft);
+                
+                // Clear selection
+                document.querySelectorAll('.matching-item.selected').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                matchingState.selectedLeft = null;
+                
+                // Check if all matched
+                if (matchingState.matches.length === pairs.length) {
+                    showFeedback(true, 'Perfect! You matched all the landforms correctly!');
+                    score++;
+                    answered = true;
+                    document.getElementById('nextBtn').style.display = 'block';
+                }
+            } else {
+                // Incorrect match
+                showFeedback(false, `Not quite! Try again.`);
+                document.querySelectorAll('.matching-item.selected').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                matchingState.selectedLeft = null;
+            }
+        }
+
+        function checkAnswer(selected, correct, explanation) {
+            if (answered) return;
+            answered = true;
+            
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons[selected].classList.add(selected === correct ? 'correct' : 'incorrect');
+            
+            if (selected === correct) {
+                score++;
+                showFeedback(true, `Correct! ${explanation}`);
+            } else {
+                buttons[correct].classList.add('correct');
+                showFeedback(false, `Not quite. ${explanation}`);
+            }
+            
+            // Disable all buttons
+            buttons.forEach(btn => {
+                btn.style.cursor = 'default';
+                btn.onclick = null;
+            });
+            
+            document.getElementById('nextBtn').style.display = 'block';
+            updateScore();
+        }
+
+        function showFeedback(isCorrect, message) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            feedback.style.display = 'block';
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = Math.round(progress) + '%';
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `Score: ${score} / ${currentQuestionIndex + (answered ? 1 : 0)}`;
+        }
+
+        function showResults() {
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            
+            const percentage = Math.round((score / totalQuestions) * 100);
+            document.getElementById('finalScore').textContent = `${score} / ${totalQuestions}`;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '🎉 Perfect Score! You\'re a Landform Expert! 🏆';
+            } else if (percentage >= 80) {
+                message = '🌟 Great Job! You really know your landforms! 🎯';
+            } else if (percentage >= 60) {
+                message = '👍 Good Work! Keep practicing to become a master! 📚';
+            } else {
+                message = '💪 Keep Learning! Practice makes perfect! 📖';
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = false;
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('startScreen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
