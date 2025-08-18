@@ -1616,31 +1616,28 @@
                 optionButtons.forEach((button) => {
                     const index = parseInt(button.getAttribute('data-index'));
                     
-                    // Use a single unified event handler to prevent double-firing
-                    let eventFired = false;
-                    
-                    const handleSelection = (e) => {
+                    // Simple click handler that works on both desktop and mobile
+                    button.onclick = function(e) {
                         e.preventDefault();
-                        e.stopPropagation();
-                        
-                        if (eventFired) return; // Prevent double execution
-                        eventFired = true;
-                        
                         selectAnswer(index);
-                        
-                        // Reset flag after a short delay
-                        setTimeout(() => { eventFired = false; }, 100);
                     };
                     
-                    // Add event listeners with unified handler
-                    button.addEventListener('click', handleSelection);
-                    button.addEventListener('touchstart', handleSelection);
+                    // Add touch handling for iOS
+                    button.ontouchend = function(e) {
+                        e.preventDefault();
+                        // Only trigger if this wasn't already handled by onclick
+                        if (!button.classList.contains('clicked')) {
+                            button.classList.add('clicked');
+                            selectAnswer(index);
+                            setTimeout(() => button.classList.remove('clicked'), 100);
+                        }
+                    };
                     
                     // Add cursor pointer for better UX
                     button.style.cursor = 'pointer';
                     button.style.webkitTapHighlightColor = 'transparent';
                 });
-            }, 10);
+            }, 50);
         }
 
         function startTimer() {
@@ -1689,30 +1686,35 @@
             
             // Show submit button
             const submitContainer = document.getElementById('submitContainer');
-            submitContainer.style.display = 'block';
+            console.log('Showing submit button, container found:', !!submitContainer);
+            if (submitContainer) {
+                submitContainer.style.display = 'block';
+                console.log('Submit container display set to block');
+            }
             
             // Add iOS-compatible event listeners to submit button
             const submitBtn = document.getElementById('submitBtn');
             if (submitBtn && !submitBtn.hasAttribute('data-listeners-added')) {
                 submitBtn.setAttribute('data-listeners-added', 'true');
                 
-                let submitEventFired = false;
-                
-                const handleSubmit = (e) => {
+                // Simple click handler that works on both desktop and mobile
+                submitBtn.onclick = function(e) {
                     e.preventDefault();
-                    e.stopPropagation();
-                    
-                    if (submitEventFired) return; // Prevent double execution
-                    submitEventFired = true;
-                    
+                    console.log('Submit button clicked!');
                     submitAnswer();
-                    
-                    // Reset flag after a short delay
-                    setTimeout(() => { submitEventFired = false; }, 100);
                 };
                 
-                submitBtn.addEventListener('click', handleSubmit);
-                submitBtn.addEventListener('touchstart', handleSubmit);
+                // Add touch handling for iOS
+                submitBtn.ontouchend = function(e) {
+                    e.preventDefault();
+                    console.log('Submit button touched!');
+                    // Only trigger if this wasn't already handled by onclick
+                    if (!submitBtn.classList.contains('clicked')) {
+                        submitBtn.classList.add('clicked');
+                        submitAnswer();
+                        setTimeout(() => submitBtn.classList.remove('clicked'), 100);
+                    }
+                };
                 
                 submitBtn.style.cursor = 'pointer';
                 submitBtn.style.webkitTapHighlightColor = 'transparent';
