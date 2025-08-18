@@ -35,7 +35,7 @@
 
         body {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #059669 25%, #16a34a 50%, #ca8a04 75%, #d97706 100%);
             min-height: 100vh;
             padding: 1rem;
             position: relative;
@@ -943,6 +943,85 @@
             0% { box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
             100% { box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
         }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .achievement-item {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-item.earned {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1));
+            transform: scale(1.02);
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.6;
+            border-color: #e2e8f0;
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .achievement-item.locked .achievement-icon {
+            filter: grayscale(100%);
+        }
+        
+        .achievement-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .achievement-item.locked .achievement-name {
+            color: var(--text-secondary);
+        }
+        
+        .achievement-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        
+        .achievement-item.locked .achievement-desc {
+            color: #9ca3af;
+        }
+        
+        .achievement-earned-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
 
         .achievements-title {
             font-size: 1.5rem;
@@ -1342,7 +1421,9 @@
 
                 <!-- Progress Section -->
                 <div class="progress-section">
-                    <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🎆 Your Journey</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🎆 Your Explorer Journey</h3>
+                    
+                    <!-- Quick Stats -->
                     <div class="progress-cards">
                         <div class="progress-card">
                             <div class="progress-icon">🏆</div>
@@ -1367,15 +1448,10 @@
                         </div>
                     </div>
                     
-                    <!-- Recent Achievement -->
-                    <div id="recentAchievement" class="recent-achievement" style="display: none;">
-                        <div class="achievement-badge">
-                            <span class="achievement-emoji">🎆</span>
-                            <div class="achievement-text">
-                                <div class="achievement-name">Latest Achievement</div>
-                                <div class="achievement-desc">Keep exploring!</div>
-                            </div>
-                        </div>
+                    <!-- Achievement Grid -->
+                    <div style="margin-top: 2rem;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🏆 Achievement Collection</h4>
+                        <div class="achievements-grid" id="achievementsGrid"></div>
                     </div>
                 </div>
             </div>
@@ -1612,7 +1688,8 @@
 
             updateProgressDisplay() {
                 // Update achievement count
-                document.getElementById('achievementCount').textContent = this.achievements.length;
+                const totalAchievements = Object.keys(this.getAllAchievements()).length;
+                document.getElementById('achievementCount').textContent = `${this.achievements.length}/${totalAchievements}`;
                 
                 // Update best streak (track it in localStorage)
                 const bestStreak = parseInt(localStorage.getItem('bestStreak') || '0');
@@ -1622,11 +1699,38 @@
                 const totalCorrect = parseInt(localStorage.getItem('totalCorrect') || '0');
                 document.getElementById('totalCorrect').textContent = totalCorrect;
                 
-                // Show most recent achievement
-                if (this.achievements.length > 0) {
-                    const recentAchievementData = this.getAchievementData(this.achievements[this.achievements.length - 1]);
-                    this.displayRecentAchievement(recentAchievementData);
-                }
+                // Update achievements grid
+                this.updateAchievementGrid();
+            }
+            
+            getAllAchievements() {
+                return {
+                    'welcome': { name: 'Welcome Explorer', desc: 'Started your landform adventure!', emoji: '🌎' },
+                    'first_correct': { name: 'First Success', desc: 'Got your first answer right!', emoji: '🎯' },
+                    'streak_5': { name: 'On Fire', desc: '5 correct answers in a row!', emoji: '🔥' },
+                    'streak_10': { name: 'Unstoppable', desc: '10 answer streak!', emoji: '🚀' },
+                    'perfect_score': { name: 'Perfect Explorer', desc: '100% quiz score!', emoji: '⭐' },
+                    'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
+                    'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
+                    'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' }
+                };
+            }
+            
+            updateAchievementGrid() {
+                const grid = document.getElementById('achievementsGrid');
+                const allAchievements = this.getAllAchievements();
+                
+                grid.innerHTML = Object.entries(allAchievements).map(([id, data]) => {
+                    const isEarned = this.achievements.includes(id);
+                    return `
+                        <div class="achievement-item ${isEarned ? 'earned' : 'locked'}">
+                            ${isEarned ? '<div class="achievement-earned-badge">✓</div>' : ''}
+                            <div class="achievement-icon">${isEarned ? data.emoji : '🔒'}</div>
+                            <div class="achievement-name">${data.name}</div>
+                            <div class="achievement-desc">${isEarned ? data.desc : '???'}</div>
+                        </div>
+                    `;
+                }).join('');
             }
             
             getAchievementData(id) {
@@ -1644,13 +1748,6 @@
                 return achievements[id] || { name: 'Achievement', desc: 'Well done!', emoji: '🏆' };
             }
             
-            displayRecentAchievement(achievement) {
-                const recentDiv = document.getElementById('recentAchievement');
-                recentDiv.style.display = 'block';
-                recentDiv.querySelector('.achievement-emoji').textContent = achievement.emoji;
-                recentDiv.querySelector('.achievement-name').textContent = achievement.name;
-                recentDiv.querySelector('.achievement-desc').textContent = achievement.desc;
-            }
 
             showAchievement(id, title, description = '') {
                 if (this.achievements.includes(id)) return;
