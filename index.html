@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Landform Explorer - Interactive Learning Adventure</title>
+    <!-- Deployment update v2 -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
@@ -23,75 +24,307 @@
             --text-secondary: #64748b;
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
             --border-radius: 16px;
+            --border-radius-lg: 24px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--text-primary);
+        /* Dark mode variables */
+        [data-theme="dark"] {
+            --primary-color: #22d3ee;
+            --secondary-color: #34d399;
+            --accent-color: #fbbf24;
+            --success-color: #4ade80;
+            --warning-color: #fcd34d;
+            --error-color: #f87171;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.7);
         }
 
+        /* Theme transition for smooth switching */
+        *, *::before, *::after {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
+        /* Ensure all text elements use theme colors */
+        [data-theme="dark"] .title,
+        [data-theme="dark"] .subtitle,
+        [data-theme="dark"] .mode-title,
+        [data-theme="dark"] .mode-description,
+        [data-theme="dark"] .section-title,
+        [data-theme="dark"] .section-subtitle,
+        [data-theme="dark"] .card-title,
+        [data-theme="dark"] .stat-label,
+        [data-theme="dark"] .progress-label,
+        [data-theme="dark"] .fun-fact,
+        [data-theme="dark"] .fun-fact h4,
+        [data-theme="dark"] .fun-fact p,
+        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, [data-theme="dark"] h4,
+        [data-theme="dark"] p {
+            color: var(--text-primary) !important;
+        }
+
+        /* Fun fact section styling */
+        .fun-fact {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .fun-fact {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.4)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 25%, #16a34a 50%, var(--accent-color) 75%, #d97706 100%);
+            min-height: 100vh;
+            padding: 1rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Dark mode background override */
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
+        }
+
+        /* Background effects */
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float-particle 20s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .floating-landform {
+            position: fixed;
+            font-size: 3rem;
+            opacity: 0.1;
+            animation: float-slow 25s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes float-slow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-30px) rotate(5deg); }
+            50% { transform: translateY(0) rotate(-3deg); }
+            75% { transform: translateY(20px) rotate(4deg); }
+        }
+
+        /* Main container */
         .app-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 1rem;
+            position: relative;
+            z-index: 10;
         }
 
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-2xl);
+            padding: 2rem;
+            transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        /* Dark mode glass cards */
+        [data-theme="dark"] .glass-card {
+            background: rgba(30, 41, 59, 0.85) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 32px 64px -12px rgb(0 0 0 / 0.35);
+        }
+
+        /* Navigation */
         .nav-bar {
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
             backdrop-filter: blur(15px);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 25px;
-            padding: 1rem 2rem;
+            border-radius: var(--border-radius);
             margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             position: relative;
         }
 
+        /* Dark mode navigation */
+        [data-theme="dark"] .nav-bar {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+        }
+        
         .header-content {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 3rem;
+            width: 100%;
+            max-width: 800px;
+            justify-content: space-between;
         }
 
-        .logo-container {
+        .logo {
             display: flex;
             align-items: center;
             gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             cursor: pointer;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(5, 150, 105, 0.15));
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-
+        
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: logoShine 4s ease-in-out infinite;
+        }
+        
         .logo-icon {
-            font-size: 2.5rem;
-            animation: logoFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .logo-text {
-            color: white;
-        }
-
-        .logo-title {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #0ea5e9, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1.5rem;
+            animation: logoFloat 3s ease-in-out infinite;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+            position: relative;
+        }
+        
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+        
+        .logo-title {
+            font-size: 1.4rem;
             font-weight: 800;
-            line-height: 1.2;
+            background: linear-gradient(135deg, #0ea5e9, #059669, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+        
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-3px) rotate(5deg); }
+        }
+        
+        @keyframes logoShine {
+            0% { left: -100%; }
+            30% { left: 100%; }
+            100% { left: 100%; }
+        }
+        
+        .logo-container:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .logo-container:hover .logo-icon {
+            animation-duration: 1s;
         }
 
-        .logo-subtitle {
-            font-size: 0.9rem;
-            opacity: 0.8;
+        .nav-controls {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
         }
 
         .user-level {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 0.75rem;
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(5, 150, 105, 0.2));
             padding: 0.75rem 1.25rem;
             border-radius: 25px;
@@ -103,57 +336,1541 @@
             backdrop-filter: blur(10px);
         }
 
-        .user-avatar {
-            font-size: 2.5rem;
-            animation: avatarFloat 3s ease-in-out infinite;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        #playerNameDisplay {
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--text-primary);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .level-xp-row {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        #levelText {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        @keyframes avatarFloat {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
         .xp-bar {
-            width: 120px;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
+            width: 60px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .xp-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--warning-color), #f59e0b);
-            width: 0%;
-            transition: width 0.5s ease;
+            width: 65%;
+            transition: var(--transition);
         }
 
+        /* Typography */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            position: relative;
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Dark mode theme toggle styling */
+        [data-theme="dark"] .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .title {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #0ea5e9, #059669, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-align: center;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .welcome-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-bubble {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .stat-bubble:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .stat-icon {
+            font-size: 1.2rem;
+        }
+
+        .stat-text {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .name-setup {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .name-input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .name-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .name-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        /* Dark mode input styling */
+        [data-theme="dark"] .name-input {
+            background: var(--bg-secondary) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .name-input:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2) !important;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            min-height: 56px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #22c55e);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #f59e0b);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--accent-color), #f093fb);
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .submit-container {
+            margin-top: 2rem;
+            text-align: center;
+            animation: slideInUp 0.3s ease;
+        }
+
+        .submit-btn {
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            min-width: 180px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Enhanced button styles */
+        .scoreboard-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 1.2rem 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .scoreboard-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn .btn-icon:first-child {
+            margin-right: 0.5rem;
+        }
+        
+        .btn .btn-icon:last-child {
+            margin-left: 0.5rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            color: var(--text-primary);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        /* Mode selection */
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .mode-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* Dark mode mode cards */
+        [data-theme="dark"] .mode-card {
+            background: var(--bg-secondary) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .mode-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+
+        .quiz-card {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(5, 150, 105, 0.15));
+        }
+
+        .speed-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(251, 191, 36, 0.15));
+        }
+
+        .study-card {
+            background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(34, 197, 94, 0.15));
+        }
+
+        .vocab-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(139, 92, 246, 0.15));
+        }
+
+        /* Vocabulary Matching Game Styles */
+        .vocab-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .vocab-column h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .vocab-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .vocab-item {
+            background: var(--bg-secondary);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            text-align: center;
+            position: relative;
+        }
+
+        [data-theme="dark"] .vocab-item {
+            background: var(--bg-secondary) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
+        .vocab-item:hover {
+            background: rgba(var(--primary-color-rgb), 0.2);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* Touch device improvements */
+        @media (hover: none) {
+            .vocab-item:hover {
+                transform: none;
+            }
+            
+            .vocab-item:active {
+                background: rgba(var(--primary-color-rgb), 0.3);
+                border-color: var(--primary-color);
+                transform: scale(0.98);
+            }
+        }
+
+        .vocab-item.selected {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border-color: var(--secondary-color) !important;
+        }
+
+        .vocab-item.matched {
+            background: var(--secondary-color) !important;
+            color: white !important;
+            border-color: #22c55e !important;
+            cursor: not-allowed;
+        }
+
+        .vocab-item.matched::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .vocab-instructions {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .vocab-instructions p {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .vocab-feedback {
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .vocab-feedback.correct {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+            color: #22c55e;
+            border: 2px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .vocab-feedback.incorrect {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            color: #ef4444;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .progress-display {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .vocab-game {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .vocab-item {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+            
+            .btn {
+                min-height: 48px; /* Better touch targets */
+                font-size: 1rem;
+            }
+            
+            .option-btn {
+                min-height: 52px; /* Even better for quiz options */
+                padding: 0.8rem 1rem;
+            }
+            
+            .mode-card {
+                min-height: 140px; /* Better touch targets for mode selection */
+            }
+        }
+
+        .mode-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #0ea5e9, #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        .mode-badge.exciting {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        }
+
+        .mode-badge.learn {
+            background: linear-gradient(135deg, #059669, #16a34a);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mode-card {
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .mode-card:nth-child(1) { animation-delay: 0.1s; }
+        .mode-card:nth-child(2) { animation-delay: 0.2s; }
+        .mode-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Challenge Scoreboard Styles */
+        .challenge-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dark mode dashboard cards */
+        [data-theme="dark"] .dashboard-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .section-subtitle {
+            color: #666;
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .quiz-stats::before {
+            background: linear-gradient(90deg, #0ea5e9, #059669);
+        }
+        
+        .speed-stats::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .score-stats::before {
+            background: linear-gradient(90deg, #059669, #16a34a);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .card-stats {
+            text-align: center;
+        }
+        
+        .stat-big {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary-color);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sessions-list {
+            max-height: 500px;
+            overflow-y: auto;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* Dark mode sessions list */
+        [data-theme="dark"] .sessions-list {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.4)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 18px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Dark mode session items */
+        [data-theme="dark"] .session-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+        }
+        
+        .session-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .session-item:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+            border-color: rgba(139, 195, 74, 0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .session-item:hover::before {
+            opacity: 1;
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .session-mode {
+            padding: 0.4rem 1rem;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .session-mode.quiz {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .session-mode.speed {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+
+        .session-score {
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .session-date {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .no-sessions {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #666;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* Dark mode no-sessions */
+        [data-theme="dark"] .no-sessions {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-secondary) !important;
+        }
+
+        .no-sessions p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #888;
+        }
+
+        .mode-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .mode-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Landform images */
+        .landform-image-container {
+            width: 100%;
+            height: 300px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .landform-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .landform-image:hover {
+            transform: scale(1.05);
+        }
+
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            color: white;
+            padding: 1.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Game stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Progress indicators */
+        .progress-container {
+            margin: 2rem 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
+            border-radius: 6px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: progress-shine 2s infinite;
+        }
+
+        @keyframes progress-shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Question cards */
+        .question-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: 2.5rem;
+            margin: 2rem 0;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .question-card:hover {
+            border-color: var(--primary-color);
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .option-btn {
+            background: var(--bg-secondary);
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 1.25rem 1.5rem;
+            text-align: left;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .option-btn:hover::before {
+            left: 100%;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+            border-color: var(--primary-color);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .option-btn.correct {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border-color: var(--success-color);
+            animation: success-bounce 0.6s ease;
+        }
+
+        .option-btn.incorrect {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-color: var(--error-color);
+            animation: error-shake 0.6s ease;
+        }
+
+        @keyframes success-bounce {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.05); }
+            50% { transform: scale(1.02); }
+            75% { transform: scale(1.03); }
+        }
+
+        @keyframes error-shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+            20%, 40%, 60%, 80% { transform: translateX(4px); }
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin: 2rem 0;
+        }
+        
+        .progress-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .progress-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Dark mode progress cards */
+        [data-theme="dark"] .progress-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
+        
+        .progress-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* Apple-style Subtle Link */
+        .scoreboard-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
+        }
+
+        .scoreboard-link:hover {
+            opacity: 1;
+            text-decoration: none;
+        }
+
+        [data-theme="dark"] .scoreboard-link {
+            color: var(--primary-color);
+            opacity: 0.9;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin: 2rem 0;
+        }
+        
+        .progress-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .progress-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+        
+        .progress-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+        
+        .recent-achievement {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: achievementGlow 2s ease-in-out infinite alternate;
+        }
+        
+        .achievement-emoji {
+            font-size: 1.5rem;
+        }
+        
+        .achievement-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .achievement-desc {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        @keyframes achievementGlow {
+            0% { box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+            100% { box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); }
+        }
+        
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+        
+        .achievement-item {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .achievement-item.earned {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1));
+            transform: scale(1.02);
+        }
+        
+        .achievement-item.locked {
+            opacity: 0.6;
+            border-color: #e2e8f0;
+        }
+        
+        .achievement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .achievement-item.locked .achievement-icon {
+            filter: grayscale(100%);
+        }
+        
+        .achievement-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .achievement-item.locked .achievement-name {
+            color: var(--text-secondary);
+        }
+        
+        .achievement-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        
+        .achievement-item.locked .achievement-desc {
+            color: #9ca3af;
+        }
+        
+        .achievement-earned-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .achievements-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+
+        .achievement-badge.earned {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-color: var(--warning-color);
+            animation: achievement-glow 2s infinite alternate;
+        }
+
+        .achievement-badge:hover {
+            transform: scale(1.05);
+        }
+
+        @keyframes achievement-glow {
+            0% { box-shadow: 0 0 10px rgba(251, 191, 36, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.6); }
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-name {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Feedback messages */
+        .feedback-card {
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            animation: feedback-slide 0.5s ease;
+        }
+
+        @keyframes feedback-slide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feedback-card.success {
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #166534; /* Dark green text for light mode */
+        }
+
+        .feedback-card.error {
+            border-left-color: var(--error-color);
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #dc2626; /* Dark red text for light mode */
+        }
+
+        /* Dark mode feedback overrides */
+        [data-theme="dark"] .feedback-card.success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)) !important;
+            color: #86efac !important; /* Light green text for dark mode */
+            border-left-color: #22c55e !important;
+        }
+
+        [data-theme="dark"] .feedback-card.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1)) !important;
+            color: #fca5a5 !important; /* Light red text for dark mode */
+            border-left-color: #ef4444 !important;
+        }
+
+        .fun-fact {
+            background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+            border: 2px solid #c084fc;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-top: 1rem;
+            font-style: italic;
+            color: #7c3aed; /* Purple text for light mode */
+        }
+
+        /* Dark mode fun fact override */
+        [data-theme="dark"] .fun-fact {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)) !important;
+            border: 2px solid rgba(196, 132, 252, 0.5) !important;
+            color: #c4b5fd !important; /* Light purple text for dark mode */
+        }
+
+        /* Control buttons */
+        .controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .control-btn:hover, .control-btn:active {
+            transform: scale(1.1);
+            background: var(--primary-color);
+            color: white;
+        }
+
+
+        /* Loading states */
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 0 0.5rem;
+                margin-top: 5rem; /* Space for home button */
+            }
+
+            .glass-card {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+
+            .nav-bar {
+                padding: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .mode-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .question-card {
+                padding: 1.5rem;
+            }
+
+            .controls {
+                bottom: 1rem;
+                right: 1rem;
+            }
+
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+        }
+
+        /* iPad specific optimizations */
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .app-container {
+                max-width: 900px;
+                margin-top: 2rem; /* Space for home button */
+            }
+
+            .mode-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .question-card {
+                padding: 2rem;
+            }
+
+            .option-btn {
+                padding: 1.5rem;
+                font-size: 1.2rem;
+                min-height: 60px;
+            }
+
+            .btn {
+                min-height: 60px;
+                padding: 1.2rem 2.5rem;
+                font-size: 1.1rem;
+            }
+
+            .mode-card {
+                padding: 2.5rem;
+            }
+
+            .mode-icon {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5rem;
+            }
+
+            /* Make all interactive elements larger for touch */
+            .control-btn {
+                width: 65px;
+                height: 65px;
+                font-size: 1.8rem;
+            }
+
+            .achievement-badge {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Large iPad Pro and desktop adjustments */
+        @media (min-width: 1024px) {
+            .app-container {
+                margin-top: 1rem;
+            }
+        }
+
+        /* Screen transitions */
         .screen {
             display: none;
             animation: screen-enter 0.5s ease-out;
@@ -168,208 +1885,41 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: var(--border-radius-lg);
-            padding: 3rem;
-            box-shadow: var(--shadow-2xl);
-            text-align: center;
-        }
-
-        .title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .theme-toggle {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--accent-color), var(--warning-color));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            animation: bounce 2s ease-in-out infinite;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .name-setup {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(5, 150, 105, 0.1));
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .name-input {
-            padding: 1rem 1.5rem;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
-            font-size: 1rem;
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--text-primary);
-            font-family: inherit;
-            transition: var(--transition);
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .name-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 15px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            font-family: inherit;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
-        }
-
-        .mode-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
-        }
-
-        .mode-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 20px;
-            padding: 2rem;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mode-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .mode-icon {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        .mode-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-        }
-
-        .mode-description {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }
-
-        .mode-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(135deg, var(--accent-color), var(--warning-color));
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        /* Vocabulary game styles */
-        .vocab-item {
-            padding: 1rem;
-            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            text-align: center;
-            color: var(--text-primary);
-            backdrop-filter: blur(10px);
-            margin-bottom: 0.5rem;
-        }
-
-        .vocab-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .vocab-item.selected {
-            background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(5, 150, 105, 0.3));
-            border-color: var(--primary-color);
-            transform: scale(1.05);
-        }
-
-        .vocab-item.matched {
-            background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3));
-            border-color: var(--success-color);
-            opacity: 0.6;
+        /* Particle system for celebrations */
+        .celebration-particle {
+            position: fixed;
             pointer-events: none;
+            z-index: 100;
+            font-size: 1.2rem;
+            animation: celebrate 2s ease-out forwards;
         }
+
+        @keyframes celebrate {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotateZ(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) rotateZ(180deg);
+            }
+        }
+
+        /* Theme variations */
     </style>
 </head>
 <body>
+    <!-- Background particles -->
+    <div class="bg-particles" id="bgParticles"></div>
+    
+    <!-- Floating landforms -->
+    <div class="floating-landform" style="top: 10%; left: 5%;">🏔️</div>
+    <div class="floating-landform" style="top: 20%; right: 10%; animation-delay: 3s;">🌋</div>
+    <div class="floating-landform" style="bottom: 30%; left: 8%; animation-delay: 6s;">🏞️</div>
+    <div class="floating-landform" style="bottom: 20%; right: 5%; animation-delay: 9s;">🏜️</div>
+    <div class="floating-landform" style="top: 60%; left: 3%; animation-delay: 12s;">⛰️</div>
+
+
     <div class="app-container">
         <!-- Navigation -->
         <nav class="nav-bar">
@@ -385,300 +1935,2366 @@
                 </div>
                 <div class="nav-controls">
                     <div class="user-level" id="userLevel">
-                        <div class="user-avatar" id="userAvatar">🥚</div>
-                        <div class="user-info">
-                            <span id="playerNameDisplay">Explorer</span>
-                            <div class="level-xp-row">
-                                <span id="levelText">Level 1</span>
-                                <div class="xp-bar">
-                                    <div class="xp-fill" id="xpFill"></div>
-                                </div>
-                                <span id="xpText">0/100 XP</span>
-                            </div>
+                        <span>Level 1</span>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpFill"></div>
                         </div>
+                        <span id="xpText">65/100 XP</span>
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5);">v2.0.0-clean</div>
         </nav>
 
         <!-- Home Screen -->
         <div class="screen active" id="homeScreen">
             <div class="glass-card">
-                <div class="theme-toggle" onclick="toggleTheme()" title="🌙 Click for dark mode">☀️</div>
-                <h1 class="title" id="welcomeTitle">Welcome, Explorer!</h1>
-                <p class="subtitle">Ready to explore amazing landforms? Let's learn about mountains, valleys, and more! 🏝️</p>
-                
-                <!-- Name Input -->
-                <div id="nameSetup" class="name-setup" style="display: block;">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">Ready for Adventure?</h3>
-                    <p style="margin-bottom: 1.5rem; color: var(--text-primary);">First, tell us your name so we can track your amazing progress!</p>
-                    <div>
-                        <input type="text" id="playerName" class="name-input" placeholder="Your name here" maxlength="20">
-                        <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Let's Go!</button>
+                <div class="hero-section">
+                    <div class="hero-icon theme-toggle" onclick="toggleTheme()" title="🌙 Click for dark mode">☀️</div>
+                    <h1 class="title" id="welcomeTitle">Welcome, Explorer!</h1>
+                    <p class="subtitle">Ready to explore amazing landforms? Let's learn about mountains, valleys, and more! 🏝️</p>
+                    <div class="welcome-stats">
+                        <div class="stat-bubble">
+                            <span class="stat-icon">🎓</span>
+                            <span class="stat-text">Learn & Play</span>
+                        </div>
+                        <div class="stat-bubble">
+                            <span class="stat-icon">🏆</span>
+                            <span class="stat-text">Earn Rewards</span>
+                        </div>
+                        <div class="stat-bubble">
+                            <span class="stat-icon">⚡</span>
+                            <span class="stat-text">Level Up</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Name Input -->
+                    <div id="nameSetup" class="name-setup" style="display: none;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem;">🚀</div>
+                        <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">Ready for Adventure?</h3>
+                        <p style="margin-bottom: 1.5rem; color: var(--text-primary);">First, tell us your name so we can track your amazing progress!</p>
+                        <div class="name-input-container">
+                            <input type="text" id="playerName" class="name-input" placeholder="Your name here" maxlength="20">
+                            <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Let's Go!</button>
+                        </div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Your name helps us save your scores and track your learning journey 🏆</p>
                     </div>
                 </div>
 
                 <div class="mode-grid" id="gameModesGrid">
-                    <div class="mode-card" onclick="startVocabMode()">
-                        <div class="mode-icon">📝</div>
+                    <div class="mode-card quiz-card" onclick="checkNameAndStart('showDifficultySelection')">
+                        <div class="mode-icon quiz-icon">🧩</div>
+                        <h3 class="mode-title">Quiz Challenge</h3>
+                        <p class="mode-description">🎯 Answer questions and become a landform expert!</p>
+                        <div class="mode-badge">Most Popular!</div>
+                    </div>
+
+                    <div class="mode-card speed-card" onclick="checkNameAndStart('startTimeChallenge')">
+                        <div class="mode-icon speed-icon">🚀</div>
+                        <h3 class="mode-title">Speed Challenge</h3>
+                        <p class="mode-description">⏱️ How fast can you answer? Beat the clock!</p>
+                        <div class="mode-badge exciting">Exciting!</div>
+                    </div>
+
+                    <div class="mode-card study-card" onclick="checkNameAndStart('startStudyMode')">
+                        <div class="mode-icon study-icon">🔍</div>
+                        <h3 class="mode-title">Explore Mode</h3>
+                        <p class="mode-description">🏞️ Discover amazing facts about Earth's landforms!</p>
+                        <div class="mode-badge learn">Learn!</div>
+                    </div>
+
+                    <div class="mode-card vocab-card" onclick="checkNameAndStart('startVocabMode')">
+                        <div class="mode-icon vocab-icon">📝</div>
                         <h3 class="mode-title">Vocabulary Match</h3>
                         <p class="mode-description">🎯 Match landforms with their descriptions!</p>
-                        <div class="mode-badge">Practice!</div>
+                        <div class="mode-badge practice">Practice!</div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1.5rem; text-align: center;">📊 Your Learning Progress</h3>
+                    
+                    <!-- Quick Stats -->
+                    <div class="progress-cards">
+                        <div class="progress-card">
+                            <div class="progress-icon">🏆</div>
+                            <div class="progress-info">
+                                <div class="progress-number" id="achievementCount">0</div>
+                                <div class="progress-label">Achievements</div>
+                            </div>
+                        </div>
+                        <div class="progress-card">
+                            <div class="progress-icon">🔥</div>
+                            <div class="progress-info">
+                                <div class="progress-number" id="bestStreak">0</div>
+                                <div class="progress-label">Best Streak</div>
+                            </div>
+                        </div>
+                        <div class="progress-card">
+                            <div class="progress-icon">🎓</div>
+                            <div class="progress-info">
+                                <div class="progress-number" id="totalCorrect">0</div>
+                                <div class="progress-label">Correct Answers</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Achievement Grid -->
+                    <div style="margin-top: 2rem;">
+                        <div class="achievements-grid" id="achievementsGrid"></div>
+                    </div>
+
+                    <!-- Subtle Scoreboard Link -->
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <a href="#" onclick="showScoreboard(); return false;" class="scoreboard-link">
+                            View detailed game history →
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Vocabulary Match Screen -->
+        <!-- Difficulty Selection -->
+        <div class="screen" id="difficultyScreen">
+            <div class="glass-card">
+                <h2 class="title">Choose Your Challenge Level</h2>
+                <div class="mode-grid">
+                    <div class="mode-card" onclick="startQuiz('easy')">
+                        <div class="mode-icon" style="background: linear-gradient(135deg, #22c55e, #16a34a);">🌱</div>
+                        <h3 class="mode-title">Explorer</h3>
+                        <p class="mode-description">Perfect for beginners. Learn the basics with guided questions.</p>
+                    </div>
+                    <div class="mode-card" onclick="startQuiz('medium')">
+                        <div class="mode-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">🌿</div>
+                        <h3 class="mode-title">Adventurer</h3>
+                        <p class="mode-description">Ready for a challenge? Test your growing knowledge.</p>
+                    </div>
+                    <div class="mode-card" onclick="startQuiz('hard')">
+                        <div class="mode-icon" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">🌳</div>
+                        <h3 class="mode-title">Master</h3>
+                        <p class="mode-description">Expert level with advanced concepts and tricky questions.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="showScreen('homeScreen')">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scoreboard Screen -->
+        <div class="screen" id="scoreboardScreen">
+            <div class="glass-card">
+                <div style="text-align: center;">
+                    <h2 class="title">🏆 Challenge Scoreboard</h2>
+                    <p class="subtitle" id="scoreboardSubtitle">Master your landform challenges and track victories!</p>
+                    
+                    <!-- Challenge Stats Dashboard -->
+                    <div class="challenge-dashboard">
+                        <div class="dashboard-card quiz-stats">
+                            <div class="card-header">
+                                <div class="card-icon">🧩</div>
+                                <div class="card-title">Quiz Challenges</div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-big" id="totalQuizzes">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card speed-stats">
+                            <div class="card-header">
+                                <div class="card-icon">🚀</div>
+                                <div class="card-title">Speed Challenges</div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-big" id="totalSpeedRuns">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="dashboard-card score-stats">
+                            <div class="card-header">
+                                <div class="card-icon">🏆</div>
+                                <div class="card-title">Overall Performance</div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-big" id="averageScore">0%</div>
+                                <div class="stat-label">Average Score</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Sessions -->
+                    <div style="margin-top: 3rem;">
+                        <div class="section-header">
+                            <h3 class="section-title">📅 Recent Challenge Sessions</h3>
+                            <p class="section-subtitle">Review your progress and achievements</p>
+                        </div>
+                        <div id="recentSessionsList" class="sessions-list">
+                            <div class="no-sessions">
+                                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🌱</div>
+                                <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">Ready to Start?</h4>
+                                <p>No challenge sessions yet! Complete your first quiz or speed challenge to see your achievements here.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation -->
+                    <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="showScreen('homeScreen')">
+                            <span class="btn-icon">🏠</span>
+                            <span>Home</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="clearScoreHistory()">
+                            <span class="btn-icon">🗑️</span>
+                            <span>Clear History</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Mode Screen -->
+        <div class="screen" id="studyScreen">
+            <div class="glass-card">
+                <div id="studyContent"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="previousLandform()">
+                        <span class="btn-icon">⬅️</span>
+                        <span>Previous</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="showScreen('homeScreen')">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="nextLandform()">
+                        <span>Next</span>
+                        <span class="btn-icon">➡️</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Matching Screen -->
         <div class="screen" id="vocabScreen">
             <div class="glass-card">
                 <h2 class="title">📝 Vocabulary Match</h2>
-                <p class="subtitle">Match each landform with its description!</p>
+                <p class="subtitle">Match each landform with its correct description!</p>
                 
-                <div style="text-align: center; margin: 1rem 0;">
-                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">Score: <span id="vocabScore">0/9</span></span>
+                <div id="vocabContent">
+                    <div class="vocab-instructions">
+                        <p>🎯 Click a landform name, then click its matching description!</p>
+                    </div>
+                    
+                    <div class="vocab-game">
+                        <div class="vocab-column">
+                            <h4>🏔️ Landforms</h4>
+                            <div id="vocabTerms" class="vocab-items"></div>
+                        </div>
+                        
+                        <div class="vocab-column">
+                            <h4>📖 Descriptions</h4>
+                            <div id="vocabDefinitions" class="vocab-items"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="vocabFeedback" class="vocab-feedback" style="display: none;"></div>
+                    <div id="vocabProgress" class="progress-display">Matches: <span id="vocabMatches">0</span> / <span id="vocabTotal">5</span></div>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
-                    <div>
-                        <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 1rem;">Landforms</h3>
-                        <div id="vocabTerms"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="resetVocabGame()">
+                        <span class="btn-icon">🔄</span>
+                        <span>Reset</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="showScreen('homeScreen')">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="startNewVocabRound()" id="vocabNextBtn" style="display: none;">
+                        <span>New Round</span>
+                        <span class="btn-icon">➡️</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div class="screen" id="quizScreen">
+            <div class="glass-card">
+                <!-- Game Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="scoreValue">0</div>
+                        <div class="stat-label">Score</div>
                     </div>
-                    <div>
-                        <h3 style="text-align: center; color: var(--secondary-color); margin-bottom: 1rem;">Descriptions</h3>
-                        <div id="vocabDefs"></div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="questionNumber">1</div>
+                        <div class="stat-label">Question</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="accuracyValue">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                    <div class="stat-card" id="streakCard" style="display: none;">
+                        <div class="stat-value" id="streakValue">0</div>
+                        <div class="stat-label">🔥 Streak</div>
+                    </div>
+                    <div class="stat-card" id="timerCard" style="display: none;">
+                        <div class="stat-value" id="timerValue">30</div>
+                        <div class="stat-label">⏱️ Time</div>
                     </div>
                 </div>
-                
-                <div id="vocabResults"></div>
-                
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-header">
+                        <span class="progress-title">Progress</span>
+                        <span class="progress-percentage" id="progressPercentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Question Content -->
+                <div id="questionContent"></div>
+
+                <!-- Next Button -->
                 <div style="text-align: center; margin-top: 2rem;">
-                    <button class="btn btn-primary" onclick="goHome()">🏠 Home</button>
+                    <button class="btn btn-success" id="nextBtn" onclick="nextQuestion()" style="display: none;">
+                        Next Question →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="screen" id="resultsScreen">
+            <div class="glass-card">
+                <div style="text-align: center;">
+                    <h2 class="title">🎉 Adventure Complete!</h2>
+                    <div style="font-size: 4rem; margin: 2rem 0;" id="finalScoreDisplay">0/10</div>
+                    <div style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--text-primary);" id="resultMessage"></div>
+                    
+                    <!-- High Scores -->
+                    <div style="background: var(--bg-primary); padding: 2rem; border-radius: var(--border-radius); margin: 2rem 0;">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">🏆 High Scores</h3>
+                        <div id="highScoresList"></div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="showScreen('homeScreen')">
+                            <span class="btn-icon">🏠</span>
+                            <span>Home</span>
+                        </button>
+                        <button class="btn btn-success" onclick="restartQuiz()">
+                            <span class="btn-icon">🔄</span>
+                            <span>Play Again</span>
+                        </button>
+                        <button class="btn btn-primary" onclick="shareResults()">
+                            <span class="btn-icon">📱</span>
+                            <span>Share</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Control Buttons -->
+    <div class="controls">
+        <button class="control-btn" onclick="goHome()" title="Home">🏠</button>
+        <button class="control-btn" id="soundToggle" onclick="toggleSound()" title="Toggle Sound">🔊</button>
+        <button class="control-btn" onclick="showScoreboard()" title="Challenge Scoreboard">🏆</button>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" style="display: none;"></div>
+
     <script>
-        // Simple vocabulary game data
-        const vocabData = [
-            { term: 'Mountain', def: 'Very tall landform that reaches high into the sky' },
-            { term: 'Valley', def: 'Low area of land between hills or mountains' },
-            { term: 'Canyon', def: 'Deep valley with steep rocky walls' },
-            { term: 'Plain', def: 'Large flat area of land perfect for farming' },
-            { term: 'Island', def: 'Land completely surrounded by water' },
-            { term: 'Peninsula', def: 'Land surrounded by water on three sides' },
-            { term: 'Volcano', def: 'Mountain that can erupt with hot lava' },
-            { term: 'Mesa', def: 'Flat-topped hill with steep sides' },
-            { term: 'Delta', def: 'Triangle-shaped land where river meets ocean' }
-        ];
+        // Game State Management
+        class GameState {
+            constructor() {
+                this.currentQuestion = 0;
+                this.score = 0;
+                this.totalQuestions = 10;
+                this.answered = false;
+                this.streak = 0;
+                this.maxStreak = 0;
+                this.gameMode = 'normal';
+                this.difficulty = 'medium';
+                this.timeLeft = 30;
+                this.timer = null;
+                this.totalAnswered = 0;
+                this.correctAnswers = 0;
+                this.currentStudyIndex = 0;
+                this.xp = parseInt(localStorage.getItem('xp') || '65');
+                this.level = Math.floor(this.xp / 100) + 1;
+                this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+                this.achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+                this.highScores = JSON.parse(localStorage.getItem('highScores') || '[]');
+            }
 
-        // Vocabulary game state
-        let vocabGame = {
-            selectedTerm: null,
-            selectedDef: null,
-            matches: [],
-            score: 0,
-            total: 9
-        };
+            save() {
+                localStorage.setItem('xp', this.xp.toString());
+                localStorage.setItem('soundEnabled', this.soundEnabled.toString());
+                localStorage.setItem('achievements', JSON.stringify(this.achievements));
+                localStorage.setItem('highScores', JSON.stringify(this.highScores));
+            }
 
-        // Screen navigation
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(screenId);
-            if (target) target.classList.add('active');
+            addXP(amount) {
+                this.xp += amount;
+                const newLevel = Math.floor(this.xp / 100) + 1;
+                if (newLevel > this.level) {
+                    this.level = newLevel;
+                    this.showAchievement('level_up', `Level ${this.level} Explorer!`, `You've reached level ${this.level}!`);
+                }
+                this.updateXPDisplay();
+                this.updateProgressDisplay();
+                this.save();
+            }
+
+            updateXPDisplay() {
+                const xpInLevel = this.xp % 100;
+                const xpNeeded = 100;
+                document.getElementById('xpFill').style.width = `${(xpInLevel / xpNeeded) * 100}%`;
+                document.getElementById('xpText').textContent = `${xpInLevel}/${xpNeeded} XP`;
+                document.querySelector('.user-level span').textContent = `Level ${this.level}`;
+            }
+
+            updateProgressDisplay() {
+                // Update achievement count
+                const totalAchievements = Object.keys(this.getAllAchievements()).length;
+                const uniqueAchievements = [...new Set(this.achievements)]; // Remove duplicates
+                
+                console.log('Progress Display:', {
+                    totalPossible: totalAchievements,
+                    currentCount: this.achievements.length,
+                    uniqueCount: uniqueAchievements.length,
+                    achievements: this.achievements
+                });
+                
+                // Fix any duplicates in the achievements array
+                if (this.achievements.length !== uniqueAchievements.length) {
+                    console.log('Found duplicate achievements, cleaning up...');
+                    this.achievements = uniqueAchievements;
+                    this.save();
+                }
+                
+                document.getElementById('achievementCount').textContent = `${this.achievements.length}/${totalAchievements}`;
+                
+                // Update best streak (track it in localStorage)
+                const bestStreak = parseInt(localStorage.getItem('bestStreak') || '0');
+                document.getElementById('bestStreak').textContent = bestStreak;
+                
+                // Update total correct answers
+                const totalCorrect = parseInt(localStorage.getItem('totalCorrect') || '0');
+                document.getElementById('totalCorrect').textContent = totalCorrect;
+                
+                // Update achievements grid
+                this.updateAchievementGrid();
+            }
+            
+            getAllAchievements() {
+                return {
+                    'welcome': { name: 'Welcome Explorer', desc: 'Started your landform adventure!', emoji: '🌎' },
+                    'first_correct': { name: 'First Success', desc: 'Got your first answer right!', emoji: '🎯' },
+                    'streak_5': { name: 'On Fire', desc: '5 correct answers in a row!', emoji: '🔥' },
+                    'streak_10': { name: 'Unstoppable', desc: '10 answer streak!', emoji: '🚀' },
+                    'perfect_score': { name: 'Perfect Explorer', desc: '100% quiz score!', emoji: '⭐' },
+                    'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
+                    'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
+                    'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
+                    'mesa_master': { name: 'Mesa Expert', desc: 'Learned about flat-topped mesas!', emoji: '🗻' },
+                    'water_features': { name: 'Water Explorer', desc: 'Discovered deltas, islands & peninsulas!', emoji: '🌊' },
+                    'landform_scholar': { name: 'Landform Scholar', desc: 'Mastered all 11 landform types!', emoji: '🎓' },
+                    'vocab_master': { name: 'Vocabulary Master', desc: 'Matched all landforms perfectly!', emoji: '📝' },
+                    'dark_mode_discovery': { name: 'Night Owl', desc: 'Discovered the secret dark mode!', emoji: '🌙' }
+                };
+            }
+            
+            updateAchievementGrid() {
+                const grid = document.getElementById('achievementsGrid');
+                if (!grid) return; // Safety check
+                
+                const allAchievements = this.getAllAchievements();
+                
+                // Ensure achievements array is valid
+                if (!Array.isArray(this.achievements)) {
+                    console.warn('Achievements not properly loaded, skipping grid update');
+                    this.achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+                }
+                
+                grid.innerHTML = Object.entries(allAchievements).map(([id, data]) => {
+                    const isEarned = this.achievements.includes(id);
+                    return `
+                        <div class="achievement-item ${isEarned ? 'earned' : 'locked'}">
+                            ${isEarned ? '<div class="achievement-earned-badge">✓</div>' : ''}
+                            <div class="achievement-icon">${isEarned ? data.emoji : '???'}</div>
+                            <div class="achievement-name">${isEarned ? data.name : '???'}</div>
+                            <div class="achievement-desc">${isEarned ? data.desc : 'Keep playing to unlock this achievement!'}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            getAchievementData(id) {
+                const achievements = {
+                    'welcome': { name: 'Welcome Explorer', desc: 'Welcome to your landform adventure!', emoji: '🌎' },
+                    'first_correct': { name: 'First Success', desc: 'Got your first answer right!', emoji: '🎯' },
+                    'streak_5': { name: 'On Fire', desc: '5 correct answers in a row!', emoji: '🔥' },
+                    'streak_10': { name: 'Unstoppable', desc: '10 answers streak!', emoji: '🚀' },
+                    'perfect_score': { name: 'Perfect Explorer', desc: '100% quiz score!', emoji: '⭐' },
+                    'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
+                    'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
+                    'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
+                    'mesa_master': { name: 'Mesa Expert', desc: 'Learned about flat-topped mesas!', emoji: '🗻' },
+                    'water_features': { name: 'Water Explorer', desc: 'Discovered deltas, islands & peninsulas!', emoji: '🌊' },
+                    'landform_scholar': { name: 'Landform Scholar', desc: 'Mastered all 11 landform types!', emoji: '🎓' },
+                    'vocab_master': { name: 'Vocabulary Master', desc: 'Matched all landforms perfectly!', emoji: '📝' },
+                    'level_up': { name: 'Level Up', desc: 'Reached a new level!', emoji: '🆙' },
+                    'dark_mode_discovery': { name: 'Night Owl', desc: 'Discovered the secret dark mode!', emoji: '🌙' }
+                };
+                return achievements[id] || { name: 'Achievement', desc: 'Well done!', emoji: '🏆' };
+            }
+            
+
+            showAchievement(id, title, description = '') {
+                if (this.achievements.includes(id)) {
+                    console.log('Achievement already earned:', id);
+                    return;
+                }
+                
+                console.log('Awarding achievement:', id, 'Current achievements:', this.achievements.length);
+                this.achievements.push(id);
+                this.save();
+                this.updateProgressDisplay();
+                
+                // Create achievement popup (non-blocking)
+                const popup = document.createElement('div');
+                popup.className = 'glass-card achievement-toast';
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    transform: translateX(400px);
+                    z-index: 500;
+                    text-align: center;
+                    animation: slideInAchievement 0.5s ease forwards;
+                    max-width: 300px;
+                    pointer-events: none;
+                `;
+                
+                popup.innerHTML = `
+                    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏆</div>
+                    <h4 style="color: var(--primary-color); margin-bottom: 0.25rem; font-size: 1rem;">Achievement!</h4>
+                    <p style="margin-bottom: 0.25rem; font-size: 0.9rem; font-weight: 600;">${title}</p>
+                    <p style="color: var(--text-secondary); font-size: 0.8rem;">${description}</p>
+                `;
+                
+                document.body.appendChild(popup);
+                
+                // Add achievement popup animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideInAchievement {
+                        0% { transform: translateX(400px); opacity: 0; }
+                        20% { transform: translateX(0); opacity: 1; }
+                        80% { transform: translateX(0); opacity: 1; }
+                        100% { transform: translateX(400px); opacity: 0; }
+                    }
+                    .achievement-toast {
+                        backdrop-filter: blur(10px) !important;
+                        border: 2px solid var(--primary-color) !important;
+                        box-shadow: 0 8px 25px rgba(0,0,0,0.2) !important;
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                this.playSound('achievement');
+                this.createCelebration();
+                
+                // Auto-remove after animation completes (3 seconds)
+                setTimeout(() => {
+                    if (popup.parentNode) {
+                        popup.remove();
+                    }
+                    if (style.parentNode) {
+                        style.remove();
+                    }
+                }, 3000);
+                
+                this.updateAchievementsDisplay();
+            }
+
+            createCelebration() {
+                const emojis = ['🎉', '🎊', '⭐', '✨', '🌟'];
+                // Reduced particles to avoid UI interference
+                for (let i = 0; i < 15; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'celebration-particle';
+                    particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    // Keep particles more to the edges
+                    particle.style.left = (Math.random() < 0.5 ? Math.random() * 30 : 70 + Math.random() * 30) + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 0.3 + 's';
+                    document.body.appendChild(particle);
+                    
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.remove();
+                        }
+                    }, 2000);
+                }
+            }
+
+            playSound(type) {
+                if (!this.soundEnabled) return;
+                
+                const context = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = context.createOscillator();
+                const gainNode = context.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+                
+                const sounds = {
+                    correct: [523.25, 659.25, 783.99], // C-E-G major chord
+                    incorrect: [200, 150], // Low tones
+                    achievement: [440, 554.37, 659.25, 880], // A-C#-E-A
+                    button: [300], // Simple click
+                    complete: [523.25, 659.25, 783.99, 1046.5] // C-E-G-C octave
+                };
+                
+                const frequencies = sounds[type] || sounds.button;
+                frequencies.forEach((freq, i) => {
+                    setTimeout(() => {
+                        oscillator.frequency.setValueAtTime(freq, context.currentTime);
+                    }, i * 100);
+                });
+                
+                gainNode.gain.setValueAtTime(0.1, context.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+                oscillator.start(context.currentTime);
+                oscillator.stop(context.currentTime + 0.5);
+            }
+
+            updateAchievementsDisplay() {
+                const grid = document.getElementById('achievementsGrid');
+                const allAchievements = [
+                    { id: 'first_correct', icon: '👣', name: 'First Steps' },
+                    { id: 'perfect_score', icon: '🎯', name: 'Perfect!' },
+                    { id: 'streak_5', icon: '🔥', name: 'On Fire' },
+                    { id: 'streak_10', icon: '⚡', name: 'Unstoppable' },
+                    { id: 'speed_demon', icon: '💨', name: 'Speed Demon' },
+                    { id: 'study_master', icon: '📚', name: 'Scholar' },
+                    { id: 'time_master', icon: '⏱️', name: 'Time Master' },
+                    { id: 'explorer', icon: '🗺️', name: 'Explorer' }
+                ];
+                
+                grid.innerHTML = allAchievements.map(achievement => `
+                    <div class="achievement-badge ${this.achievements.includes(achievement.id) ? 'earned' : ''}">
+                        <div class="achievement-icon">${this.achievements.includes(achievement.id) ? achievement.icon : '🔒'}</div>
+                        <div class="achievement-name">${this.achievements.includes(achievement.id) ? achievement.name : '???'}</div>
+                    </div>
+                `).join('');
+            }
         }
 
-        // Name management
+        // Enhanced landform data with verified landmark images
+        const landformData = [
+            {
+                name: 'Mountain',
+                emoji: '🏔️',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=640&h=480&fit=crop&q=80',
+                description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
+                facts: [
+                    'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
+                    'Mountains cover about 24% of Earth\'s land surface',
+                    'The youngest mountains are the Himalayas, still growing 4mm per year',
+                    'Mountains create their own weather patterns and climates'
+                ]
+            },
+            {
+                name: 'Volcano',
+                emoji: '🌋',
+                imageUrl: 'https://images.unsplash.com/photo-1561409037-c7be81613c1f?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
+                facts: [
+                    'There are about 1,500 active volcanoes worldwide',
+                    'The Ring of Fire around the Pacific has 75% of all volcanoes',
+                    'Volcanic soil is incredibly fertile for farming',
+                    'Mauna Loa in Hawaii is the world\'s largest active volcano'
+                ]
+            },
+            {
+                name: 'Valley',
+                emoji: '🏞️',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=640&h=480&fit=crop&q=80',
+                description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
+                facts: [
+                    'The Great Rift Valley stretches 4,000 miles across Africa',
+                    'Death Valley is 282 feet below sea level',
+                    'Many valleys were carved by glaciers during ice ages',
+                    'Silicon Valley gets its name from silicon computer chips'
+                ]
+            },
+            {
+                name: 'Canyon',
+                emoji: '🏜️',
+                imageUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
+                facts: [
+                    'The Grand Canyon is 277 miles long and over 1 mile deep',
+                    'It took the Colorado River 6 million years to carve the Grand Canyon',
+                    'Antelope Canyon in Arizona is famous for its wave-like walls',
+                    'Some slot canyons are so narrow you can touch both walls'
+                ]
+            },
+            {
+                name: 'Plain',
+                emoji: '🌾',
+                imageUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1574263867128-3b2c7b9badce?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=640&h=480&fit=crop&q=80',
+                description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
+                facts: [
+                    'Plains cover over one-third of Earth\'s land surface',
+                    'The Great Plains produce 70% of America\'s wheat',
+                    'They were formed by sediment deposits over millions of years',
+                    'The Amazon River plain is the world\'s largest river plain'
+                ]
+            },
+            {
+                name: 'Plateau',
+                emoji: '🏔️',
+                imageUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1434394354979-a235cd36269d?w=640&h=480&fit=crop&q=80',
+                description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
+                facts: [
+                    'The Tibetan Plateau is called "The Roof of the World"',
+                    'Plateaus can be formed by volcanic activity or tectonic uplift',
+                    'The Colorado Plateau contains the Grand Canyon',
+                    'Some plateaus are higher than many mountain peaks'
+                ]
+            },
+            {
+                name: 'Hill',
+                emoji: '⛰️',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=640&h=480&fit=crop&q=80',
+                description: 'Hills are rounded elevations smaller than mountains, typically under 2,000 feet tall. They provide gentle slopes perfect for recreation and settlements.',
+                facts: [
+                    'Hills are generally considered smaller than mountains',
+                    'The Chocolate Hills in Philippines turn brown in dry season',
+                    'Many ancient civilizations built on hills for defense',
+                    'Rolling hills are perfect for agriculture and grazing'
+                ]
+            },
+            {
+                name: 'Mesa',
+                emoji: '🗻',
+                imageUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1434394354979-a235cd36269d?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=640&h=480&fit=crop&q=80',
+                description: 'Mesas are isolated, flat-topped hills with steep sides. These table-like landforms are created when harder rock layers protect softer rock below from erosion.',
+                facts: [
+                    'Mesa means "table" in Spanish because of their flat tops',
+                    'Monument Valley has many famous mesas used in Western movies',
+                    'Mesas are smaller versions of plateaus',
+                    'Mesa Verde National Park has ancient cliff dwellings built into mesa walls'
+                ]
+            },
+            {
+                name: 'Delta',
+                emoji: '🏞️',
+                imageUrl: 'https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                description: 'Deltas are triangular areas of land formed where rivers meet the sea. Rivers slow down and drop sediment, creating fertile land perfect for farming.',
+                facts: [
+                    'The Nile Delta has been called "the gift of the Nile" for thousands of years',
+                    'Deltas get their name from the Greek letter Δ because of their triangular shape',
+                    'The Mississippi River Delta grows by about 300 feet every year',
+                    'Many of the world\'s largest cities are built on river deltas'
+                ]
+            },
+            {
+                name: 'Peninsula',
+                emoji: '🏝️',
+                imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=640&h=480&fit=crop&q=80',
+                description: 'Peninsulas are pieces of land surrounded by water on three sides and connected to the mainland on one side. They extend out into oceans, lakes, or rivers.',
+                facts: [
+                    'Florida is a famous peninsula extending into the Atlantic Ocean and Gulf of Mexico',
+                    'The word peninsula comes from Latin meaning "almost an island"',
+                    'Spain and Portugal share the Iberian Peninsula',
+                    'Peninsulas often have unique wildlife because they\'re partially isolated'
+                ]
+            },
+            {
+                name: 'Island',
+                emoji: '🏝️',
+                imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=640&h=480&fit=crop&q=80',
+                description: 'Islands are pieces of land completely surrounded by water. They can be formed by volcanoes, coral reefs, or by rising sea levels separating land from continents.',
+                facts: [
+                    'Hawaii\'s islands were formed by underwater volcanoes',
+                    'Manhattan is an island where New York City was built',
+                    'The largest island in the world is Greenland',
+                    'Some islands are so small they can only fit one tree!'
+                ]
+            }
+        ];
+
+        // Enhanced question data
+        const questionData = [
+            // Easy questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'Which landform can erupt with hot lava and ash?',
+                options: ['Hill', 'Plateau', 'Volcano', 'Plain'],
+                correct: 2,
+                explanation: 'Volcanoes are openings in Earth\'s crust where molten rock can escape!',
+                funFact: '🌋 The word "volcano" comes from Vulcan, the Roman god of fire!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What landform is perfect for farming because it\'s wide and flat?',
+                options: ['Mountain', 'Plain', 'Canyon', 'Valley'],
+                correct: 1,
+                explanation: 'Plains are large, flat areas ideal for growing crops!',
+                funFact: '🌾 The Great Plains produce enough wheat to feed millions of people!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'Which landform is the low area between hills or mountains?',
+                options: ['Plateau', 'Hill', 'Valley', 'Canyon'],
+                correct: 2,
+                explanation: 'Valleys are the low-lying areas nestled between higher landforms!',
+                funFact: '🏞️ Many cities are built in valleys because they\'re protected and have water!'
+            },
+            // Medium questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Which landform is a deep, narrow valley with steep walls carved by rivers?',
+                options: ['Mountain', 'Canyon', 'Plateau', 'Plain'],
+                correct: 1,
+                explanation: 'Canyons are carved by rivers cutting through rock over millions of years!',
+                funFact: '🏜️ The Grand Canyon reveals 2 billion years of Earth\'s history in its rock layers!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'What do we call a flat area of land at a high elevation?',
+                options: ['Valley', 'Plain', 'Hill', 'Plateau'],
+                correct: 3,
+                explanation: 'Plateaus are like giant tables rising high above the surrounding land!',
+                funFact: '🏔️ The Tibetan Plateau is so high it\'s called "The Roof of the World"!'
+            },
+            // Hard questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'Which process primarily carved out most river valleys?',
+                options: ['Volcanic eruption', 'Water erosion', 'Earthquake activity', 'Wind erosion'],
+                correct: 1,
+                explanation: 'Water erosion over thousands of years carves valleys as rivers flow downhill!',
+                funFact: '💧 A single drop of water isn\'t powerful, but billions together can carve the Grand Canyon!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'What type of plateau is formed by repeated lava flows?',
+                options: ['Tectonic plateau', 'Volcanic plateau', 'Erosional plateau', 'Glacial plateau'],
+                correct: 1,
+                explanation: 'Volcanic plateaus form when lava flows spread out and cool into flat surfaces!',
+                funFact: '🌋 The Deccan Plateau in India was formed by massive lava flows 66 million years ago!'
+            },
+            // More questions for variety
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'Which landform is smaller than a mountain but higher than the surrounding land?',
+                options: ['Canyon', 'Plain', 'Hill', 'Valley'],
+                correct: 2,
+                explanation: 'Hills are gentle rises in the land, perfect for rolling down!',
+                funFact: '⛰️ Some hills are actually worn-down mountains that used to be much taller!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'What landform covers more than one-third of Earth\'s land surface?',
+                options: ['Mountains', 'Plains', 'Canyons', 'Plateaus'],
+                correct: 1,
+                explanation: 'Plains are the most common landform, covering vast areas of every continent!',
+                funFact: '🌍 Without plains, we wouldn\'t have enough farmland to feed the world!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'Which mountain range is still growing taller each year?',
+                options: ['Rocky Mountains', 'Appalachian Mountains', 'Himalayan Mountains', 'Andes Mountains'],
+                correct: 2,
+                explanation: 'The Himalayas grow about 4 millimeters taller each year due to tectonic plate movement!',
+                funFact: '🏔️ Mount Everest is literally growing taller as you read this!'
+            },
+            // New curriculum-aligned questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What is a flat-topped hill with steep sides called?',
+                options: ['Mesa', 'Delta', 'Peninsula', 'Canyon'],
+                correct: 0,
+                explanation: 'Mesa means "table" in Spanish because of their flat tops and steep sides!',
+                funFact: '🗻 Many Western movies were filmed in Monument Valley\'s famous mesas!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What landform is made where a river meets the ocean?',
+                options: ['Island', 'Peninsula', 'Delta', 'Mesa'],
+                correct: 2,
+                explanation: 'Deltas form when rivers slow down and drop sediment as they reach the ocean!',
+                funFact: '🏞️ The Nile Delta has been feeding people for thousands of years!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'What is land surrounded by water on three sides called?',
+                options: ['Island', 'Peninsula', 'Delta', 'Canyon'],
+                correct: 1,
+                explanation: 'Peninsula means "almost an island" - it\'s connected to land on one side!',
+                funFact: '🏝️ Florida is a famous peninsula you can drive to but is mostly surrounded by water!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What is land completely surrounded by water called?',
+                options: ['Peninsula', 'Mesa', 'Island', 'Delta'],
+                correct: 2,
+                explanation: 'Islands are completely surrounded by water with no connection to mainland!',
+                funFact: '🏝️ Manhattan Island is where New York City was built!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Which landforms are found between two mountains or hills?',
+                options: ['Plains and mesas', 'Valleys and canyons', 'Islands and peninsulas', 'Deltas and plateaus'],
+                correct: 1,
+                explanation: 'Valleys and canyons are both low areas found between higher landforms!',
+                funFact: '🏞️ Rivers often flow through valleys, and deep valleys with steep walls become canyons!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'What do mesas, plateaus, and hills all have in common?',
+                options: ['They are all formed by rivers', 'They all have flat tops', 'They are all higher than surrounding land', 'They are all made by volcanoes'],
+                correct: 2,
+                explanation: 'Mesas, plateaus, and hills are all elevated landforms that rise above the surrounding area!',
+                funFact: '⛰️ The main difference is their size and shape, but they all stick up above the land around them!'
+            },
+            // Additional curriculum-aligned questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'Which landform is best for farming because it is flat and has rich soil?',
+                options: ['Mountain', 'Plain', 'Canyon', 'Hill'],
+                correct: 1,
+                explanation: 'Plains are perfect for farming because they are flat and often have fertile soil!',
+                funFact: '🌾 Most of our food comes from crops grown on plains!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What makes an island different from a peninsula?',
+                options: ['Islands are bigger', 'Islands have more trees', 'Islands are completely surrounded by water', 'Islands are taller'],
+                correct: 2,
+                explanation: 'Islands are completely surrounded by water, while peninsulas are connected to land on one side!',
+                funFact: '🏝️ You need a boat or plane to get to an island!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Which two landforms are both formed where water meets land?',
+                options: ['Mountain and hill', 'Delta and peninsula', 'Volcano and mesa', 'Canyon and valley'],
+                correct: 1,
+                explanation: 'Deltas form where rivers meet the ocean, and peninsulas are land surrounded by water on three sides!',
+                funFact: '🌊 Both deltas and peninsulas show how water shapes our land!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'What is the main difference between a mesa and a plateau?',
+                options: ['Mesas are made by volcanoes, plateaus by earthquakes', 'Mesas are smaller and more isolated', 'Mesas are higher than plateaus', 'Mesas have steeper sides'],
+                correct: 1,
+                explanation: 'Mesas are smaller, isolated flat-topped hills, while plateaus are large elevated flat areas!',
+                funFact: '🗻 Both mesa and plateau mean "table" in Spanish and French!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Why are deltas important to people?',
+                options: ['They provide fresh water', 'They have very fertile soil for farming', 'They prevent floods', 'They create mountains'],
+                correct: 1,
+                explanation: 'Deltas have extremely fertile soil because rivers deposit rich sediments there!',
+                funFact: '🌱 Ancient Egypt called the Nile Delta "the gift of the Nile" because it was so fertile!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'Which process creates most valleys over long periods of time?',
+                options: ['Volcanoes erupting', 'Rivers cutting through rock', 'Wind blowing sand', 'Animals digging'],
+                correct: 1,
+                explanation: 'Most valleys are formed by rivers slowly cutting through rock over millions of years!',
+                funFact: '💧 The Grand Canyon was carved by the Colorado River over 6 million years!'
+            }
+        ];
+
+        // Initialize game state
+        const game = new GameState();
+
+        // Initialize the app
+        function initializeApp() {
+            initializeTheme();
+            createBackgroundParticles();
+            game.updateXPDisplay();
+            game.updateProgressDisplay();
+            updateHighScores();
+            checkPlayerName();
+            setupNameInput();
+        }
+
+        function createBackgroundParticles() {
+            const container = document.getElementById('bgParticles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Screen management
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+            game.playSound('button');
+        }
+
+        // Study Mode
+        function startStudyMode() {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
+            showScreen('studyScreen');
+            game.currentStudyIndex = 0;
+            displayLandformInfo();
+        }
+
+        function displayLandformInfo() {
+            const landform = landformData[game.currentStudyIndex];
+            const content = document.getElementById('studyContent');
+            
+            content.innerHTML = `
+                <div style="text-align: center;">
+                    <h2 class="title">${landform.emoji} ${landform.name}</h2>
+                    <div class="landform-image-container">
+                        <div class="image-loading" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; border-radius: var(--border-radius);">
+                            📷 Loading image...
+                        </div>
+                        <div class="image-overlay">${landform.name}</div>
+                    </div>
+                    <p class="subtitle">${landform.description}</p>
+                    <div class="fun-fact">
+                        <h4 style="margin-bottom: 1rem; color: var(--primary-color);">🌟 Amazing Facts!</h4>
+                        ${landform.facts.map(fact => `<p style="margin: 0.75rem 0; color: var(--text-primary);">• ${fact}</p>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Load the image after setting innerHTML
+            loadLandformImage(landform);
+        }
+
+        function loadLandformImage(landform) {
+            const container = document.querySelector('.landform-image-container');
+            const loading = container.querySelector('.image-loading');
+            
+            let currentAttempt = 0;
+            const imageUrls = [
+                landform.imageUrl,
+                landform.fallbackUrl, 
+                landform.fallbackUrl2
+            ].filter(url => url); // Remove any undefined URLs
+            
+            // Update loading text to show we're trying real photos
+            loading.innerHTML = `📷 Loading educational photo...`;
+            
+            // Start with a timeout for the entire loading process
+            const timeout = setTimeout(() => {
+                console.log('All image sources failed for', landform.name);
+                showFallbackDisplay(landform, loading);
+            }, 8000); // 8 second total timeout
+            
+            const img = document.createElement('img');
+            img.alt = `${landform.name} - Educational Photo`;
+            img.className = 'landform-image';
+            img.style.display = 'none';
+            
+            function tryNextImage() {
+                if (currentAttempt >= imageUrls.length) {
+                    clearTimeout(timeout);
+                    console.log('All image sources exhausted for', landform.name);
+                    showFallbackDisplay(landform, loading);
+                    return;
+                }
+                
+                const currentUrl = imageUrls[currentAttempt];
+                console.log(`Trying image ${currentAttempt + 1}/${imageUrls.length} for ${landform.name}:`, currentUrl);
+                
+                // Update loading text to show progress
+                loading.innerHTML = `📷 Loading from source ${currentAttempt + 1}/${imageUrls.length}...`;
+                
+                img.src = currentUrl;
+                currentAttempt++;
+            }
+            
+            img.onload = function() {
+                clearTimeout(timeout);
+                console.log(`Successfully loaded image for ${landform.name} from source ${currentAttempt}`);
+                this.style.display = 'block';
+                loading.style.display = 'none';
+            };
+            
+            img.onerror = function() {
+                console.log(`Image source ${currentAttempt} failed for ${landform.name}`);
+                tryNextImage();
+            };
+            
+            // Start loading first image
+            tryNextImage();
+            
+            // Insert image before overlay
+            const overlay = container.querySelector('.image-overlay');
+            container.insertBefore(img, overlay);
+        }
+        
+        function showFallbackDisplay(landform, loading) {
+            const landmarkNames = {
+                'Mountain': 'Mount Rushmore',
+                'Volcano': 'Mount St. Helens',
+                'Valley': 'Yosemite Valley', 
+                'Canyon': 'Grand Canyon',
+                'Plain': 'Great Plains',
+                'Plateau': 'Colorado Plateau',
+                'Hill': 'Rolling Hills',
+                'Mesa': 'Monument Valley',
+                'Delta': 'Mississippi Delta',
+                'Peninsula': 'Florida Peninsula',
+                'Island': 'Hawaiian Islands'
+            };
+            
+            loading.innerHTML = `
+                <div style="text-align: center; color: var(--text-primary); padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">${landform.emoji}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">${landform.name}</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--primary-color);">
+                        📍 Featured: ${landmarkNames[landform.name] || 'Famous landmark'}
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; max-width: 300px; margin: 0 auto;">
+                        High-resolution educational photo loading...
+                        <br>Showing diagram while we fetch the landmark image.
+                    </div>
+                </div>
+            `;
+            loading.style.display = 'flex';
+            loading.style.alignItems = 'center';
+            loading.style.justifyContent = 'center';
+        }
+
+        function nextLandform() {
+            game.currentStudyIndex = (game.currentStudyIndex + 1) % landformData.length;
+            displayLandformInfo();
+            
+            // Check for achievement triggers based on specific landforms
+            const currentLandform = landformData[game.currentStudyIndex];
+            if (currentLandform.name === 'Mesa' && !game.achievements.includes('mesa_master')) {
+                game.showAchievement('mesa_master', 'Mesa Expert!', 'You discovered these flat-topped wonders!');
+            }
+            if (['Delta', 'Peninsula', 'Island'].includes(currentLandform.name) && !game.achievements.includes('water_features')) {
+                game.showAchievement('water_features', 'Water Explorer!', 'You\'re learning water-related landforms!');
+            }
+            
+            // Final completion achievement
+            if (game.currentStudyIndex === landformData.length - 1) {
+                game.showAchievement('study_master', 'Study Master!', 'You\'ve learned about all landforms!');
+                if (landformData.length >= 11) {
+                    game.showAchievement('landform_scholar', 'Landform Scholar!', 'You mastered all 11 landform types!');
+                }
+            }
+        }
+
+        function previousLandform() {
+            game.currentStudyIndex = (game.currentStudyIndex - 1 + landformData.length) % landformData.length;
+            displayLandformInfo();
+        }
+
+        // Vocabulary Matching Game
+        let vocabGame = {
+            currentRound: [],
+            selectedTerm: null,
+            selectedDefinition: null,
+            matches: 0,
+            total: 5,
+            completedPairs: [],
+            difficulty: 'easy' // easy, medium, hard
+        };
+
+        function startVocabMode() {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
+            showScreen('vocabScreen');
+            resetVocabGame();
+        }
+
+        function resetVocabGame() {
+            vocabGame.selectedTerm = null;
+            vocabGame.selectedDefinition = null;
+            vocabGame.matches = 0;
+            vocabGame.completedPairs = [];
+            
+            // Generate a new round with 5 random landforms
+            generateVocabRound();
+            
+            document.getElementById('vocabFeedback').style.display = 'none';
+            document.getElementById('vocabNextBtn').style.display = 'none';
+            updateVocabProgress();
+        }
+
+        function generateVocabRound() {
+            // Create simple descriptions for vocabulary matching
+            const vocabData = [
+                { term: 'Mountain', description: 'Very tall landform that reaches high into the sky' },
+                { term: 'Valley', description: 'Low area of land between hills or mountains' },
+                { term: 'Canyon', description: 'Deep valley with steep rocky walls' },
+                { term: 'Plain', description: 'Large flat area of land perfect for farming' },
+                { term: 'Island', description: 'Land completely surrounded by water' },
+                { term: 'Peninsula', description: 'Land surrounded by water on three sides' },
+                { term: 'Volcano', description: 'Mountain that can erupt with hot lava' },
+                { term: 'Mesa', description: 'Flat-topped hill with steep sides' },
+                { term: 'Delta', description: 'Triangle-shaped land where a river meets the ocean' },
+                { term: 'Plateau', description: 'Large flat area of land at a high elevation' },
+                { term: 'Hill', description: 'Rounded land that is higher than surrounding areas' }
+            ];
+
+            // Shuffle and pick 5 random items
+            const shuffled = [...vocabData].sort(() => Math.random() - 0.5);
+            vocabGame.currentRound = shuffled.slice(0, vocabGame.total);
+            
+            displayVocabItems();
+        }
+
+        function displayVocabItems() {
+            const termsContainer = document.getElementById('vocabTerms');
+            const defsContainer = document.getElementById('vocabDefinitions');
+            
+            // Shuffle terms and definitions separately
+            const shuffledTerms = [...vocabGame.currentRound].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...vocabGame.currentRound].sort(() => Math.random() - 0.5);
+            
+            // Clear existing content
+            termsContainer.innerHTML = '';
+            defsContainer.innerHTML = '';
+            
+            // Create term items with event delegation
+            shuffledTerms.forEach((item, index) => {
+                const termDiv = document.createElement('div');
+                termDiv.className = 'vocab-item';
+                termDiv.setAttribute('data-term', item.term);
+                termDiv.textContent = item.term;
+                termDiv.addEventListener('click', () => selectTerm(termDiv, item.term));
+                termsContainer.appendChild(termDiv);
+            });
+            
+            // Create definition items with event delegation
+            shuffledDefs.forEach((item, index) => {
+                const defDiv = document.createElement('div');
+                defDiv.className = 'vocab-item';
+                defDiv.setAttribute('data-definition', item.term);
+                defDiv.textContent = item.description;
+                defDiv.addEventListener('click', () => selectDefinition(defDiv, item.term, item.description));
+                defsContainer.appendChild(defDiv);
+            });
+        }
+
+        function selectTerm(element, term) {
+            console.log('selectTerm called:', term, element);
+            if (element.classList.contains('matched')) {
+                console.log('Term already matched, ignoring');
+                return;
+            }
+            
+            // Clear previous term selection
+            document.querySelectorAll('[data-term]').forEach(el => el.classList.remove('selected'));
+            
+            // Select this term
+            element.classList.add('selected');
+            vocabGame.selectedTerm = term;
+            console.log('Selected term:', vocabGame.selectedTerm);
+            
+            // Check for match if definition is also selected
+            if (vocabGame.selectedDefinition) {
+                console.log('Definition already selected, checking match');
+                checkVocabMatch();
+            }
+        }
+
+        function selectDefinition(element, term, description) {
+            console.log('selectDefinition called:', term, description, element);
+            if (element.classList.contains('matched')) {
+                console.log('Definition already matched, ignoring');
+                return;
+            }
+            
+            // Clear previous definition selection
+            document.querySelectorAll('[data-definition]').forEach(el => el.classList.remove('selected'));
+            
+            // Select this definition
+            element.classList.add('selected');
+            vocabGame.selectedDefinition = term;
+            console.log('Selected definition:', vocabGame.selectedDefinition);
+            
+            // Check for match if term is also selected
+            if (vocabGame.selectedTerm) {
+                console.log('Term already selected, checking match');
+                checkVocabMatch();
+            }
+        }
+
+        function checkVocabMatch() {
+            const feedback = document.getElementById('vocabFeedback');
+            const isMatch = vocabGame.selectedTerm === vocabGame.selectedDefinition;
+            
+            if (isMatch) {
+                // Correct match
+                vocabGame.matches++;
+                vocabGame.completedPairs.push(vocabGame.selectedTerm);
+                
+                // Mark items as matched
+                document.querySelector(`[data-term="${vocabGame.selectedTerm}"]`).classList.add('matched');
+                document.querySelector(`[data-definition="${vocabGame.selectedDefinition}"]`).classList.add('matched');
+                
+                feedback.textContent = `🎉 Correct! ${vocabGame.selectedTerm} matches!`;
+                feedback.className = 'vocab-feedback correct';
+                feedback.style.display = 'block';
+                
+                // Add XP for correct match
+                game.addXP(10);
+                
+                // Play success sound
+                game.playSound('correct');
+                
+                // Check for completion
+                if (vocabGame.matches === vocabGame.total) {
+                    setTimeout(() => {
+                        feedback.textContent = `🏆 Excellent! You matched all ${vocabGame.total} landforms!`;
+                        document.getElementById('vocabNextBtn').style.display = 'block';
+                        
+                        // Award achievement for vocabulary mastery
+                        game.showAchievement('vocab_master', 'Vocabulary Master!', 'You matched all the landforms perfectly!');
+                        game.addXP(25);
+                    }, 1500);
+                }
+                
+            } else {
+                // Incorrect match
+                feedback.textContent = `❌ Not quite right. Try again!`;
+                feedback.className = 'vocab-feedback incorrect';
+                feedback.style.display = 'block';
+                
+                // Play error sound
+                game.playSound('incorrect');
+                
+                // Clear selections after showing feedback
+                setTimeout(() => {
+                    document.querySelectorAll('.vocab-item.selected').forEach(el => el.classList.remove('selected'));
+                }, 1000);
+            }
+            
+            // Clear selections
+            vocabGame.selectedTerm = null;
+            vocabGame.selectedDefinition = null;
+            updateVocabProgress();
+            
+            // Hide feedback after 2 seconds
+            setTimeout(() => {
+                if (!isMatch || vocabGame.matches < vocabGame.total) {
+                    feedback.style.display = 'none';
+                }
+            }, 2000);
+        }
+
+        function updateVocabProgress() {
+            document.getElementById('vocabMatches').textContent = vocabGame.matches;
+            document.getElementById('vocabTotal').textContent = vocabGame.total;
+        }
+
+        function startNewVocabRound() {
+            resetVocabGame();
+        }
+
+        // Quiz functionality
+        function showDifficultySelection() {
+            showScreen('difficultyScreen');
+        }
+
+        function startQuiz(difficulty) {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
+            game.difficulty = difficulty;
+            game.gameMode = 'normal';
+            resetQuizState();
+            showScreen('quizScreen');
+            loadQuestion();
+        }
+
+        function startTimeChallenge() {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
+            game.difficulty = 'medium';
+            game.gameMode = 'challenge';
+            resetQuizState();
+            showScreen('quizScreen');
+            document.getElementById('timerCard').style.display = 'block';
+            document.getElementById('streakCard').style.display = 'block';
+            loadQuestion();
+        }
+
+        function resetQuizState() {
+            game.currentQuestion = 0;
+            game.score = 0;
+            game.answered = false;
+            game.streak = 0;
+            game.totalAnswered = 0;
+            game.correctAnswers = 0;
+            game.questions = null; // Reset questions array so it gets refreshed
+            if (game.timer) clearInterval(game.timer);
+            
+            // Set total questions based on available questions for difficulty
+            const availableQuestions = getQuestionsByDifficulty();
+            game.totalQuestions = Math.min(10, availableQuestions.length); // Max 10 or all available
+            console.log('Quiz reset - Total questions set to:', game.totalQuestions);
+            
+            updateStats();
+        }
+
+        function getQuestionsByDifficulty() {
+            let questions;
+            if (game.difficulty === 'easy') {
+                questions = questionData.filter(q => q.difficulty === 'easy');
+            } else if (game.difficulty === 'hard') {
+                questions = questionData.filter(q => q.difficulty === 'hard' || q.difficulty === 'medium');
+            } else {
+                questions = questionData;
+            }
+            
+            // Shuffle questions to avoid repetition
+            return shuffleArray([...questions]);
+        }
+        
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function loadQuestion() {
+            console.log('=== LOADING QUESTION ===' );
+            game.answered = false;
+            selectedAnswerIndex = -1; // Reset selected answer
+            
+            // Ensure we have the questions array stored in game object
+            if (!game.questions) {
+                game.questions = getQuestionsByDifficulty();
+                console.log('Generated new shuffled questions:', game.questions.length);
+            }
+            
+            // Prevent going beyond available questions
+            if (game.currentQuestion >= game.questions.length) {
+                console.log('No more questions, showing results');
+                showResults();
+                return;
+            }
+            
+            const question = game.questions[game.currentQuestion];
+            console.log('Loading question', game.currentQuestion + 1, 'of', game.questions.length, ':', question.question);
+            
+            // Start timer for challenge mode
+            if (game.gameMode === 'challenge') {
+                startTimer();
+            }
+            
+            // Update progress
+            updateProgress();
+            updateStats();
+            
+            // Hide next button
+            document.getElementById('nextBtn').style.display = 'none';
+            
+            // Display question
+            const content = document.getElementById('questionContent');
+            content.innerHTML = `
+                <div class="question-card">
+                    <h3 class="question-text">${question.question}</h3>
+                    <div class="options-grid">
+                        ${question.options.map((option, index) => `
+                            <button class="option-btn" data-index="${index}">
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="submit-container" id="submitContainer" style="display: none;">
+                        <button class="btn btn-primary submit-btn" id="submitBtn">Submit Answer</button>
+                    </div>
+                    <div id="feedbackArea"></div>
+                </div>
+            `;
+            
+            // Add event listeners for iOS compatibility - CRITICAL: Clean setup every time
+            setTimeout(() => {
+                console.log('Setting up button event listeners');
+                const optionButtons = document.querySelectorAll('.option-btn');
+                console.log('Found option buttons:', optionButtons.length);
+                
+                optionButtons.forEach((button, buttonIndex) => {
+                    const index = parseInt(button.getAttribute('data-index'));
+                    console.log('Setting up button', buttonIndex, 'with data-index:', index);
+                    
+                    // Clear any existing event handlers to prevent conflicts
+                    button.onclick = null;
+                    button.ontouchend = null;
+                    
+                    // Add a unique identifier to debug
+                    button.setAttribute('data-button-id', `btn-${game.currentQuestion}-${index}`);
+                    
+                    // Simple click handler that works on both desktop and mobile
+                    button.onclick = function(e) {
+                        e.preventDefault();
+                        console.log('Button clicked:', index, 'Question:', game.currentQuestion);
+                        selectAnswer(index);
+                    };
+                    
+                    // Add touch handling for iOS
+                    button.ontouchend = function(e) {
+                        e.preventDefault();
+                        console.log('Button touched:', index);
+                        // Only trigger if this wasn't already handled by onclick
+                        if (!button.classList.contains('clicked')) {
+                            button.classList.add('clicked');
+                            selectAnswer(index);
+                            setTimeout(() => button.classList.remove('clicked'), 100);
+                        }
+                    };
+                    
+                    // Add cursor pointer for better UX
+                    button.style.cursor = 'pointer';
+                    button.style.webkitTapHighlightColor = 'transparent';
+                });
+            }, 50);
+        }
+
+        function startTimer() {
+            game.timeLeft = 30;
+            updateTimerDisplay();
+            
+            game.timer = setInterval(() => {
+                game.timeLeft--;
+                updateTimerDisplay();
+                
+                if (game.timeLeft <= 10) {
+                    document.getElementById('timerCard').style.background = 'linear-gradient(135deg, #fee2e2, #fecaca)';
+                }
+                
+                if (game.timeLeft <= 0) {
+                    clearInterval(game.timer);
+                    // Auto-submit when time runs out
+                    selectedAnswerIndex = -1;
+                    if (game.questions && game.questions[game.currentQuestion]) {
+                        const question = game.questions[game.currentQuestion];
+                        checkAnswer(-1, question.correct, 'Time\'s up!', 'Try to answer faster next time!');
+                    }
+                    document.getElementById('submitContainer').style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            document.getElementById('timerValue').textContent = game.timeLeft;
+        }
+
+        let selectedAnswerIndex = -1;
+
+        function selectAnswer(index) {
+            console.log('=== SELECT ANSWER ===');
+            console.log('Index:', index, 'Current Question:', game.currentQuestion, 'Already answered:', game.answered);
+            
+            if (game.answered) {
+                console.log('Already answered, ignoring click');
+                return;
+            }
+            
+            // Remove previous selection
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            
+            // Select new answer
+            selectedAnswerIndex = index;
+            if (buttons[index]) {
+                buttons[index].classList.add('selected');
+            }
+            
+            // Show submit button
+            const submitContainer = document.getElementById('submitContainer');
+            console.log('Showing submit button, container found:', !!submitContainer);
+            if (submitContainer) {
+                submitContainer.style.display = 'block';
+                console.log('Submit container display set to block');
+            }
+            
+            // Add iOS-compatible event listeners to submit button
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn && !submitBtn.hasAttribute('data-listeners-added')) {
+                submitBtn.setAttribute('data-listeners-added', 'true');
+                
+                // Simple click handler that works on both desktop and mobile
+                submitBtn.onclick = function(e) {
+                    e.preventDefault();
+                    console.log('Submit button clicked!');
+                    submitAnswer();
+                };
+                
+                // Add touch handling for iOS
+                submitBtn.ontouchend = function(e) {
+                    e.preventDefault();
+                    console.log('Submit button touched!');
+                    // Only trigger if this wasn't already handled by onclick
+                    if (!submitBtn.classList.contains('clicked')) {
+                        submitBtn.classList.add('clicked');
+                        submitAnswer();
+                        setTimeout(() => submitBtn.classList.remove('clicked'), 100);
+                    }
+                };
+                
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.webkitTapHighlightColor = 'transparent';
+            }
+        }
+
+        function submitAnswer() {
+            console.log('submitAnswer called, selectedAnswerIndex:', selectedAnswerIndex);
+            console.log('game.answered:', game.answered);
+            
+            if (selectedAnswerIndex === -1 || game.answered) {
+                console.log('Submit blocked - no answer selected or already answered');
+                return;
+            }
+            
+            const question = game.questions[game.currentQuestion];
+            console.log('Calling checkAnswer with:', selectedAnswerIndex, question.correct);
+            checkAnswer(selectedAnswerIndex, question.correct, question.explanation, question.funFact || '');
+            
+            // Hide submit button after submission
+            document.getElementById('submitContainer').style.display = 'none';
+        }
+
+        function checkAnswer(selected, correct, explanation, funFact) {
+            console.log('checkAnswer called with:', selected, correct, explanation);
+            if (game.answered) {
+                console.log('checkAnswer blocked - already answered');
+                return;
+            }
+            game.answered = true;
+            game.totalAnswered++;
+            console.log('Answer processed, setting answered to true');
+            
+            // Clear timer
+            if (game.timer) {
+                clearInterval(game.timer);
+                document.getElementById('timerCard').style.background = '';
+            }
+            
+            // Check for speed achievement
+            if (game.gameMode === 'challenge' && game.timeLeft > 25 && selected === correct) {
+                game.showAchievement('speed_demon', 'Speed Demon!', 'Answered correctly in under 5 seconds!');
+            }
+            
+            // Update buttons
+            const buttons = document.querySelectorAll('.option-btn');
+            if (selected >= 0 && buttons[selected]) {
+                buttons[selected].classList.add(selected === correct ? 'correct' : 'incorrect');
+            }
+            
+            // Handle correct/incorrect
+            if (selected === correct) {
+                game.score++;
+                game.correctAnswers++;
+                game.streak++;
+                game.addXP(10 + (game.streak * 2)); // Bonus XP for streaks
+                game.playSound('correct');
+                
+                // Check for first correct achievement
+                if (game.correctAnswers === 1) {
+                    game.showAchievement('first_correct', 'First Steps!', 'You got your first answer correct!');
+                }
+                
+                // Update best streak tracking
+                const bestStreak = parseInt(localStorage.getItem('bestStreak') || '0');
+                if (game.streak > bestStreak) {
+                    localStorage.setItem('bestStreak', game.streak.toString());
+                }
+                
+                // Update total correct answers
+                const totalCorrect = parseInt(localStorage.getItem('totalCorrect') || '0');
+                localStorage.setItem('totalCorrect', (totalCorrect + 1).toString());
+                
+                // Check for streak achievements
+                if (game.streak === 5) {
+                    game.showAchievement('streak_5', 'On Fire!', 'Got 5 answers in a row!');
+                } else if (game.streak === 10) {
+                    game.showAchievement('streak_10', 'Unstoppable!', 'Amazing 10-answer streak!');
+                }
+            } else {
+                if (buttons[correct]) {
+                    buttons[correct].classList.add('correct');
+                }
+                game.streak = 0;
+                game.playSound('incorrect');
+            }
+            
+            // Show feedback
+            showFeedback(selected === correct, explanation, funFact);
+            
+            // Disable buttons
+            buttons.forEach(btn => {
+                btn.style.cursor = 'default';
+                btn.onclick = null;
+            });
+            
+            // Show next button
+            const nextBtn = document.getElementById('nextBtn');
+            console.log('Trying to show next button, element found:', !!nextBtn);
+            if (nextBtn) {
+                nextBtn.style.display = 'block';
+                console.log('Next button display set to block');
+            } else {
+                console.error('Next button not found!');
+            }
+            updateStats();
+        }
+
+        function showFeedback(isCorrect, explanation, funFact) {
+            const feedbackArea = document.getElementById('feedbackArea');
+            let content = `
+                <div class="feedback-card ${isCorrect ? 'success' : 'error'}">
+                    <strong>${isCorrect ? '🎉 Correct!' : '❌ Not quite.'}</strong> ${explanation}
+                </div>
+            `;
+            
+            if (funFact) {
+                content += `<div class="fun-fact">💡 <strong>Fun Fact:</strong> ${funFact}</div>`;
+            }
+            
+            feedbackArea.innerHTML = content;
+        }
+
+        function nextQuestion() {
+            game.currentQuestion++;
+            if (game.currentQuestion < game.totalQuestions) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateProgress() {
+            const percentage = ((game.currentQuestion + 1) / game.totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressPercentage').textContent = Math.round(percentage) + '%';
+        }
+
+        function updateStats() {
+            document.getElementById('scoreValue').textContent = game.score;
+            document.getElementById('questionNumber').textContent = game.currentQuestion + 1;
+            
+            const accuracy = game.totalAnswered > 0 ? Math.round((game.correctAnswers / game.totalAnswered) * 100) : 0;
+            document.getElementById('accuracyValue').textContent = accuracy + '%';
+            
+            if (game.gameMode === 'challenge') {
+                document.getElementById('streakValue').textContent = game.streak;
+            }
+        }
+
+        function showResults() {
+            showScreen('resultsScreen');
+            
+            const percentage = Math.round((game.score / game.totalQuestions) * 100);
+            document.getElementById('finalScoreDisplay').textContent = `${game.score}/${game.totalQuestions}`;
+            
+            // Save the game session for scoreboard tracking
+            const mode = game.gameMode === 'challenge' ? 'speed' : 'quiz';
+            saveGameSession(mode, game.score, game.totalQuestions, game.difficulty);
+            
+            // Determine message
+            let message = '';
+            if (percentage === 100) {
+                message = '🎉 PERFECT SCORE! You\'re a Landform Master! 🏆';
+                game.showAchievement('perfect_score', 'Perfect Explorer!', 'Got 100% on a quiz!');
+                game.addXP(50); // Bonus XP for perfect score
+                game.createCelebration();
+            } else if (percentage >= 80) {
+                message = '🌟 Excellent work! You really know your landforms!';
+                game.addXP(30);
+            } else if (percentage >= 60) {
+                message = '👍 Good job! Keep studying to become a master!';
+                game.addXP(20);
+            } else {
+                message = '💪 Keep learning! Every expert was once a beginner!';
+                game.addXP(10);
+            }
+            
+            document.getElementById('resultMessage').textContent = message;
+            
+            // Save high score
+            saveHighScore(percentage);
+            updateHighScores();
+            
+            // Check for challenge completion achievement
+            if (game.gameMode === 'challenge') {
+                game.showAchievement('time_master', 'Time Master!', 'Completed a speed challenge!');
+            }
+            
+            game.playSound('complete');
+        }
+
+        function saveHighScore(percentage) {
+            const newScore = {
+                score: game.score,
+                total: game.totalQuestions,
+                percentage: percentage,
+                date: new Date().toLocaleDateString(),
+                mode: game.gameMode,
+                difficulty: game.difficulty
+            };
+            
+            game.highScores.push(newScore);
+            game.highScores.sort((a, b) => b.percentage - a.percentage);
+            game.highScores.splice(5); // Keep only top 5
+            game.save();
+        }
+
+        function updateHighScores() {
+            const list = document.getElementById('highScoresList');
+            if (game.highScores.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-secondary);">No scores yet. Play a quiz to get started!</p>';
+                return;
+            }
+            
+            list.innerHTML = game.highScores.map((score, index) => `
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; margin: 0.5rem 0; border: 2px solid ${index === 0 ? 'var(--warning-color)' : 'rgba(255,255,255,0.2)'}; color: var(--text-primary);">
+                    <span>${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅'} ${score.percentage}% (${score.score}/${score.total})</span>
+                    <span style="color: var(--text-secondary);">${score.date}</span>
+                </div>
+            `).join('');
+        }
+
+        function restartQuiz() {
+            showScreen('difficultyScreen');
+        }
+
+        function shareResults() {
+            const text = `I just scored ${game.score}/${game.totalQuestions} on the Landform Explorer quiz! 🎉`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Landform Explorer Results',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback - copy to clipboard
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Results copied to clipboard! 📋');
+                });
+            }
+            game.playSound('button');
+        }
+
+        // Control functions
+        function toggleSound() {
+            game.soundEnabled = !game.soundEnabled;
+            const btn = document.getElementById('soundToggle');
+            btn.textContent = game.soundEnabled ? '🔊' : '🔇';
+            btn.style.background = game.soundEnabled ? '' : 'rgba(255, 255, 255, 0.5)';
+            game.save();
+            game.playSound('button');
+        }
+
+        // Theme toggle function
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Apply theme
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+            
+            // Update theme icon with animation
+            const themeIcon = document.querySelector('.theme-toggle');
+            themeIcon.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+                themeIcon.title = newTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
+                themeIcon.style.transform = '';
+            }, 150);
+            
+            // Play sound feedback
+            game.playSound('button');
+            
+            // Trigger dark mode discovery achievement
+            if (newTheme === 'dark' && !game.achievements.includes('dark_mode_discovery')) {
+                game.showAchievement('dark_mode_discovery', 'Night Owl!', 'You discovered the secret dark mode!');
+            }
+            
+            // Show subtle notification
+            showThemeNotification(newTheme);
+        }
+
+        function showThemeNotification(theme) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+                opacity: 0;
+                transition: all 0.3s ease;
+                pointer-events: none;
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255,255,255,0.3);
+            `;
+            notification.textContent = `${theme === 'dark' ? '🌙' : '☀️'} ${theme === 'dark' ? 'Dark' : 'Light'} mode activated`;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(-50%) translateY(10px)';
+            }, 10);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-50%) translateY(-10px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Update theme icon based on current theme
+            const themeIcon = document.querySelector('.theme-toggle');
+            if (themeIcon) {
+                themeIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+                themeIcon.title = savedTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
+            }
+        }
+
+
+        // Scoreboard Functions
+        function showScoreboard() {
+            showScreen('scoreboardScreen');
+            
+            // Update subtitle with player name
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                document.getElementById('scoreboardSubtitle').textContent = `${playerName}'s learning progress and achievements!`;
+            }
+            
+            updateScoreboardDisplay();
+            game.playSound('button');
+        }
+
+        function saveGameSession(mode, score, totalQuestions, difficulty = null) {
+            const playerName = localStorage.getItem('playerName');
+            const sessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+            const session = {
+                mode: mode,
+                score: score,
+                totalQuestions: totalQuestions,
+                percentage: Math.round((score / totalQuestions) * 100),
+                difficulty: difficulty,
+                playerName: playerName,
+                date: new Date().toISOString(),
+                timestamp: Date.now()
+            };
+            
+            console.log('Saving game session:', session); // Debug log
+            
+            sessions.unshift(session); // Add to beginning
+            
+            // Keep only last 50 sessions
+            if (sessions.length > 50) {
+                sessions.splice(50);
+            }
+            
+            localStorage.setItem('gameSessions', JSON.stringify(sessions));
+        }
+
+        function updateScoreboardDisplay() {
+            const sessions = JSON.parse(localStorage.getItem('gameSessions') || '[]');
+            console.log('Loading scoreboard, found sessions:', sessions.length); // Debug log
+            
+            // Calculate summary stats
+            const quizSessions = sessions.filter(s => s.mode === 'quiz');
+            const speedSessions = sessions.filter(s => s.mode === 'speed');
+            
+            const totalQuizzes = quizSessions.length;
+            const totalSpeedRuns = speedSessions.length;
+            
+            let averageScore = 0;
+            if (sessions.length > 0) {
+                const totalPercentage = sessions.reduce((sum, s) => sum + s.percentage, 0);
+                averageScore = Math.round(totalPercentage / sessions.length);
+            }
+            
+            // Update summary display
+            document.getElementById('totalQuizzes').textContent = totalQuizzes;
+            document.getElementById('totalSpeedRuns').textContent = totalSpeedRuns;
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            
+            // Update recent sessions list
+            const sessionsList = document.getElementById('recentSessionsList');
+            
+            if (sessions.length === 0) {
+                sessionsList.innerHTML = `
+                    <div class="no-sessions">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
+                        <p>No practice sessions yet! Start playing to see scores here.</p>
+                    </div>
+                `;
+            } else {
+                const recentSessions = sessions.slice(0, 10); // Show last 10 sessions
+                sessionsList.innerHTML = recentSessions.map(session => {
+                    const date = new Date(session.date);
+                    const dateStr = date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const modeIcon = session.mode === 'quiz' ? '🎯' : '⚡';
+                    const modeClass = session.mode === 'quiz' ? 'quiz' : 'speed';
+                    const difficultyText = session.difficulty ? ` (${session.difficulty})` : '';
+                    
+                    return `
+                        <div class="session-item">
+                            <div class="session-info">
+                                <span style="font-size: 1.5rem;">${modeIcon}</span>
+                                <div>
+                                    <div class="session-mode ${modeClass}">${session.mode === 'quiz' ? 'Quiz Challenge' : 'Speed Challenge'}${difficultyText}</div>
+                                    <div class="session-date">${dateStr}</div>
+                                </div>
+                            </div>
+                            <div class="session-score" style="color: ${session.percentage >= 80 ? 'var(--success-color)' : session.percentage >= 60 ? 'var(--warning-color)' : 'var(--error-color)'}">
+                                ${session.score}/${session.totalQuestions} (${session.percentage}%)
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function clearScoreHistory() {
+            if (confirm('Are you sure you want to clear all practice history? This cannot be undone.')) {
+                localStorage.removeItem('gameSessions');
+                updateScoreboardDisplay();
+                game.playSound('button');
+            }
+        }
+
+
+        // Home button function
+        function goHome() {
+            // Stop any running timers
+            if (game.timer) {
+                clearInterval(game.timer);
+                game.timer = null;
+            }
+            
+            // Reset quiz state if needed
+            game.answered = false;
+            
+            // Go to home screen
+            showScreen('homeScreen');
+            game.playSound('button');
+        }
+
+        // Name management functions
+        function checkPlayerName() {
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                updateWelcomeMessage(playerName);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+            } else {
+                document.getElementById('nameSetup').style.display = 'block';
+                disableGameModes();
+            }
+        }
+        
+        function enableGameModes() {
+            const modeGrid = document.getElementById('gameModesGrid');
+            modeGrid.style.opacity = '1';
+            modeGrid.style.pointerEvents = 'auto';
+            
+            // Enable scoreboard access
+            const scoreboardBtns = document.querySelectorAll('[onclick*="showScoreboard"]');
+            scoreboardBtns.forEach(btn => {
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function disableGameModes() {
+            const modeGrid = document.getElementById('gameModesGrid');
+            modeGrid.style.opacity = '0.5';
+            modeGrid.style.pointerEvents = 'none';
+            
+            // Disable scoreboard access
+            const scoreboardBtns = document.querySelectorAll('[onclick*="showScoreboard"]');
+            scoreboardBtns.forEach(btn => {
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+            });
+        }
+        
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                // Scroll to name input and highlight it
+                document.getElementById('playerName').focus();
+                document.getElementById('nameSetup').style.animation = 'shake 0.5s ease';
+                
+                // Add shake animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        25% { transform: translateX(-5px); }
+                        75% { transform: translateX(5px); }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                setTimeout(() => {
+                    document.getElementById('nameSetup').style.animation = '';
+                    style.remove();
+                }, 500);
+                
+                return;
+            }
+            
+            // Call the actual function
+            if (functionName === 'showDifficultySelection') {
+                showDifficultySelection();
+            } else if (functionName === 'startTimeChallenge') {
+                startTimeChallenge();
+            } else if (functionName === 'startStudyMode') {
+                startStudyMode();
+            }
+        }
+        
         function saveName() {
-            console.log('💾 saveName called');
             const nameInput = document.getElementById('playerName');
             const name = nameInput.value.trim();
             
             if (name.length > 0) {
                 localStorage.setItem('playerName', name);
-                document.getElementById('welcomeTitle').textContent = `Welcome, ${name}!`;
-                document.getElementById('playerNameDisplay').textContent = name;
+                updateWelcomeMessage(name);
                 document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+                game.playSound('button');
                 
-                // Enable game modes
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.style.opacity = '1';
-                    card.style.pointerEvents = 'auto';
-                });
-                
-                console.log('✅ Name saved successfully');
+                // Welcome achievement will be shown when they start their first game
             } else {
                 nameInput.focus();
             }
         }
+        
+        function updateWelcomeMessage(name) {
+            document.getElementById('welcomeTitle').textContent = `Welcome, ${name}!`;
+        }
+        
+        // Allow Enter key to save name
+        function setupNameInput() {
+            const nameInput = document.getElementById('playerName');
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    saveName();
+                }
+            });
+        }
 
-        // Check for existing name on load
-        function checkPlayerName() {
+
+        // Initialize the app when page loads
+        function initializeApp() {
+            // Create game instance
+            window.game = new GameState();
+            
+            // Clean up any duplicate achievements on startup
+            game.updateProgressDisplay();
+            
+            // Auto-detect and fix corruption (18/9 bug)
+            const storedAchievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+            const totalPossible = Object.keys(game.getAllAchievements()).length;
+            if (storedAchievements.length > totalPossible) {
+                console.log(`🔧 Auto-fixing corrupted achievements: ${storedAchievements.length}/${totalPossible}`);
+                game.achievements = [...new Set(storedAchievements)]; // Remove duplicates
+                game.save();
+                game.updateProgressDisplay();
+                console.log(`✅ Fixed to: ${game.achievements.length}/${totalPossible}`);
+            }
+            
+            // Initialize theme
+            initializeTheme();
+            
+            // Setup name input
+            setupNameInput();
+            
+            // Load saved player name
             const savedName = localStorage.getItem('playerName');
             if (savedName) {
-                document.getElementById('welcomeTitle').textContent = `Welcome, ${savedName}!`;
-                document.getElementById('playerNameDisplay').textContent = savedName;
+                updateWelcomeMessage(savedName);
+                document.getElementById('playerName').value = savedName;
                 document.getElementById('nameSetup').style.display = 'none';
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.style.opacity = '1';
-                    card.style.pointerEvents = 'auto';
-                });
+                enableGameModes();
             } else {
                 document.getElementById('nameSetup').style.display = 'block';
-                document.querySelectorAll('.mode-card').forEach(card => {
-                    card.style.opacity = '0.5';
-                    card.style.pointerEvents = 'none';
-                });
+                disableGameModes();
             }
+            
+            console.log('App initialized successfully');
+            
+            // Developer functions (accessible via console)
+            window.resetAchievements = function() {
+                console.log('Resetting achievements...');
+                localStorage.removeItem('achievements');
+                game.achievements = [];
+                game.save();
+                game.updateProgressDisplay();
+                console.log('Achievements reset successfully');
+            };
+            
+            window.debugAchievements = function() {
+                console.log('Achievement Debug Info:', {
+                    stored: game.achievements,
+                    count: game.achievements.length,
+                    unique: [...new Set(game.achievements)].length,
+                    totalPossible: Object.keys(game.getAllAchievements()).length,
+                    allPossible: Object.keys(game.getAllAchievements())
+                });
+            };
         }
+        
+        window.addEventListener('load', initializeApp);
 
-        // Navigation functions
-        function goHome() {
-            showScreen('homeScreen');
-        }
+        // Add some fun keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && e.target.tagName !== 'BUTTON') {
+                e.preventDefault();
+                if (document.getElementById('nextBtn').style.display !== 'none') {
+                    nextQuestion();
+                }
+            }
+            
+            // Home shortcut - Escape key
+            if (e.key === 'Escape') {
+                goHome();
+            }
+        });
 
-        function startVocabMode() {
-            const playerName = localStorage.getItem('playerName');
-            if (!playerName) {
-                alert('Please enter your name first!');
+        // Prevent iOS Safari bounce effect and zoom
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // Prevent double-tap zoom on iOS (but not on buttons)
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            // Don't interfere with button touches
+            if (e.target.classList.contains('option-btn') || e.target.classList.contains('submit-btn')) {
                 return;
             }
-            showScreen('vocabScreen');
-            initVocabGame();
-        }
-
-        // Vocabulary game functions
-        function initVocabGame() {
-            vocabGame.selectedTerm = null;
-            vocabGame.selectedDef = null;
-            vocabGame.matches = [];
-            vocabGame.score = 0;
             
-            const shuffledTerms = [...vocabData].sort(() => Math.random() - 0.5);
-            const shuffledDefs = [...vocabData].sort(() => Math.random() - 0.5);
-            
-            const termsContainer = document.getElementById('vocabTerms');
-            const defsContainer = document.getElementById('vocabDefs');
-            
-            termsContainer.innerHTML = '';
-            defsContainer.innerHTML = '';
-            
-            shuffledTerms.forEach(item => {
-                const termDiv = document.createElement('div');
-                termDiv.className = 'vocab-item';
-                termDiv.dataset.term = item.term;
-                termDiv.textContent = item.term;
-                termDiv.onclick = () => selectVocabTerm(termDiv, item.term);
-                termsContainer.appendChild(termDiv);
-            });
-            
-            shuffledDefs.forEach(item => {
-                const defDiv = document.createElement('div');
-                defDiv.className = 'vocab-item';
-                defDiv.dataset.def = item.term;
-                defDiv.textContent = item.def;
-                defDiv.onclick = () => selectVocabDef(defDiv, item.term);
-                defsContainer.appendChild(defDiv);
-            });
-            
-            updateVocabScore();
-        }
-
-        function selectVocabTerm(element, term) {
-            document.querySelectorAll('#vocabTerms .vocab-item').forEach(el => {
-                el.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            vocabGame.selectedTerm = term;
-            checkVocabMatch();
-        }
-
-        function selectVocabDef(element, termForDef) {
-            document.querySelectorAll('#vocabDefs .vocab-item').forEach(el => {
-                el.classList.remove('selected');
-            });
-            element.classList.add('selected');
-            vocabGame.selectedDef = termForDef;
-            checkVocabMatch();
-        }
-
-        function checkVocabMatch() {
-            if (vocabGame.selectedTerm && vocabGame.selectedDef) {
-                if (vocabGame.selectedTerm === vocabGame.selectedDef) {
-                    // Correct match!
-                    vocabGame.score++;
-                    vocabGame.matches.push(vocabGame.selectedTerm);
-                    
-                    document.querySelector(`#vocabTerms .vocab-item[data-term="${vocabGame.selectedTerm}"]`).classList.add('matched');
-                    document.querySelector(`#vocabDefs .vocab-item[data-def="${vocabGame.selectedDef}"]`).classList.add('matched');
-                    
-                    updateVocabScore();
-                    
-                    if (vocabGame.matches.length === vocabGame.total) {
-                        setTimeout(() => {
-                            showVocabResults();
-                        }, 500);
-                    }
-                } else {
-                    // Wrong match - flash and reset
-                    setTimeout(() => {
-                        document.querySelectorAll('.vocab-item').forEach(el => {
-                            el.classList.remove('selected');
-                        });
-                    }, 500);
-                }
-                
-                vocabGame.selectedTerm = null;
-                vocabGame.selectedDef = null;
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
             }
-        }
-
-        function updateVocabScore() {
-            document.getElementById('vocabScore').textContent = `${vocabGame.score}/${vocabGame.total}`;
-        }
-
-        function showVocabResults() {
-            const percentage = Math.round((vocabGame.score / vocabGame.total) * 100);
-            let message = '';
-            
-            if (percentage === 100) {
-                message = '🎉 Perfect Matching! You know all the landforms!';
-            } else if (percentage >= 80) {
-                message = '🌟 Great matching skills!';
-            } else {
-                message = '💪 Keep practicing!';
-            }
-            
-            document.getElementById('vocabResults').innerHTML = `
-                <div style="background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), rgba(34, 197, 94, 0.1)); padding: 2rem; border-radius: 16px; margin: 2rem 0;">
-                    <h3>${message}</h3>
-                    <p>You matched ${vocabGame.score} out of ${vocabGame.total} landforms correctly!</p>
-                    <div style="margin-top: 1rem;">
-                        <button class="btn btn-primary" onclick="initVocabGame()">Play Again</button>
-                        <button class="btn btn-primary" onclick="goHome()" style="margin-left: 0.5rem;">Home</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Theme toggle
-        function toggleTheme() {
-            const themeIcon = document.querySelector('.theme-toggle');
-            const currentIcon = themeIcon.textContent;
-            themeIcon.textContent = currentIcon === '☀️' ? '🌙' : '☀️';
-        }
-
-        // Initialize app
-        function initializeApp() {
-            console.log('🚀 App initializing...');
-            checkPlayerName();
-            console.log('✅ App initialized');
-        }
-
-        // Start the app
-        window.addEventListener('load', initializeApp);
+            lastTouchEnd = now;
+        }, false);
     </script>
 </body>
 </html>
