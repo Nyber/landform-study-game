@@ -324,7 +324,7 @@
         .user-level {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(5, 150, 105, 0.2));
             padding: 0.75rem 1.25rem;
             border-radius: 25px;
@@ -334,6 +334,47 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
+        }
+        
+        .user-avatar {
+            font-size: 2.5rem;
+            animation: avatarFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        #playerNameDisplay {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .level-xp-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        #levelText {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes avatarEvolve {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.5) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
         }
 
         .xp-bar {
@@ -347,8 +388,8 @@
         .xp-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--warning-color), #f59e0b);
-            width: 65%;
-            transition: var(--transition);
+            width: 0%;
+            transition: width 0.5s ease;
         }
 
         /* Typography */
@@ -1906,6 +1947,55 @@
         }
 
         /* Theme variations */
+        
+        /* Vocabulary game styles */
+        .vocab-item {
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+        }
+        
+        [data-theme="dark"] .vocab-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 2px solid rgba(100, 116, 139, 0.3);
+        }
+        
+        .vocab-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .vocab-item.selected {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(5, 150, 105, 0.3));
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .vocab-item.matched {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3));
+            border-color: var(--success-color);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .vocab-item.wrong {
+            background: linear-gradient(135deg, rgba(248, 113, 113, 0.3), rgba(239, 68, 68, 0.3));
+            border-color: var(--error-color);
+            animation: shake 0.3s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
 </head>
 <body>
@@ -1935,14 +2025,21 @@
                 </div>
                 <div class="nav-controls">
                     <div class="user-level" id="userLevel">
-                        <span>Level 1</span>
-                        <div class="xp-bar">
-                            <div class="xp-fill" id="xpFill"></div>
+                        <div class="user-avatar" id="userAvatar">🥚</div>
+                        <div class="user-info">
+                            <span id="playerNameDisplay">Explorer</span>
+                            <div class="level-xp-row">
+                                <span id="levelText">Level 1</span>
+                                <div class="xp-bar">
+                                    <div class="xp-fill" id="xpFill"></div>
+                                </div>
+                                <span id="xpText">0/100 XP</span>
+                            </div>
                         </div>
-                        <span id="xpText">65/100 XP</span>
                     </div>
                 </div>
             </div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.4.0-debug</div>
         </nav>
 
         <!-- Home Screen -->
@@ -1968,13 +2065,13 @@
                     </div>
                     
                     <!-- Name Input -->
-                    <div id="nameSetup" class="name-setup" style="display: none;">
+                    <div id="nameSetup" class="name-setup" style="display: block;">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">🚀</div>
                         <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">Ready for Adventure?</h3>
                         <p style="margin-bottom: 1.5rem; color: var(--text-primary);">First, tell us your name so we can track your amazing progress!</p>
                         <div class="name-input-container">
                             <input type="text" id="playerName" class="name-input" placeholder="Your name here" maxlength="20">
-                            <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Let's Go!</button>
+                            <button class="btn btn-primary" onclick="alert('Lets Go clicked! Clicking works'); saveName();" style="margin-left: 1rem;">Let's Go!</button>
                         </div>
                         <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Your name helps us save your scores and track your learning journey 🏆</p>
                     </div>
@@ -2002,7 +2099,7 @@
                         <div class="mode-badge learn">Learn!</div>
                     </div>
 
-                    <div class="mode-card vocab-card" onclick="checkNameAndStart('startVocabMode')">
+                    <div class="mode-card vocab-card" onclick="alert('Vocabulary Match clicked! This means clicking works.')">
                         <div class="mode-icon vocab-icon">📝</div>
                         <h3 class="mode-title">Vocabulary Match</h3>
                         <p class="mode-description">🎯 Match landforms with their descriptions!</p>
@@ -2054,6 +2151,70 @@
             </div>
         </div>
 
+        <!-- Vocabulary Match Screen -->
+        <div class="screen" id="vocabScreen">
+            <div class="glass-card">
+                <h2 class="title">📝 Vocabulary Match</h2>
+                <p class="subtitle">Match each landform with its description!</p>
+                
+                <div style="text-align: center; margin: 1rem 0;">
+                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">Score: <span id="vocabScore">0/9</span></span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                    <div>
+                        <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 1rem;">Landforms</h3>
+                        <div id="vocabTerms" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                    </div>
+                    <div>
+                        <h3 style="text-align: center; color: var(--secondary-color); margin-bottom: 1rem;">Descriptions</h3>
+                        <div id="vocabDefs" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                    </div>
+                </div>
+                
+                <div id="vocabResults"></div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="goHome()">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Study/Explore Screen -->
+        <div class="screen" id="studyScreen">
+            <div class="glass-card">
+                <h2 class="title" id="studyTitle">Mountain</h2>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <img id="studyImage" src="" alt="Landform" style="width: 100%; max-width: 600px; height: 400px; object-fit: cover; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                </div>
+                
+                <p id="studyDescription" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-primary); margin: 1.5rem 0;"></p>
+                
+                <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(5, 150, 105, 0.1)); padding: 1.5rem; border-radius: 16px; margin: 2rem 0;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">🌟 Amazing Facts:</h3>
+                    <ul id="studyFacts" style="list-style: none; padding: 0;">
+                    </ul>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-secondary" id="prevStudyBtn" onclick="prevStudyCard()">
+                        <span>← Previous</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="goHome()">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="btn btn-secondary" id="nextStudyBtn" onclick="nextStudyCard()">
+                        <span>Next →</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Difficulty Selection -->
         <div class="screen" id="difficultyScreen">
             <div class="glass-card">
@@ -2332,7 +2493,7 @@
                 this.totalAnswered = 0;
                 this.correctAnswers = 0;
                 this.currentStudyIndex = 0;
-                this.xp = parseInt(localStorage.getItem('xp') || '65');
+                this.xp = parseInt(localStorage.getItem('xp') || '0');
                 this.level = Math.floor(this.xp / 100) + 1;
                 this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
                 this.achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
@@ -2363,7 +2524,48 @@
                 const xpNeeded = 100;
                 document.getElementById('xpFill').style.width = `${(xpInLevel / xpNeeded) * 100}%`;
                 document.getElementById('xpText').textContent = `${xpInLevel}/${xpNeeded} XP`;
-                document.querySelector('.user-level span').textContent = `Level ${this.level}`;
+                const levelText = document.getElementById('levelText');
+                if (levelText) {
+                    levelText.textContent = `Level ${this.level}`;
+                }
+                
+                // Update player name display
+                const playerName = localStorage.getItem('playerName');
+                const nameDisplay = document.getElementById('playerNameDisplay');
+                if (playerName && nameDisplay) {
+                    nameDisplay.textContent = playerName;
+                }
+                
+                // Update avatar based on level
+                this.updateAvatar();
+            }
+            
+            updateAvatar() {
+                const avatarProgression = [
+                    '🥚', // Level 1 - Egg
+                    '🐣', // Level 2 - Hatching
+                    '🐥', // Level 3 - Baby chick
+                    '🐤', // Level 4 - Chick
+                    '🐦', // Level 5 - Bird
+                    '🦅', // Level 6 - Eagle
+                    '🦖', // Level 7 - T-Rex
+                    '🐲', // Level 8 - Dragon face
+                    '🐉', // Level 9+ - Full dragon
+                ];
+                
+                const avatarIndex = Math.min(this.level - 1, avatarProgression.length - 1);
+                const avatar = avatarProgression[avatarIndex];
+                const avatarElement = document.getElementById('userAvatar');
+                if (avatarElement) {
+                    const currentAvatar = avatarElement.textContent;
+                    if (currentAvatar !== avatar) {
+                        avatarElement.textContent = avatar;
+                        avatarElement.style.animation = 'avatarEvolve 1s ease';
+                        setTimeout(() => {
+                            avatarElement.style.animation = 'avatarFloat 3s ease-in-out infinite';
+                        }, 1000);
+                    }
+                }
             }
 
             updateProgressDisplay() {
@@ -4257,6 +4459,442 @@
             };
         }
         
+        // Missing game mode functions
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                document.getElementById('playerName').focus();
+                document.getElementById('nameSetup').style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    document.getElementById('nameSetup').style.animation = '';
+                }, 500);
+                game.playSound('incorrect');
+                return;
+            }
+            
+            // Call the appropriate function
+            if (functionName === 'showDifficultySelection') {
+                showScreen('difficultyScreen');
+            } else if (functionName === 'startTimeChallenge') {
+                startTimeChallenge();
+            } else if (functionName === 'startStudyMode') {
+                startStudyMode();
+            } else if (functionName === 'startVocabMode') {
+                startVocabMode();
+            }
+        }
+        
+        function showDifficultySelection() {
+            showScreen('difficultyScreen');
+        }
+        
+        function startTimeChallenge() {
+            // For now, just start a medium difficulty quiz with time pressure
+            game.gameMode = 'challenge';
+            startQuiz('medium');
+        }
+        
+        function startQuiz(difficulty) {
+            game.difficulty = difficulty;
+            game.gameMode = game.gameMode || 'quiz';
+            game.currentQuestion = 0;
+            game.score = 0;
+            game.streak = 0;
+            game.totalAnswered = 0;
+            game.correctAnswers = 0;
+            
+            // Filter questions by difficulty
+            const availableQuestions = questionData.filter(q => q.difficulty === difficulty);
+            game.questions = availableQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
+            game.totalQuestions = game.questions.length;
+            
+            showScreen('quizScreen');
+            loadQuestion();
+        }
+        
+        function startStudyMode() {
+            // Show explore/study screen
+            showScreen('studyScreen');
+            loadStudyCard();
+        }
+        
+        function startVocabMode() {
+            showScreen('vocabScreen');
+            initVocabGame();
+        }
+        
+        // Vocabulary game implementation - REMOVED DUPLICATE
+        
+        function initVocabGame() {
+            vocabGame.selectedTerm = null;
+            vocabGame.selectedDef = null;
+            vocabGame.matches = [];
+            vocabGame.score = 0;
+            
+            const vocabData = [
+                { term: 'Mountain', def: 'Very tall landform that reaches high into the sky' },
+                { term: 'Valley', def: 'Low area of land between hills or mountains' },
+                { term: 'Canyon', def: 'Deep valley with steep rocky walls' },
+                { term: 'Plain', def: 'Large flat area of land perfect for farming' },
+                { term: 'Island', def: 'Land completely surrounded by water' },
+                { term: 'Peninsula', def: 'Land surrounded by water on three sides' },
+                { term: 'Volcano', def: 'Mountain that can erupt with hot lava' },
+                { term: 'Mesa', def: 'Flat-topped hill with steep sides' },
+                { term: 'Delta', def: 'Triangle-shaped land where river meets ocean' }
+            ];
+            
+            // Shuffle terms and definitions separately
+            const shuffledTerms = [...vocabData].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...vocabData].sort(() => Math.random() - 0.5);
+            
+            const termsContainer = document.getElementById('vocabTerms');
+            const defsContainer = document.getElementById('vocabDefs');
+            
+            termsContainer.innerHTML = '';
+            defsContainer.innerHTML = '';
+            
+            shuffledTerms.forEach((item, index) => {
+                const termDiv = document.createElement('div');
+                termDiv.className = 'vocab-item';
+                termDiv.dataset.term = item.term;
+                termDiv.textContent = item.term;
+                termDiv.onclick = () => selectVocabTerm(termDiv, item.term);
+                termsContainer.appendChild(termDiv);
+            });
+            
+            shuffledDefs.forEach((item, index) => {
+                const defDiv = document.createElement('div');
+                defDiv.className = 'vocab-item';
+                defDiv.dataset.def = item.term; // Store which term this def belongs to
+                defDiv.textContent = item.def;
+                defDiv.onclick = () => selectVocabDef(defDiv, item.term);
+                defsContainer.appendChild(defDiv);
+            });
+            
+            updateVocabScore();
+        }
+        
+        function selectVocabTerm(element, term) {
+            // Remove previous selection
+            document.querySelectorAll('#vocabTerms .vocab-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            vocabGame.selectedTerm = term;
+            
+            checkVocabMatch();
+        }
+        
+        function selectVocabDef(element, termForDef) {
+            // Remove previous selection
+            document.querySelectorAll('#vocabDefs .vocab-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            vocabGame.selectedDef = termForDef;
+            
+            checkVocabMatch();
+        }
+        
+        function checkVocabMatch() {
+            if (vocabGame.selectedTerm && vocabGame.selectedDef) {
+                if (vocabGame.selectedTerm === vocabGame.selectedDef) {
+                    // Correct match!
+                    game.playSound('correct');
+                    vocabGame.score++;
+                    vocabGame.matches.push(vocabGame.selectedTerm);
+                    
+                    // Mark both as matched
+                    document.querySelector(`#vocabTerms .vocab-item[data-term="${vocabGame.selectedTerm}"]`).classList.add('matched');
+                    document.querySelector(`#vocabDefs .vocab-item[data-def="${vocabGame.selectedDef}"]`).classList.add('matched');
+                    
+                    // Add XP
+                    game.addXP(5);
+                    
+                    updateVocabScore();
+                    
+                    // Check if game is complete
+                    if (vocabGame.matches.length === vocabGame.total) {
+                        setTimeout(() => {
+                            showVocabResults();
+                        }, 500);
+                    }
+                } else {
+                    // Wrong match
+                    game.playSound('incorrect');
+                    
+                    // Flash red and reset
+                    document.querySelector(`#vocabTerms .vocab-item.selected`).classList.add('wrong');
+                    document.querySelector(`#vocabDefs .vocab-item.selected`).classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        document.querySelectorAll('.vocab-item').forEach(el => {
+                            el.classList.remove('selected', 'wrong');
+                        });
+                    }, 500);
+                }
+                
+                // Reset selections
+                vocabGame.selectedTerm = null;
+                vocabGame.selectedDef = null;
+            }
+        }
+        
+        function updateVocabScore() {
+            document.getElementById('vocabScore').textContent = `${vocabGame.score}/${vocabGame.total}`;
+        }
+        
+        function showVocabResults() {
+            const percentage = Math.round((vocabGame.score / vocabGame.total) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = '🎉 Perfect Matching! You know all the landforms!';
+                game.showAchievement('vocab_master', 'Vocabulary Master!', 'Perfect score in vocabulary match!');
+                game.addXP(30);
+            } else if (percentage >= 80) {
+                message = '🌟 Great matching skills!';
+                game.addXP(20);
+            } else {
+                message = '💪 Keep practicing!';
+                game.addXP(10);
+            }
+            
+            document.getElementById('vocabResults').innerHTML = `
+                <div class="feedback-card success">
+                    <h3>${message}</h3>
+                    <p>You matched ${vocabGame.score} out of ${vocabGame.total} landforms correctly!</p>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="initVocabGame()">Play Again</button>
+                        <button class="btn btn-secondary" onclick="goHome()" style="margin-left: 0.5rem;">Home</button>
+                    </div>
+                </div>
+            `;
+            
+            game.playSound('complete');
+        }
+        
+        // Study mode functions
+        function loadStudyCard() {
+            const landform = landformData[game.currentStudyIndex];
+            document.getElementById('studyTitle').textContent = landform.name;
+            document.getElementById('studyImage').src = landform.imageUrl;
+            document.getElementById('studyImage').onerror = function() {
+                this.src = landform.fallbackUrl || landform.fallbackUrl2;
+            };
+            document.getElementById('studyDescription').textContent = landform.description;
+            
+            const factsHtml = landform.facts.map(fact => `<li>${fact}</li>`).join('');
+            document.getElementById('studyFacts').innerHTML = factsHtml;
+            
+            // Update navigation buttons
+            document.getElementById('prevStudyBtn').disabled = game.currentStudyIndex === 0;
+            document.getElementById('nextStudyBtn').disabled = game.currentStudyIndex === landformData.length - 1;
+        }
+        
+        function nextStudyCard() {
+            if (game.currentStudyIndex < landformData.length - 1) {
+                game.currentStudyIndex++;
+                loadStudyCard();
+                game.playSound('button');
+            }
+        }
+        
+        function prevStudyCard() {
+            if (game.currentStudyIndex > 0) {
+                game.currentStudyIndex--;
+                loadStudyCard();
+                game.playSound('button');
+            }
+        }
+        
+        // Screen navigation function
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show the requested screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+        }
+        
+        // Helper functions
+        function goHome() {
+            showScreen('homeScreen');
+            game.playSound('button');
+        }
+        
+        function saveName() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            
+            if (name.length > 0) {
+                localStorage.setItem('playerName', name);
+                updateWelcomeMessage(name);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+                game.playSound('correct');
+                
+                // Update player name in XP bar
+                game.updateXPDisplay();
+            } else {
+                nameInput.focus();
+                game.playSound('incorrect');
+            }
+        }
+        
+        function updateWelcomeMessage(name) {
+            document.getElementById('welcomeTitle').textContent = `Welcome, ${name}!`;
+        }
+        
+        function enableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function disableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            });
+        }
+        
+        function showScoreboard() {
+            showScreen('scoreboardScreen');
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                document.getElementById('scoreboardSubtitle').textContent = `${playerName}'s learning progress and achievements!`;
+            }
+            updateScoreboardDisplay();
+        }
+        
+        function updateScoreboardDisplay() {
+            // This would update scoreboard stats
+            // Implementation depends on what data you're tracking
+        }
+        
+        // Fix missing showScreen function for vocabulary match
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(screenId);
+            if (target) target.classList.add('active');
+        }
+        
+        // Fix missing saveName function for name input
+        function saveName() {
+            console.log('💾 saveName called');
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            console.log('Name entered:', name);
+            
+            if (name.length > 0) {
+                localStorage.setItem('playerName', name);
+                
+                // Update welcome message safely
+                const title = document.getElementById('welcomeTitle');
+                if (title) title.textContent = `Welcome, ${name}!`;
+                
+                // Hide name setup
+                document.getElementById('nameSetup').style.display = 'none';
+                
+                // Enable game modes safely
+                document.querySelectorAll('.mode-card').forEach(card => {
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
+                });
+                
+                console.log('✅ Name saved and game modes enabled');
+            } else {
+                nameInput.focus();
+                console.log('❌ Name was empty');
+            }
+        }
+        
+        // Fix missing helper functions
+        function updateWelcomeMessage(name) {
+            const title = document.getElementById('welcomeTitle');
+            if (title) title.textContent = `Welcome, ${name}!`;
+        }
+        
+        function checkPlayerName() {
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                updateWelcomeMessage(playerName);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+            } else {
+                document.getElementById('nameSetup').style.display = 'block';
+                disableGameModes();
+            }
+        }
+        
+        function enableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function disableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            });
+        }
+        
+        // Initialize the app
+        function initializeApp() {
+            console.log('🚀 App initializing...');
+            
+            // Force show name setup for debugging
+            const nameSetup = document.getElementById('nameSetup');
+            if (nameSetup) {
+                console.log('✅ Found nameSetup element');
+                nameSetup.style.display = 'block';
+            } else {
+                console.log('❌ nameSetup element not found');
+            }
+            
+            // Try to call checkPlayerName if it exists
+            try {
+                checkPlayerName();
+                console.log('✅ checkPlayerName called successfully');
+            } catch (e) {
+                console.log('❌ checkPlayerName failed:', e);
+            }
+            
+            console.log('🎯 App initialized');
+        }
+        
+        // Add missing checkNameAndStart function
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                document.getElementById('playerName').focus();
+                alert('Please enter your name first!');
+                return;
+            }
+            
+            // Call the appropriate function
+            if (functionName === 'showDifficultySelection') {
+                alert('Quiz mode not implemented yet');
+            } else if (functionName === 'startTimeChallenge') {
+                alert('Speed challenge not implemented yet');
+            } else if (functionName === 'startStudyMode') {
+                alert('Study mode not implemented yet');
+            } else if (functionName === 'startVocabMode') {
+                alert('Vocabulary match not implemented yet');
+            }
+        }
+        
         window.addEventListener('load', initializeApp);
 
         // Add some fun keyboard shortcuts
@@ -4295,6 +4933,19 @@
             }
             lastTouchEnd = now;
         }, false);
+    </script>
+    <!-- Force initialization script -->
+    <script>
+        // Force show name input and disable game modes
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Force init running...');
+            document.getElementById('nameSetup').style.display = 'block';
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            });
+            console.log('🎯 Force init complete');
+        });
     </script>
 </body>
 </html>
