@@ -67,9 +67,27 @@
         [data-theme="dark"] .card-title,
         [data-theme="dark"] .stat-label,
         [data-theme="dark"] .progress-label,
+        [data-theme="dark"] .fun-fact,
+        [data-theme="dark"] .fun-fact h4,
+        [data-theme="dark"] .fun-fact p,
         [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, [data-theme="dark"] h4,
         [data-theme="dark"] p {
             color: var(--text-primary) !important;
+        }
+
+        /* Fun fact section styling */
+        .fun-fact {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        [data-theme="dark"] .fun-fact {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.4)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
         }
 
         body {
@@ -2295,7 +2313,7 @@
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1464822759356-8d6106e78f86?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/640px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
@@ -2308,7 +2326,7 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'https://images.unsplash.com/photo-1570993492881-25240ce854f4?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1618050411648-d8dd3fa5d2b2?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/MtStHelens_SouthFace_HR.jpg/640px-MtStHelens_SouthFace_HR.jpg',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
@@ -2321,7 +2339,7 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point..JPG/640px-Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point..JPG',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
@@ -2334,7 +2352,7 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1544968503-7ad532b1e42b?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Grand_Canyon_Desert_View_Watchtower_2013.jpg/640px-Grand_Canyon_Desert_View_Watchtower_2013.jpg',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
@@ -2347,7 +2365,7 @@
             {
                 name: 'Plain',
                 emoji: '🌾',
-                imageUrl: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1524486361537-8ad15938e1a3?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Great_Plains_Farming.jpg/640px-Great_Plains_Farming.jpg',
                 description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
                 facts: [
@@ -2360,7 +2378,7 @@
             {
                 name: 'Plateau',
                 emoji: '🏔️',
-                imageUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg',
                 description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
                 facts: [
@@ -2373,7 +2391,7 @@
             {
                 name: 'Hill',
                 emoji: '⛰️',
-                imageUrl: 'https://images.unsplash.com/photo-1464822759356-8d6106e78f86?w=640&h=480&fit=crop&auto=format',
+                imageUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Tuscany_Landscape.jpg/640px-Tuscany_Landscape.jpg',
                 description: 'Hills are rounded elevations smaller than mountains, typically under 2,000 feet tall. They provide gentle slopes perfect for recreation and settlements.',
                 facts: [
@@ -2546,7 +2564,7 @@
                     <p class="subtitle">${landform.description}</p>
                     <div class="fun-fact">
                         <h4 style="margin-bottom: 1rem; color: var(--primary-color);">🌟 Amazing Facts!</h4>
-                        ${landform.facts.map(fact => `<p style="margin: 0.75rem 0;">• ${fact}</p>`).join('')}
+                        ${landform.facts.map(fact => `<p style="margin: 0.75rem 0; color: var(--text-primary);">• ${fact}</p>`).join('')}
                     </div>
                 </div>
             `;
