@@ -1947,6 +1947,55 @@
         }
 
         /* Theme variations */
+        
+        /* Vocabulary game styles */
+        .vocab-item {
+            padding: 1rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: center;
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+        }
+        
+        [data-theme="dark"] .vocab-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 2px solid rgba(100, 116, 139, 0.3);
+        }
+        
+        .vocab-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .vocab-item.selected {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(5, 150, 105, 0.3));
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+        
+        .vocab-item.matched {
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), rgba(34, 197, 94, 0.3));
+            border-color: var(--success-color);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .vocab-item.wrong {
+            background: linear-gradient(135deg, rgba(248, 113, 113, 0.3), rgba(239, 68, 68, 0.3));
+            border-color: var(--error-color);
+            animation: shake 0.3s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
     </style>
 </head>
 <body>
@@ -2101,6 +2150,70 @@
             </div>
         </div>
 
+        <!-- Vocabulary Match Screen -->
+        <div class="screen" id="vocabScreen">
+            <div class="glass-card">
+                <h2 class="title">📝 Vocabulary Match</h2>
+                <p class="subtitle">Match each landform with its description!</p>
+                
+                <div style="text-align: center; margin: 1rem 0;">
+                    <span style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);">Score: <span id="vocabScore">0/9</span></span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                    <div>
+                        <h3 style="text-align: center; color: var(--primary-color); margin-bottom: 1rem;">Landforms</h3>
+                        <div id="vocabTerms" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                    </div>
+                    <div>
+                        <h3 style="text-align: center; color: var(--secondary-color); margin-bottom: 1rem;">Descriptions</h3>
+                        <div id="vocabDefs" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+                    </div>
+                </div>
+                
+                <div id="vocabResults"></div>
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="goHome()">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Study/Explore Screen -->
+        <div class="screen" id="studyScreen">
+            <div class="glass-card">
+                <h2 class="title" id="studyTitle">Mountain</h2>
+                
+                <div style="text-align: center; margin: 2rem 0;">
+                    <img id="studyImage" src="" alt="Landform" style="width: 100%; max-width: 600px; height: 400px; object-fit: cover; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.1);">
+                </div>
+                
+                <p id="studyDescription" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-primary); margin: 1.5rem 0;"></p>
+                
+                <div style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(5, 150, 105, 0.1)); padding: 1.5rem; border-radius: 16px; margin: 2rem 0;">
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem;">🌟 Amazing Facts:</h3>
+                    <ul id="studyFacts" style="list-style: none; padding: 0;">
+                    </ul>
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-secondary" id="prevStudyBtn" onclick="prevStudyCard()">
+                        <span>← Previous</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="goHome()">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="btn btn-secondary" id="nextStudyBtn" onclick="nextStudyCard()">
+                        <span>Next →</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <!-- Difficulty Selection -->
         <div class="screen" id="difficultyScreen">
             <div class="glass-card">
@@ -4343,6 +4456,303 @@
                     allPossible: Object.keys(game.getAllAchievements())
                 });
             };
+        }
+        
+        // Missing game mode functions
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                document.getElementById('playerName').focus();
+                document.getElementById('nameSetup').style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    document.getElementById('nameSetup').style.animation = '';
+                }, 500);
+                game.playSound('incorrect');
+                return;
+            }
+            
+            // Call the appropriate function
+            if (functionName === 'showDifficultySelection') {
+                showScreen('difficultyScreen');
+            } else if (functionName === 'startTimeChallenge') {
+                startTimeChallenge();
+            } else if (functionName === 'startStudyMode') {
+                startStudyMode();
+            } else if (functionName === 'startVocabMode') {
+                startVocabMode();
+            }
+        }
+        
+        function showDifficultySelection() {
+            showScreen('difficultyScreen');
+        }
+        
+        function startTimeChallenge() {
+            // For now, just start a medium difficulty quiz with time pressure
+            game.gameMode = 'challenge';
+            startQuiz('medium');
+        }
+        
+        function startStudyMode() {
+            // Show explore/study screen
+            showScreen('studyScreen');
+            loadStudyCard();
+        }
+        
+        function startVocabMode() {
+            showScreen('vocabScreen');
+            initVocabGame();
+        }
+        
+        // Vocabulary game implementation
+        let vocabGame = {
+            selectedTerm: null,
+            selectedDef: null,
+            matches: [],
+            score: 0,
+            total: 9
+        };
+        
+        function initVocabGame() {
+            vocabGame.selectedTerm = null;
+            vocabGame.selectedDef = null;
+            vocabGame.matches = [];
+            vocabGame.score = 0;
+            
+            const vocabData = [
+                { term: 'Mountain', def: 'Very tall landform that reaches high into the sky' },
+                { term: 'Valley', def: 'Low area of land between hills or mountains' },
+                { term: 'Canyon', def: 'Deep valley with steep rocky walls' },
+                { term: 'Plain', def: 'Large flat area of land perfect for farming' },
+                { term: 'Island', def: 'Land completely surrounded by water' },
+                { term: 'Peninsula', def: 'Land surrounded by water on three sides' },
+                { term: 'Volcano', def: 'Mountain that can erupt with hot lava' },
+                { term: 'Mesa', def: 'Flat-topped hill with steep sides' },
+                { term: 'Delta', def: 'Triangle-shaped land where river meets ocean' }
+            ];
+            
+            // Shuffle terms and definitions separately
+            const shuffledTerms = [...vocabData].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...vocabData].sort(() => Math.random() - 0.5);
+            
+            const termsContainer = document.getElementById('vocabTerms');
+            const defsContainer = document.getElementById('vocabDefs');
+            
+            termsContainer.innerHTML = '';
+            defsContainer.innerHTML = '';
+            
+            shuffledTerms.forEach((item, index) => {
+                const termDiv = document.createElement('div');
+                termDiv.className = 'vocab-item';
+                termDiv.dataset.term = item.term;
+                termDiv.textContent = item.term;
+                termDiv.onclick = () => selectVocabTerm(termDiv, item.term);
+                termsContainer.appendChild(termDiv);
+            });
+            
+            shuffledDefs.forEach((item, index) => {
+                const defDiv = document.createElement('div');
+                defDiv.className = 'vocab-item';
+                defDiv.dataset.def = item.term; // Store which term this def belongs to
+                defDiv.textContent = item.def;
+                defDiv.onclick = () => selectVocabDef(defDiv, item.term);
+                defsContainer.appendChild(defDiv);
+            });
+            
+            updateVocabScore();
+        }
+        
+        function selectVocabTerm(element, term) {
+            // Remove previous selection
+            document.querySelectorAll('#vocabTerms .vocab-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            vocabGame.selectedTerm = term;
+            
+            checkVocabMatch();
+        }
+        
+        function selectVocabDef(element, termForDef) {
+            // Remove previous selection
+            document.querySelectorAll('#vocabDefs .vocab-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            vocabGame.selectedDef = termForDef;
+            
+            checkVocabMatch();
+        }
+        
+        function checkVocabMatch() {
+            if (vocabGame.selectedTerm && vocabGame.selectedDef) {
+                if (vocabGame.selectedTerm === vocabGame.selectedDef) {
+                    // Correct match!
+                    game.playSound('correct');
+                    vocabGame.score++;
+                    vocabGame.matches.push(vocabGame.selectedTerm);
+                    
+                    // Mark both as matched
+                    document.querySelector(`#vocabTerms .vocab-item[data-term="${vocabGame.selectedTerm}"]`).classList.add('matched');
+                    document.querySelector(`#vocabDefs .vocab-item[data-def="${vocabGame.selectedDef}"]`).classList.add('matched');
+                    
+                    // Add XP
+                    game.addXP(5);
+                    
+                    updateVocabScore();
+                    
+                    // Check if game is complete
+                    if (vocabGame.matches.length === vocabGame.total) {
+                        setTimeout(() => {
+                            showVocabResults();
+                        }, 500);
+                    }
+                } else {
+                    // Wrong match
+                    game.playSound('incorrect');
+                    
+                    // Flash red and reset
+                    document.querySelector(`#vocabTerms .vocab-item.selected`).classList.add('wrong');
+                    document.querySelector(`#vocabDefs .vocab-item.selected`).classList.add('wrong');
+                    
+                    setTimeout(() => {
+                        document.querySelectorAll('.vocab-item').forEach(el => {
+                            el.classList.remove('selected', 'wrong');
+                        });
+                    }, 500);
+                }
+                
+                // Reset selections
+                vocabGame.selectedTerm = null;
+                vocabGame.selectedDef = null;
+            }
+        }
+        
+        function updateVocabScore() {
+            document.getElementById('vocabScore').textContent = `${vocabGame.score}/${vocabGame.total}`;
+        }
+        
+        function showVocabResults() {
+            const percentage = Math.round((vocabGame.score / vocabGame.total) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = '🎉 Perfect Matching! You know all the landforms!';
+                game.showAchievement('vocab_master', 'Vocabulary Master!', 'Perfect score in vocabulary match!');
+                game.addXP(30);
+            } else if (percentage >= 80) {
+                message = '🌟 Great matching skills!';
+                game.addXP(20);
+            } else {
+                message = '💪 Keep practicing!';
+                game.addXP(10);
+            }
+            
+            document.getElementById('vocabResults').innerHTML = `
+                <div class="feedback-card success">
+                    <h3>${message}</h3>
+                    <p>You matched ${vocabGame.score} out of ${vocabGame.total} landforms correctly!</p>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn btn-primary" onclick="initVocabGame()">Play Again</button>
+                        <button class="btn btn-secondary" onclick="goHome()" style="margin-left: 0.5rem;">Home</button>
+                    </div>
+                </div>
+            `;
+            
+            game.playSound('complete');
+        }
+        
+        // Study mode functions
+        function loadStudyCard() {
+            const landform = landformData[game.currentStudyIndex];
+            document.getElementById('studyTitle').textContent = landform.name;
+            document.getElementById('studyImage').src = landform.imageUrl;
+            document.getElementById('studyImage').onerror = function() {
+                this.src = landform.fallbackUrl || landform.fallbackUrl2;
+            };
+            document.getElementById('studyDescription').textContent = landform.description;
+            
+            const factsHtml = landform.facts.map(fact => `<li>${fact}</li>`).join('');
+            document.getElementById('studyFacts').innerHTML = factsHtml;
+            
+            // Update navigation buttons
+            document.getElementById('prevStudyBtn').disabled = game.currentStudyIndex === 0;
+            document.getElementById('nextStudyBtn').disabled = game.currentStudyIndex === landformData.length - 1;
+        }
+        
+        function nextStudyCard() {
+            if (game.currentStudyIndex < landformData.length - 1) {
+                game.currentStudyIndex++;
+                loadStudyCard();
+                game.playSound('button');
+            }
+        }
+        
+        function prevStudyCard() {
+            if (game.currentStudyIndex > 0) {
+                game.currentStudyIndex--;
+                loadStudyCard();
+                game.playSound('button');
+            }
+        }
+        
+        // Helper functions
+        function goHome() {
+            showScreen('homeScreen');
+            game.playSound('button');
+        }
+        
+        function saveName() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            
+            if (name.length > 0) {
+                localStorage.setItem('playerName', name);
+                updateWelcomeMessage(name);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+                game.playSound('correct');
+                
+                // Update player name in XP bar
+                game.updateXPDisplay();
+            } else {
+                nameInput.focus();
+                game.playSound('incorrect');
+            }
+        }
+        
+        function updateWelcomeMessage(name) {
+            document.getElementById('welcomeTitle').textContent = `Welcome, ${name}!`;
+        }
+        
+        function enableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function disableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            });
+        }
+        
+        function showScoreboard() {
+            showScreen('scoreboardScreen');
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                document.getElementById('scoreboardSubtitle').textContent = `${playerName}'s learning progress and achievements!`;
+            }
+            updateScoreboardDisplay();
+        }
+        
+        function updateScoreboardDisplay() {
+            // This would update scoreboard stats
+            // Implementation depends on what data you're tracking
         }
         
         window.addEventListener('load', initializeApp);
