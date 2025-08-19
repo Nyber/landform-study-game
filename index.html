@@ -324,7 +324,7 @@
         .user-level {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 1rem;
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(5, 150, 105, 0.2));
             padding: 0.75rem 1.25rem;
             border-radius: 25px;
@@ -334,6 +334,47 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
+        }
+        
+        .user-avatar {
+            font-size: 2.5rem;
+            animation: avatarFloat 3s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        #playerNameDisplay {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-primary);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .level-xp-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        #levelText {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        @keyframes avatarFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        @keyframes avatarEvolve {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.5) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
         }
 
         .xp-bar {
@@ -347,8 +388,8 @@
         .xp-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--warning-color), #f59e0b);
-            width: 65%;
-            transition: var(--transition);
+            width: 0%;
+            transition: width 0.5s ease;
         }
 
         /* Typography */
@@ -1935,11 +1976,17 @@
                 </div>
                 <div class="nav-controls">
                     <div class="user-level" id="userLevel">
-                        <span>Level 1</span>
-                        <div class="xp-bar">
-                            <div class="xp-fill" id="xpFill"></div>
+                        <div class="user-avatar" id="userAvatar">🥚</div>
+                        <div class="user-info">
+                            <span id="playerNameDisplay">Explorer</span>
+                            <div class="level-xp-row">
+                                <span id="levelText">Level 1</span>
+                                <div class="xp-bar">
+                                    <div class="xp-fill" id="xpFill"></div>
+                                </div>
+                                <span id="xpText">0/100 XP</span>
+                            </div>
                         </div>
-                        <span id="xpText">65/100 XP</span>
                     </div>
                 </div>
             </div>
@@ -2332,7 +2379,7 @@
                 this.totalAnswered = 0;
                 this.correctAnswers = 0;
                 this.currentStudyIndex = 0;
-                this.xp = parseInt(localStorage.getItem('xp') || '65');
+                this.xp = parseInt(localStorage.getItem('xp') || '0');
                 this.level = Math.floor(this.xp / 100) + 1;
                 this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
                 this.achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
@@ -2363,7 +2410,48 @@
                 const xpNeeded = 100;
                 document.getElementById('xpFill').style.width = `${(xpInLevel / xpNeeded) * 100}%`;
                 document.getElementById('xpText').textContent = `${xpInLevel}/${xpNeeded} XP`;
-                document.querySelector('.user-level span').textContent = `Level ${this.level}`;
+                const levelText = document.getElementById('levelText');
+                if (levelText) {
+                    levelText.textContent = `Level ${this.level}`;
+                }
+                
+                // Update player name display
+                const playerName = localStorage.getItem('playerName');
+                const nameDisplay = document.getElementById('playerNameDisplay');
+                if (playerName && nameDisplay) {
+                    nameDisplay.textContent = playerName;
+                }
+                
+                // Update avatar based on level
+                this.updateAvatar();
+            }
+            
+            updateAvatar() {
+                const avatarProgression = [
+                    '🥚', // Level 1 - Egg
+                    '🐣', // Level 2 - Hatching
+                    '🐥', // Level 3 - Baby chick
+                    '🐤', // Level 4 - Chick
+                    '🐦', // Level 5 - Bird
+                    '🦅', // Level 6 - Eagle
+                    '🦖', // Level 7 - T-Rex
+                    '🐲', // Level 8 - Dragon face
+                    '🐉', // Level 9+ - Full dragon
+                ];
+                
+                const avatarIndex = Math.min(this.level - 1, avatarProgression.length - 1);
+                const avatar = avatarProgression[avatarIndex];
+                const avatarElement = document.getElementById('userAvatar');
+                if (avatarElement) {
+                    const currentAvatar = avatarElement.textContent;
+                    if (currentAvatar !== avatar) {
+                        avatarElement.textContent = avatar;
+                        avatarElement.style.animation = 'avatarEvolve 1s ease';
+                        setTimeout(() => {
+                            avatarElement.style.animation = 'avatarFloat 3s ease-in-out infinite';
+                        }, 1000);
+                    }
+                }
             }
 
             updateProgressDisplay() {
