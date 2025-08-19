@@ -10,7 +10,11 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(git rebase:*)",
-      "Bash(git filter-branch:*)"
+      "Bash(git filter-branch:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git ls-tree:*)",
+      "WebFetch(domain:images.unsplash.com)",
+      "WebFetch(domain:upload.wikimedia.org)"
     ],
     "deny": []
   }

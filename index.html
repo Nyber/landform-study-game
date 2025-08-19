@@ -726,6 +726,126 @@
             background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(34, 197, 94, 0.15));
         }
 
+        .vocab-card {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(139, 92, 246, 0.15));
+        }
+
+        /* Vocabulary Matching Game Styles */
+        .vocab-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .vocab-column h4 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .vocab-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .vocab-item {
+            background: var(--bg-secondary);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            text-align: center;
+            position: relative;
+        }
+
+        [data-theme="dark"] .vocab-item {
+            background: var(--bg-secondary) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
+        .vocab-item:hover {
+            background: rgba(var(--primary-color-rgb), 0.2);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .vocab-item.selected {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border-color: var(--secondary-color) !important;
+        }
+
+        .vocab-item.matched {
+            background: var(--secondary-color) !important;
+            color: white !important;
+            border-color: #22c55e !important;
+            cursor: not-allowed;
+        }
+
+        .vocab-item.matched::after {
+            content: '✓';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .vocab-instructions {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .vocab-instructions p {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .vocab-feedback {
+            text-align: center;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+            font-weight: bold;
+        }
+
+        .vocab-feedback.correct {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+            color: #22c55e;
+            border: 2px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .vocab-feedback.incorrect {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1));
+            color: #ef4444;
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .progress-display {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .vocab-game {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .vocab-item {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+        }
+
         .mode-badge {
             position: absolute;
             top: 15px;
@@ -1854,6 +1974,13 @@
                         <p class="mode-description">🏞️ Discover amazing facts about Earth's landforms!</p>
                         <div class="mode-badge learn">Learn!</div>
                     </div>
+
+                    <div class="mode-card vocab-card" onclick="checkNameAndStart('startVocabMode')">
+                        <div class="mode-icon vocab-icon">📝</div>
+                        <h3 class="mode-title">Vocabulary Match</h3>
+                        <p class="mode-description">🎯 Match landforms with their descriptions!</p>
+                        <div class="mode-badge practice">Practice!</div>
+                    </div>
                 </div>
 
                 <!-- Progress Section -->
@@ -2018,6 +2145,50 @@
                     </button>
                     <button class="btn btn-primary" onclick="nextLandform()">
                         <span>Next</span>
+                        <span class="btn-icon">➡️</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vocabulary Matching Screen -->
+        <div class="screen" id="vocabScreen">
+            <div class="glass-card">
+                <h2 class="title">📝 Vocabulary Match</h2>
+                <p class="subtitle">Match each landform with its correct description!</p>
+                
+                <div id="vocabContent">
+                    <div class="vocab-instructions">
+                        <p>🎯 Click a landform name, then click its matching description!</p>
+                    </div>
+                    
+                    <div class="vocab-game">
+                        <div class="vocab-column">
+                            <h4>🏔️ Landforms</h4>
+                            <div id="vocabTerms" class="vocab-items"></div>
+                        </div>
+                        
+                        <div class="vocab-column">
+                            <h4>📖 Descriptions</h4>
+                            <div id="vocabDefinitions" class="vocab-items"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="vocabFeedback" class="vocab-feedback" style="display: none;"></div>
+                    <div id="vocabProgress" class="progress-display">Matches: <span id="vocabMatches">0</span> / <span id="vocabTotal">5</span></div>
+                </div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="resetVocabGame()">
+                        <span class="btn-icon">🔄</span>
+                        <span>Reset</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="showScreen('homeScreen')">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="startNewVocabRound()" id="vocabNextBtn" style="display: none;">
+                        <span>New Round</span>
                         <span class="btn-icon">➡️</span>
                     </button>
                 </div>
@@ -2211,6 +2382,10 @@
                     'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
                     'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
                     'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
+                    'mesa_master': { name: 'Mesa Expert', desc: 'Learned about flat-topped mesas!', emoji: '🗻' },
+                    'water_features': { name: 'Water Explorer', desc: 'Discovered deltas, islands & peninsulas!', emoji: '🌊' },
+                    'landform_scholar': { name: 'Landform Scholar', desc: 'Mastered all 11 landform types!', emoji: '🎓' },
+                    'vocab_master': { name: 'Vocabulary Master', desc: 'Matched all landforms perfectly!', emoji: '📝' },
                     'dark_mode_discovery': { name: 'Night Owl', desc: 'Discovered the secret dark mode!', emoji: '🌙' }
                 };
             }
@@ -2224,9 +2399,9 @@
                     return `
                         <div class="achievement-item ${isEarned ? 'earned' : 'locked'}">
                             ${isEarned ? '<div class="achievement-earned-badge">✓</div>' : ''}
-                            <div class="achievement-icon">${data.emoji}</div>
-                            <div class="achievement-name">${data.name}</div>
-                            <div class="achievement-desc">${data.desc}</div>
+                            <div class="achievement-icon">${isEarned ? data.emoji : '???'}</div>
+                            <div class="achievement-name">${isEarned ? data.name : '???'}</div>
+                            <div class="achievement-desc">${isEarned ? data.desc : 'Keep playing to unlock this achievement!'}</div>
                         </div>
                     `;
                 }).join('');
@@ -2242,6 +2417,10 @@
                     'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
                     'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
                     'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
+                    'mesa_master': { name: 'Mesa Expert', desc: 'Learned about flat-topped mesas!', emoji: '🗻' },
+                    'water_features': { name: 'Water Explorer', desc: 'Discovered deltas, islands & peninsulas!', emoji: '🌊' },
+                    'landform_scholar': { name: 'Landform Scholar', desc: 'Mastered all 11 landform types!', emoji: '🎓' },
+                    'vocab_master': { name: 'Vocabulary Master', desc: 'Matched all landforms perfectly!', emoji: '📝' },
                     'level_up': { name: 'Level Up', desc: 'Reached a new level!', emoji: '🆙' },
                     'dark_mode_discovery': { name: 'Night Owl', desc: 'Discovered the secret dark mode!', emoji: '🌙' }
                 };
@@ -2482,12 +2661,69 @@
                 emoji: '⛰️',
                 imageUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop&auto=format',
                 fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Tuscany_Landscape.jpg/640px-Tuscany_Landscape.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rolling_hills_near_Marquette%2C_IA.jpg/640px-Rolling_hills_near_Marquette%2C_IA.jpg',
                 description: 'Hills are rounded elevations smaller than mountains, typically under 2,000 feet tall. They provide gentle slopes perfect for recreation and settlements.',
                 facts: [
                     'Hills are generally considered smaller than mountains',
                     'The Chocolate Hills in Philippines turn brown in dry season',
                     'Many ancient civilizations built on hills for defense',
                     'Rolling hills are perfect for agriculture and grazing'
+                ]
+            },
+            {
+                name: 'Mesa',
+                emoji: '🗻',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Devils_Tower_CROP.jpg/640px-Devils_Tower_CROP.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Mesa_Verde_National_Park_Cliff_Palace_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_2006_09_12.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Monument_Valley_2.jpg/640px-Monument_Valley_2.jpg',
+                description: 'Mesas are isolated, flat-topped hills with steep sides. These table-like landforms are created when harder rock layers protect softer rock below from erosion.',
+                facts: [
+                    'Mesa means "table" in Spanish because of their flat tops',
+                    'Monument Valley has many famous mesas used in Western movies',
+                    'Mesas are smaller versions of plateaus',
+                    'Mesa Verde National Park has ancient cliff dwellings built into mesa walls'
+                ]
+            },
+            {
+                name: 'Delta',
+                emoji: '🏞️',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Nile_River_Delta_at_Night.JPG/640px-Nile_River_Delta_at_Night.JPG',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mississippi_River_Delta_Landsat.jpg/640px-Mississippi_River_Delta_Landsat.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Ganges_Delta.jpg/640px-Ganges_Delta.jpg',
+                description: 'Deltas are triangular areas of land formed where rivers meet the sea. Rivers slow down and drop sediment, creating fertile land perfect for farming.',
+                facts: [
+                    'The Nile Delta has been called "the gift of the Nile" for thousands of years',
+                    'Deltas get their name from the Greek letter Δ because of their triangular shape',
+                    'The Mississippi River Delta grows by about 300 feet every year',
+                    'Many of the world\'s largest cities are built on river deltas'
+                ]
+            },
+            {
+                name: 'Peninsula',
+                emoji: '🏝️',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Florida_peninsula.jpg/640px-Florida_peninsula.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Iberian_Peninsula_location_map.svg/640px-Iberian_Peninsula_location_map.svg.png',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Cape_Cod_aerial_view.jpg/640px-Cape_Cod_aerial_view.jpg',
+                description: 'Peninsulas are pieces of land surrounded by water on three sides and connected to the mainland on one side. They extend out into oceans, lakes, or rivers.',
+                facts: [
+                    'Florida is a famous peninsula extending into the Atlantic Ocean and Gulf of Mexico',
+                    'The word peninsula comes from Latin meaning "almost an island"',
+                    'Spain and Portugal share the Iberian Peninsula',
+                    'Peninsulas often have unique wildlife because they\'re partially isolated'
+                ]
+            },
+            {
+                name: 'Island',
+                emoji: '🏝️',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Maui_Hawaii.jpg/640px-Maui_Hawaii.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Statue_of_Liberty_7.jpg/640px-Statue_of_Liberty_7.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Manhattan_from_top_of_rock.jpg/640px-Manhattan_from_top_of_rock.jpg',
+                description: 'Islands are pieces of land completely surrounded by water. They can be formed by volcanoes, coral reefs, or by rising sea levels separating land from continents.',
+                facts: [
+                    'Hawaii\'s islands were formed by underwater volcanoes',
+                    'Manhattan is an island where New York City was built',
+                    'The largest island in the world is Greenland',
+                    'Some islands are so small they can only fit one tree!'
                 ]
             }
         ];
@@ -2587,6 +2823,61 @@
                 correct: 2,
                 explanation: 'The Himalayas grow about 4 millimeters taller each year due to tectonic plate movement!',
                 funFact: '🏔️ Mount Everest is literally growing taller as you read this!'
+            },
+            // New curriculum-aligned questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What is a flat-topped hill with steep sides called?',
+                options: ['Mesa', 'Delta', 'Peninsula', 'Canyon'],
+                correct: 0,
+                explanation: 'Mesa means "table" in Spanish because of their flat tops and steep sides!',
+                funFact: '🗻 Many Western movies were filmed in Monument Valley\'s famous mesas!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What landform is made where a river meets the ocean?',
+                options: ['Island', 'Peninsula', 'Delta', 'Mesa'],
+                correct: 2,
+                explanation: 'Deltas form when rivers slow down and drop sediment as they reach the ocean!',
+                funFact: '🏞️ The Nile Delta has been feeding people for thousands of years!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'What is land surrounded by water on three sides called?',
+                options: ['Island', 'Peninsula', 'Delta', 'Canyon'],
+                correct: 1,
+                explanation: 'Peninsula means "almost an island" - it\'s connected to land on one side!',
+                funFact: '🏝️ Florida is a famous peninsula you can drive to but is mostly surrounded by water!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What is land completely surrounded by water called?',
+                options: ['Peninsula', 'Mesa', 'Island', 'Delta'],
+                correct: 2,
+                explanation: 'Islands are completely surrounded by water with no connection to mainland!',
+                funFact: '🏝️ Manhattan Island is where New York City was built!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Which landforms are found between two mountains or hills?',
+                options: ['Plains and mesas', 'Valleys and canyons', 'Islands and peninsulas', 'Deltas and plateaus'],
+                correct: 1,
+                explanation: 'Valleys and canyons are both low areas found between higher landforms!',
+                funFact: '🏞️ Rivers often flow through valleys, and deep valleys with steep walls become canyons!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'What do mesas, plateaus, and hills all have in common?',
+                options: ['They are all formed by rivers', 'They all have flat tops', 'They are all higher than surrounding land', 'They are all made by volcanoes'],
+                correct: 2,
+                explanation: 'Mesas, plateaus, and hills are all elevated landforms that rise above the surrounding area!',
+                funFact: '⛰️ The main difference is their size and shape, but they all stick up above the land around them!'
             }
         ];
 
@@ -2741,14 +3032,204 @@
         function nextLandform() {
             game.currentStudyIndex = (game.currentStudyIndex + 1) % landformData.length;
             displayLandformInfo();
+            
+            // Check for achievement triggers based on specific landforms
+            const currentLandform = landformData[game.currentStudyIndex];
+            if (currentLandform.name === 'Mesa' && !game.achievements.includes('mesa_master')) {
+                game.showAchievement('mesa_master', 'Mesa Expert!', 'You discovered these flat-topped wonders!');
+            }
+            if (['Delta', 'Peninsula', 'Island'].includes(currentLandform.name) && !game.achievements.includes('water_features')) {
+                game.showAchievement('water_features', 'Water Explorer!', 'You\'re learning water-related landforms!');
+            }
+            
+            // Final completion achievement
             if (game.currentStudyIndex === landformData.length - 1) {
                 game.showAchievement('study_master', 'Study Master!', 'You\'ve learned about all landforms!');
+                if (landformData.length >= 11) {
+                    game.showAchievement('landform_scholar', 'Landform Scholar!', 'You mastered all 11 landform types!');
+                }
             }
         }
 
         function previousLandform() {
             game.currentStudyIndex = (game.currentStudyIndex - 1 + landformData.length) % landformData.length;
             displayLandformInfo();
+        }
+
+        // Vocabulary Matching Game
+        let vocabGame = {
+            currentRound: [],
+            selectedTerm: null,
+            selectedDefinition: null,
+            matches: 0,
+            total: 5,
+            completedPairs: []
+        };
+
+        function startVocabMode() {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
+            showScreen('vocabScreen');
+            resetVocabGame();
+        }
+
+        function resetVocabGame() {
+            vocabGame.selectedTerm = null;
+            vocabGame.selectedDefinition = null;
+            vocabGame.matches = 0;
+            vocabGame.completedPairs = [];
+            
+            // Generate a new round with 5 random landforms
+            generateVocabRound();
+            
+            document.getElementById('vocabFeedback').style.display = 'none';
+            document.getElementById('vocabNextBtn').style.display = 'none';
+            updateVocabProgress();
+        }
+
+        function generateVocabRound() {
+            // Create simple descriptions for vocabulary matching
+            const vocabData = [
+                { term: 'Mountain', description: 'Very tall landform that reaches high into the sky' },
+                { term: 'Valley', description: 'Low area of land between hills or mountains' },
+                { term: 'Canyon', description: 'Deep valley with steep rocky walls' },
+                { term: 'Plain', description: 'Large flat area of land perfect for farming' },
+                { term: 'Island', description: 'Land completely surrounded by water' },
+                { term: 'Peninsula', description: 'Land surrounded by water on three sides' },
+                { term: 'Volcano', description: 'Mountain that can erupt with hot lava' },
+                { term: 'Mesa', description: 'Flat-topped hill with steep sides' },
+                { term: 'Delta', description: 'Triangle-shaped land where a river meets the ocean' },
+                { term: 'Plateau', description: 'Large flat area of land at a high elevation' },
+                { term: 'Hill', description: 'Rounded land that is higher than surrounding areas' }
+            ];
+
+            // Shuffle and pick 5 random items
+            const shuffled = [...vocabData].sort(() => Math.random() - 0.5);
+            vocabGame.currentRound = shuffled.slice(0, vocabGame.total);
+            
+            displayVocabItems();
+        }
+
+        function displayVocabItems() {
+            const termsContainer = document.getElementById('vocabTerms');
+            const defsContainer = document.getElementById('vocabDefinitions');
+            
+            // Shuffle terms and definitions separately
+            const shuffledTerms = [...vocabGame.currentRound].sort(() => Math.random() - 0.5);
+            const shuffledDefs = [...vocabGame.currentRound].sort(() => Math.random() - 0.5);
+            
+            termsContainer.innerHTML = shuffledTerms.map((item, index) => 
+                `<div class="vocab-item" data-term="${item.term}" onclick="selectTerm(this, '${item.term}')">
+                    ${item.term}
+                </div>`
+            ).join('');
+            
+            defsContainer.innerHTML = shuffledDefs.map((item, index) => 
+                `<div class="vocab-item" data-definition="${item.term}" onclick="selectDefinition(this, '${item.term}', '${item.description}')">
+                    ${item.description}
+                </div>`
+            ).join('');
+        }
+
+        function selectTerm(element, term) {
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous term selection
+            document.querySelectorAll('[data-term]').forEach(el => el.classList.remove('selected'));
+            
+            // Select this term
+            element.classList.add('selected');
+            vocabGame.selectedTerm = term;
+            
+            // Check for match if definition is also selected
+            if (vocabGame.selectedDefinition) {
+                checkVocabMatch();
+            }
+        }
+
+        function selectDefinition(element, term, description) {
+            if (element.classList.contains('matched')) return;
+            
+            // Clear previous definition selection
+            document.querySelectorAll('[data-definition]').forEach(el => el.classList.remove('selected'));
+            
+            // Select this definition
+            element.classList.add('selected');
+            vocabGame.selectedDefinition = term;
+            
+            // Check for match if term is also selected
+            if (vocabGame.selectedTerm) {
+                checkVocabMatch();
+            }
+        }
+
+        function checkVocabMatch() {
+            const feedback = document.getElementById('vocabFeedback');
+            const isMatch = vocabGame.selectedTerm === vocabGame.selectedDefinition;
+            
+            if (isMatch) {
+                // Correct match
+                vocabGame.matches++;
+                vocabGame.completedPairs.push(vocabGame.selectedTerm);
+                
+                // Mark items as matched
+                document.querySelector(`[data-term="${vocabGame.selectedTerm}"]`).classList.add('matched');
+                document.querySelector(`[data-definition="${vocabGame.selectedDefinition}"]`).classList.add('matched');
+                
+                feedback.textContent = `🎉 Correct! ${vocabGame.selectedTerm} matches!`;
+                feedback.className = 'vocab-feedback correct';
+                feedback.style.display = 'block';
+                
+                // Add XP for correct match
+                game.addXP(10);
+                
+                // Check for completion
+                if (vocabGame.matches === vocabGame.total) {
+                    setTimeout(() => {
+                        feedback.textContent = `🏆 Excellent! You matched all ${vocabGame.total} landforms!`;
+                        document.getElementById('vocabNextBtn').style.display = 'block';
+                        
+                        // Award achievement for vocabulary mastery
+                        game.showAchievement('vocab_master', 'Vocabulary Master!', 'You matched all the landforms perfectly!');
+                        game.addXP(25);
+                    }, 1500);
+                }
+                
+            } else {
+                // Incorrect match
+                feedback.textContent = `❌ Not quite right. Try again!`;
+                feedback.className = 'vocab-feedback incorrect';
+                feedback.style.display = 'block';
+                
+                // Clear selections after showing feedback
+                setTimeout(() => {
+                    document.querySelectorAll('.vocab-item.selected').forEach(el => el.classList.remove('selected'));
+                }, 1000);
+            }
+            
+            // Clear selections
+            vocabGame.selectedTerm = null;
+            vocabGame.selectedDefinition = null;
+            updateVocabProgress();
+            
+            // Hide feedback after 2 seconds
+            setTimeout(() => {
+                if (!isMatch || vocabGame.matches < vocabGame.total) {
+                    feedback.style.display = 'none';
+                }
+            }, 2000);
+        }
+
+        function updateVocabProgress() {
+            document.getElementById('vocabMatches').textContent = vocabGame.matches;
+            document.getElementById('vocabTotal').textContent = vocabGame.total;
+        }
+
+        function startNewVocabRound() {
+            resetVocabGame();
         }
 
         // Quiz functionality
