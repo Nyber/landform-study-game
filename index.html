@@ -774,6 +774,19 @@
             transform: translateY(-2px);
         }
 
+        /* Touch device improvements */
+        @media (hover: none) {
+            .vocab-item:hover {
+                transform: none;
+            }
+            
+            .vocab-item:active {
+                background: rgba(var(--primary-color-rgb), 0.3);
+                border-color: var(--primary-color);
+                transform: scale(0.98);
+            }
+        }
+
         .vocab-item.selected {
             background: var(--primary-color) !important;
             color: white !important;
@@ -843,6 +856,20 @@
             .vocab-item {
                 font-size: 0.9rem;
                 padding: 0.75rem;
+            }
+            
+            .btn {
+                min-height: 48px; /* Better touch targets */
+                font-size: 1rem;
+            }
+            
+            .option-btn {
+                min-height: 52px; /* Even better for quiz options */
+                padding: 0.8rem 1rem;
+            }
+            
+            .mode-card {
+                min-height: 140px; /* Better touch targets for mode selection */
             }
         }
 
@@ -2583,9 +2610,9 @@
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/mountain-rushmore.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://cdn.britannica.com/85/25785-050-10C622E1/Mount-Rushmore-National-Memorial-South-Dakota.jpg',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1464822759844-d150f39bf2c8?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1582049877318-b71e6110c4d2?w=640&h=480&fit=crop&q=80',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
                     'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
@@ -2597,9 +2624,9 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/volcano-sthelens.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.nps.gov/mosh/learn/nature/images/MSH82_st_helens_plume_from_harrys_ridge_05-19-82_med_res_credit_mike_doukas_cvo.jpg',
+                imageUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1618397746666-63405ce5d015?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=640&h=480&fit=crop&q=80',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
                     'There are about 1,500 active volcanoes worldwide',
@@ -2611,9 +2638,9 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/valley-yosemite.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.nps.gov/yose/learn/nature/images/tunnel-view-valley-2016.jpg',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=640&h=480&fit=crop&q=80',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
                     'The Great Rift Valley stretches 4,000 miles across Africa',
@@ -2625,9 +2652,9 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/canyon-grand.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.nps.gov/grca/learn/nature/images/GrandCanyon_2012_0573.jpg',
+                imageUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
                     'The Grand Canyon is 277 miles long and over 1 mile deep',
@@ -2639,9 +2666,9 @@
             {
                 name: 'Plain',
                 emoji: '🌾',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/plain-greatplains.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.usgs.gov/media/images/great-plains-wheat-field-kansas',
+                imageUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1574263867128-3b2c7b9badce?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=640&h=480&fit=crop&q=80',
                 description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
                 facts: [
                     'Plains cover over one-third of Earth\'s land surface',
@@ -2653,9 +2680,9 @@
             {
                 name: 'Plateau',
                 emoji: '🏔️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/plateau-colorado.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.nps.gov/cany/learn/nature/images/Green-River-Overlook_2016.jpg',
+                imageUrl: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
                 description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
                 facts: [
                     'The Tibetan Plateau is called "The Roof of the World"',
@@ -2667,9 +2694,9 @@
             {
                 name: 'Hill',
                 emoji: '⛰️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/hill-rolling.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.nrcs.usda.gov/wps/portal/nrcs/detail/ia/newsroom/releases/?cid=nrcs142p2_008305',
+                imageUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=640&h=480&fit=crop&q=80',
                 description: 'Hills are rounded elevations smaller than mountains, typically under 2,000 feet tall. They provide gentle slopes perfect for recreation and settlements.',
                 facts: [
                     'Hills are generally considered smaller than mountains',
@@ -2681,9 +2708,9 @@
             {
                 name: 'Mesa',
                 emoji: '🗻',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/mesa-monument.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.nps.gov/nava/learn/nature/images/Monument-Valley-4.jpg',
+                imageUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1434394354979-a235cd36269d?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=640&h=480&fit=crop&q=80',
                 description: 'Mesas are isolated, flat-topped hills with steep sides. These table-like landforms are created when harder rock layers protect softer rock below from erosion.',
                 facts: [
                     'Mesa means "table" in Spanish because of their flat tops',
@@ -2695,9 +2722,9 @@
             {
                 name: 'Delta',
                 emoji: '🏞️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/delta-mississippi.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.usgs.gov/media/images/mississippi-river-delta-satellite-image',
+                imageUrl: 'https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&q=80',
                 description: 'Deltas are triangular areas of land formed where rivers meet the sea. Rivers slow down and drop sediment, creating fertile land perfect for farming.',
                 facts: [
                     'The Nile Delta has been called "the gift of the Nile" for thousands of years',
@@ -2709,9 +2736,9 @@
             {
                 name: 'Peninsula',
                 emoji: '🏝️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/peninsula-florida.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://earthobservatory.nasa.gov/images/3866/florida-from-space',
+                imageUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop&q=80',
                 description: 'Peninsulas are pieces of land surrounded by water on three sides and connected to the mainland on one side. They extend out into oceans, lakes, or rivers.',
                 facts: [
                     'Florida is a famous peninsula extending into the Atlantic Ocean and Gulf of Mexico',
@@ -2723,9 +2750,9 @@
             {
                 name: 'Island',
                 emoji: '🏝️',
-                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/island-hawaii.jpg',
-                fallbackUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=640&h=480&fit=crop',
-                fallbackUrl2: 'https://www.usgs.gov/observatories/hawaiian-volcano-observatory/multimedia-data-products',
+                imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop&q=80',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=640&h=480&fit=crop&q=80',
                 description: 'Islands are pieces of land completely surrounded by water. They can be formed by volcanoes, coral reefs, or by rising sea levels separating land from continents.',
                 facts: [
                     'Hawaii\'s islands were formed by underwater volcanoes',
@@ -2886,6 +2913,61 @@
                 correct: 2,
                 explanation: 'Mesas, plateaus, and hills are all elevated landforms that rise above the surrounding area!',
                 funFact: '⛰️ The main difference is their size and shape, but they all stick up above the land around them!'
+            },
+            // Additional curriculum-aligned questions
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'Which landform is best for farming because it is flat and has rich soil?',
+                options: ['Mountain', 'Plain', 'Canyon', 'Hill'],
+                correct: 1,
+                explanation: 'Plains are perfect for farming because they are flat and often have fertile soil!',
+                funFact: '🌾 Most of our food comes from crops grown on plains!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'easy',
+                question: 'What makes an island different from a peninsula?',
+                options: ['Islands are bigger', 'Islands have more trees', 'Islands are completely surrounded by water', 'Islands are taller'],
+                correct: 2,
+                explanation: 'Islands are completely surrounded by water, while peninsulas are connected to land on one side!',
+                funFact: '🏝️ You need a boat or plane to get to an island!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Which two landforms are both formed where water meets land?',
+                options: ['Mountain and hill', 'Delta and peninsula', 'Volcano and mesa', 'Canyon and valley'],
+                correct: 1,
+                explanation: 'Deltas form where rivers meet the ocean, and peninsulas are land surrounded by water on three sides!',
+                funFact: '🌊 Both deltas and peninsulas show how water shapes our land!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'What is the main difference between a mesa and a plateau?',
+                options: ['Mesas are made by volcanoes, plateaus by earthquakes', 'Mesas are smaller and more isolated', 'Mesas are higher than plateaus', 'Mesas have steeper sides'],
+                correct: 1,
+                explanation: 'Mesas are smaller, isolated flat-topped hills, while plateaus are large elevated flat areas!',
+                funFact: '🗻 Both mesa and plateau mean "table" in Spanish and French!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'medium',
+                question: 'Why are deltas important to people?',
+                options: ['They provide fresh water', 'They have very fertile soil for farming', 'They prevent floods', 'They create mountains'],
+                correct: 1,
+                explanation: 'Deltas have extremely fertile soil because rivers deposit rich sediments there!',
+                funFact: '🌱 Ancient Egypt called the Nile Delta "the gift of the Nile" because it was so fertile!'
+            },
+            {
+                type: 'multiple-choice',
+                difficulty: 'hard',
+                question: 'Which process creates most valleys over long periods of time?',
+                options: ['Volcanoes erupting', 'Rivers cutting through rock', 'Wind blowing sand', 'Animals digging'],
+                correct: 1,
+                explanation: 'Most valleys are formed by rivers slowly cutting through rock over millions of years!',
+                funFact: '💧 The Grand Canyon was carved by the Colorado River over 6 million years!'
             }
         ];
 
@@ -3091,7 +3173,8 @@
             selectedDefinition: null,
             matches: 0,
             total: 5,
-            completedPairs: []
+            completedPairs: [],
+            difficulty: 'easy' // easy, medium, hard
         };
 
         function startVocabMode() {
@@ -3214,6 +3297,9 @@
                 // Add XP for correct match
                 game.addXP(10);
                 
+                // Play success sound
+                game.playSound('correct');
+                
                 // Check for completion
                 if (vocabGame.matches === vocabGame.total) {
                     setTimeout(() => {
@@ -3231,6 +3317,9 @@
                 feedback.textContent = `❌ Not quite right. Try again!`;
                 feedback.className = 'vocab-feedback incorrect';
                 feedback.style.display = 'block';
+                
+                // Play error sound
+                game.playSound('incorrect');
                 
                 // Clear selections after showing feedback
                 setTimeout(() => {
