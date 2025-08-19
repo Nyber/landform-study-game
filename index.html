@@ -3583,6 +3583,17 @@
             // Clean up any duplicate achievements on startup
             game.updateProgressDisplay();
             
+            // Auto-detect and fix corruption (18/9 bug)
+            const storedAchievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+            const totalPossible = Object.keys(game.getAllAchievements()).length;
+            if (storedAchievements.length > totalPossible) {
+                console.log(`🔧 Auto-fixing corrupted achievements: ${storedAchievements.length}/${totalPossible}`);
+                game.achievements = [...new Set(storedAchievements)]; // Remove duplicates
+                game.save();
+                game.updateProgressDisplay();
+                console.log(`✅ Fixed to: ${game.achievements.length}/${totalPossible}`);
+            }
+            
             // Initialize theme
             initializeTheme();
             
@@ -3597,6 +3608,7 @@
                 document.getElementById('nameSetup').style.display = 'none';
                 enableGameModes();
             } else {
+                document.getElementById('nameSetup').style.display = 'block';
                 disableGameModes();
             }
             
