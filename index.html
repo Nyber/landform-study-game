@@ -3232,21 +3232,37 @@
             const shuffledTerms = [...vocabGame.currentRound].sort(() => Math.random() - 0.5);
             const shuffledDefs = [...vocabGame.currentRound].sort(() => Math.random() - 0.5);
             
-            termsContainer.innerHTML = shuffledTerms.map((item, index) => 
-                `<div class="vocab-item" data-term="${item.term}" onclick="selectTerm(this, '${item.term}')">
-                    ${item.term}
-                </div>`
-            ).join('');
+            // Clear existing content
+            termsContainer.innerHTML = '';
+            defsContainer.innerHTML = '';
             
-            defsContainer.innerHTML = shuffledDefs.map((item, index) => 
-                `<div class="vocab-item" data-definition="${item.term}" onclick="selectDefinition(this, '${item.term}', '${item.description}')">
-                    ${item.description}
-                </div>`
-            ).join('');
+            // Create term items with event delegation
+            shuffledTerms.forEach((item, index) => {
+                const termDiv = document.createElement('div');
+                termDiv.className = 'vocab-item';
+                termDiv.setAttribute('data-term', item.term);
+                termDiv.textContent = item.term;
+                termDiv.addEventListener('click', () => selectTerm(termDiv, item.term));
+                termsContainer.appendChild(termDiv);
+            });
+            
+            // Create definition items with event delegation
+            shuffledDefs.forEach((item, index) => {
+                const defDiv = document.createElement('div');
+                defDiv.className = 'vocab-item';
+                defDiv.setAttribute('data-definition', item.term);
+                defDiv.textContent = item.description;
+                defDiv.addEventListener('click', () => selectDefinition(defDiv, item.term, item.description));
+                defsContainer.appendChild(defDiv);
+            });
         }
 
         function selectTerm(element, term) {
-            if (element.classList.contains('matched')) return;
+            console.log('selectTerm called:', term, element);
+            if (element.classList.contains('matched')) {
+                console.log('Term already matched, ignoring');
+                return;
+            }
             
             // Clear previous term selection
             document.querySelectorAll('[data-term]').forEach(el => el.classList.remove('selected'));
@@ -3254,15 +3270,21 @@
             // Select this term
             element.classList.add('selected');
             vocabGame.selectedTerm = term;
+            console.log('Selected term:', vocabGame.selectedTerm);
             
             // Check for match if definition is also selected
             if (vocabGame.selectedDefinition) {
+                console.log('Definition already selected, checking match');
                 checkVocabMatch();
             }
         }
 
         function selectDefinition(element, term, description) {
-            if (element.classList.contains('matched')) return;
+            console.log('selectDefinition called:', term, description, element);
+            if (element.classList.contains('matched')) {
+                console.log('Definition already matched, ignoring');
+                return;
+            }
             
             // Clear previous definition selection
             document.querySelectorAll('[data-definition]').forEach(el => el.classList.remove('selected'));
@@ -3270,9 +3292,11 @@
             // Select this definition
             element.classList.add('selected');
             vocabGame.selectedDefinition = term;
+            console.log('Selected definition:', vocabGame.selectedDefinition);
             
             // Check for match if term is also selected
             if (vocabGame.selectedTerm) {
+                console.log('Term already selected, checking match');
                 checkVocabMatch();
             }
         }
