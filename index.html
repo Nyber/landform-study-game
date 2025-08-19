@@ -57,6 +57,21 @@
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
         }
 
+        /* Ensure all text elements use theme colors */
+        [data-theme="dark"] .title,
+        [data-theme="dark"] .subtitle,
+        [data-theme="dark"] .mode-title,
+        [data-theme="dark"] .mode-description,
+        [data-theme="dark"] .section-title,
+        [data-theme="dark"] .section-subtitle,
+        [data-theme="dark"] .card-title,
+        [data-theme="dark"] .stat-label,
+        [data-theme="dark"] .progress-label,
+        [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, [data-theme="dark"] h4,
+        [data-theme="dark"] p {
+            color: var(--text-primary) !important;
+        }
+
         body {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 25%, #16a34a 50%, var(--accent-color) 75%, #d97706 100%);
@@ -136,9 +151,9 @@
 
         /* Dark mode glass cards */
         [data-theme="dark"] .glass-card {
-            background: rgba(30, 41, 59, 0.85);
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            color: var(--text-primary);
+            background: rgba(30, 41, 59, 0.85) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
         }
 
         .glass-card:hover {
@@ -163,8 +178,8 @@
 
         /* Dark mode navigation */
         [data-theme="dark"] .nav-bar {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            border: 1px solid rgba(100, 116, 139, 0.3);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
         }
         
         .header-content {
@@ -640,8 +655,9 @@
 
         /* Dark mode mode cards */
         [data-theme="dark"] .mode-card {
-            background: var(--bg-secondary);
-            border: 2px solid rgba(100, 116, 139, 0.3);
+            background: var(--bg-secondary) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
         }
 
         .mode-card::before {
@@ -748,8 +764,8 @@
 
         /* Dark mode dashboard cards */
         [data-theme="dark"] .dashboard-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            border: 2px solid rgba(100, 116, 139, 0.3);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
         }
         
         .dashboard-card::before {
@@ -855,6 +871,12 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
+        /* Dark mode sessions list */
+        [data-theme="dark"] .sessions-list {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.4)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
         .session-item {
             display: flex;
             justify-content: space-between;
@@ -873,8 +895,8 @@
 
         /* Dark mode session items */
         [data-theme="dark"] .session-item {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            border: 2px solid rgba(100, 116, 139, 0.3);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
         }
         
         .session-item::before {
@@ -957,9 +979,9 @@
 
         /* Dark mode no-sessions */
         [data-theme="dark"] .no-sessions {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            border: 2px solid rgba(100, 116, 139, 0.3);
-            color: var(--text-secondary);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-secondary) !important;
         }
 
         .no-sessions p {
@@ -1246,8 +1268,9 @@
 
         /* Dark mode progress cards */
         [data-theme="dark"] .progress-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
-            border: 1px solid rgba(100, 116, 139, 0.3);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
         }
         
         .progress-card:hover {
