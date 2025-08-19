@@ -16,7 +16,9 @@
       "WebFetch(domain:images.unsplash.com)",
       "WebFetch(domain:upload.wikimedia.org)",
       "Bash(rm:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(start index_clean.html)",
+      "Bash(cp:*)"
     ],
     "deny": []
   }
