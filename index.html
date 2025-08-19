@@ -222,6 +222,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            cursor: pointer;
             background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(5, 150, 105, 0.15));
             padding: 0.75rem 1.5rem;
             border-radius: 25px;
@@ -306,7 +307,7 @@
         }
         
         .logo-container:hover {
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.02);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
         
@@ -1309,75 +1310,51 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        /* Section Navigation Tabs */
-        .section-nav {
-            display: flex;
-            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
-            backdrop-filter: blur(10px);
-            border-radius: var(--border-radius);
-            padding: 0.5rem;
-            margin: 2rem 0 1rem 0;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .section-tab {
-            flex: 1;
+        /* Full-Width Scoreboard CTA Button */
+        .scoreboard-cta {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            padding: 1rem;
-            border-radius: calc(var(--border-radius) - 0.25rem);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-secondary);
-            font-weight: 500;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease-in-out infinite;
         }
 
-        .section-tab:hover {
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-            color: var(--text-primary);
-            transform: translateY(-1px);
+        .scoreboard-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(14, 165, 233, 0.4);
+            animation-duration: 1.5s;
         }
 
-        .section-tab.active {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        .scoreboard-text {
+            flex: 1;
+            text-align: center;
         }
 
-        .section-icon {
-            font-size: 1.2rem;
+        .btn-arrow {
+            font-size: 1.3rem;
+            transition: transform 0.3s ease;
         }
 
-        .section-title {
-            font-size: 1rem;
-            font-weight: 600;
+        .scoreboard-cta:hover .btn-arrow {
+            transform: translateX(5px);
         }
 
-        /* Dark mode section nav */
-        [data-theme="dark"] .section-nav {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.4)) !important;
-            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        [data-theme="dark"] .section-tab:hover {
-            background: linear-gradient(135deg, rgba(100, 116, 139, 0.3), rgba(71, 85, 105, 0.2)) !important;
-        }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Progress Section */
+        .progress-section {
+            margin: 2rem 0;
         }
         
         .progress-icon {
@@ -1822,7 +1799,7 @@
         <nav class="nav-bar">
             <div class="header-content">
                 <div class="logo">
-                    <div class="logo-container">
+                    <div class="logo-container" onclick="goHome()" title="Go to Home">
                         <div class="logo-icon">🌍</div>
                         <div class="logo-text">
                             <div class="logo-title">Landform Explorer</div>
@@ -1900,20 +1877,10 @@
                     </div>
                 </div>
 
-                <!-- Section Navigation -->
-                <div class="section-nav">
-                    <div class="section-tab active" data-section="progress">
-                        <span class="section-icon">📊</span>
-                        <span class="section-title">Progress</span>
-                    </div>
-                    <div class="section-tab" data-section="scoreboard">
-                        <span class="section-icon">🏆</span>
-                        <span class="section-title">Scoreboard</span>
-                    </div>
-                </div>
-
                 <!-- Progress Section -->
-                <div id="progressSection" class="tab-content active">
+                <div class="progress-section">
+                    <h3 style="color: var(--text-primary); margin-bottom: 1.5rem; text-align: center;">📊 Your Learning Progress</h3>
+                    
                     <!-- Quick Stats -->
                     <div class="progress-cards">
                         <div class="progress-card">
@@ -1943,20 +1910,14 @@
                     <div style="margin-top: 2rem;">
                         <div class="achievements-grid" id="achievementsGrid"></div>
                     </div>
-                </div>
 
-                <!-- Scoreboard Section -->
-                <div id="scoreboardSection" class="tab-content">
-                    <div class="scoreboard-preview">
-                        <p style="color: var(--text-secondary); text-align: center; margin: 2rem 0;">
-                            Click to view your detailed game history and statistics
-                        </p>
-                        <div style="text-align: center;">
-                            <button class="btn btn-primary" onclick="showScoreboard()">
-                                <span class="btn-icon">📊</span>
-                                <span>Open Full Scoreboard</span>
-                            </button>
-                        </div>
+                    <!-- Full-Width Scoreboard Button -->
+                    <div style="margin-top: 2rem;">
+                        <button class="btn btn-primary scoreboard-cta" onclick="showScoreboard()">
+                            <span class="btn-icon">📊</span>
+                            <span class="scoreboard-text">View Detailed Scoreboard & Game History</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2458,8 +2419,9 @@
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'https://picsum.photos/640/480?random=1',
-                fallbackUrl: 'https://via.placeholder.com/640x480/059669/ffffff?text=Mountain+🏔️',
+                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C7B227E-1DD8-B71B-0BB4C4C8D7EC73A6.jpg',
+                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Mount_McKinley_and_Denali_National_Park_Road_2048px.jpg',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
                     'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
@@ -2471,8 +2433,9 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'https://picsum.photos/640/480?random=2',
-                fallbackUrl: 'https://via.placeholder.com/640x480/ef4444/ffffff?text=Volcano+🌋',
+                imageUrl: 'https://www.usgs.gov/sites/default/files/styles/full_width/public/images/2022-05/Kilauea-volcano.jpg',
+                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Stromboli_Eruption.jpg',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1618050411648-d8dd3fa5d2b2?w=640&h=480&fit=crop',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
                     'There are about 1,500 active volcanoes worldwide',
@@ -2484,8 +2447,9 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'https://picsum.photos/640/480?random=3',
-                fallbackUrl: 'https://via.placeholder.com/640x480/10b981/ffffff?text=Valley+🏞️',
+                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C7D2FBB-1DD8-B71B-0BED99731011CFCE.jpg',
+                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Yosemite_Valley_from_Tunnel_View_2010.JPG',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
                     'The Great Rift Valley stretches 4,000 miles across Africa',
@@ -2497,8 +2461,9 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'https://picsum.photos/640/480?random=4',
-                fallbackUrl: 'https://via.placeholder.com/640x480/f59e0b/ffffff?text=Canyon+🏜️',
+                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C7B12D1-1DD8-B71B-0BCE0712F9CEF48C.jpg',
+                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_view_from_Hopi_Point_2010.jpg',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1544968503-7ad532b1e42b?w=640&h=480&fit=crop',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
                     'The Grand Canyon is 277 miles long and over 1 mile deep',
@@ -2510,8 +2475,9 @@
             {
                 name: 'Plain',
                 emoji: '🌾',
-                imageUrl: 'https://images.unsplash.com/photo-1524486361537-8ad15938e1a3?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Great_Plains_Farming.jpg/640px-Great_Plains_Farming.jpg',
+                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/A4C88B3F-C0C3-A777-12AEE2F830A3BB1F.jpg',
+                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Great_Plains_panorama.jpg',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1500622944204-b135684e99fd?w=640&h=480&fit=crop',
                 description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
                 facts: [
                     'Plains cover over one-third of Earth\'s land surface',
@@ -2523,8 +2489,9 @@
             {
                 name: 'Plateau',
                 emoji: '🏔️',
-                imageUrl: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg',
+                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C79933C-1DD8-B71B-0BF201E3DB540D04.jpg',
+                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Colorado_Plateau_view.jpg',
+                fallbackUrl2: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop',
                 description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
                 facts: [
                     'The Tibetan Plateau is called "The Roof of the World"',
@@ -2722,36 +2689,59 @@
             const container = document.querySelector('.landform-image-container');
             const loading = container.querySelector('.image-loading');
             
-            // Start with a timeout in case images never load/fail silently
+            let currentAttempt = 0;
+            const imageUrls = [
+                landform.imageUrl,
+                landform.fallbackUrl, 
+                landform.fallbackUrl2
+            ].filter(url => url); // Remove any undefined URLs
+            
+            // Update loading text to show we're trying real photos
+            loading.innerHTML = `📷 Loading educational photo...`;
+            
+            // Start with a timeout for the entire loading process
             const timeout = setTimeout(() => {
-                console.log('Image load timeout for', landform.name);
+                console.log('All image sources failed for', landform.name);
                 showFallbackDisplay(landform, loading);
-            }, 5000); // 5 second timeout
+            }, 8000); // 8 second total timeout
             
             const img = document.createElement('img');
-            img.alt = landform.name;
+            img.alt = `${landform.name} - Educational Photo`;
             img.className = 'landform-image';
             img.style.display = 'none';
             
+            function tryNextImage() {
+                if (currentAttempt >= imageUrls.length) {
+                    clearTimeout(timeout);
+                    console.log('All image sources exhausted for', landform.name);
+                    showFallbackDisplay(landform, loading);
+                    return;
+                }
+                
+                const currentUrl = imageUrls[currentAttempt];
+                console.log(`Trying image ${currentAttempt + 1}/${imageUrls.length} for ${landform.name}:`, currentUrl);
+                
+                // Update loading text to show progress
+                loading.innerHTML = `📷 Loading from source ${currentAttempt + 1}/${imageUrls.length}...`;
+                
+                img.src = currentUrl;
+                currentAttempt++;
+            }
+            
             img.onload = function() {
                 clearTimeout(timeout);
+                console.log(`Successfully loaded image for ${landform.name} from source ${currentAttempt}`);
                 this.style.display = 'block';
                 loading.style.display = 'none';
             };
             
             img.onerror = function() {
-                console.log('Primary image failed for', landform.name, 'trying fallback...');
-                if (landform.fallbackUrl && this.src !== landform.fallbackUrl) {
-                    this.src = landform.fallbackUrl;
-                } else {
-                    clearTimeout(timeout);
-                    console.log('All images failed for', landform.name);
-                    showFallbackDisplay(landform, loading);
-                }
+                console.log(`Image source ${currentAttempt} failed for ${landform.name}`);
+                tryNextImage();
             };
             
-            // Try primary image first
-            img.src = landform.imageUrl;
+            // Start loading first image
+            tryNextImage();
             
             // Insert image before overlay
             const overlay = container.querySelector('.image-overlay');
@@ -3607,33 +3597,6 @@
             });
         }
 
-        // Section Tab Functionality
-        function setupSectionTabs() {
-            const tabs = document.querySelectorAll('.section-tab');
-            const contents = document.querySelectorAll('.tab-content');
-            
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const targetSection = tab.getAttribute('data-section');
-                    
-                    // Remove active class from all tabs and contents
-                    tabs.forEach(t => t.classList.remove('active'));
-                    contents.forEach(c => c.classList.remove('active'));
-                    
-                    // Add active class to clicked tab and corresponding content
-                    tab.classList.add('active');
-                    const targetContent = document.getElementById(targetSection + 'Section');
-                    if (targetContent) {
-                        targetContent.classList.add('active');
-                    }
-                    
-                    // Play sound feedback
-                    if (window.game) {
-                        game.playSound('button');
-                    }
-                });
-            });
-        }
 
         // Initialize the app when page loads
         function initializeApp() {
@@ -3648,9 +3611,6 @@
             
             // Setup name input
             setupNameInput();
-            
-            // Setup section tabs
-            setupSectionTabs();
             
             // Load saved player name
             const savedName = localStorage.getItem('playerName');
