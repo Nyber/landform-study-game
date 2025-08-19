@@ -2179,29 +2179,58 @@
             game.correctAnswers = 0;
             game.questions = null; // Reset questions array so it gets refreshed
             if (game.timer) clearInterval(game.timer);
+            
+            // Set total questions based on available questions for difficulty
+            const availableQuestions = getQuestionsByDifficulty();
+            game.totalQuestions = Math.min(10, availableQuestions.length); // Max 10 or all available
+            console.log('Quiz reset - Total questions set to:', game.totalQuestions);
+            
             updateStats();
         }
 
         function getQuestionsByDifficulty() {
+            let questions;
             if (game.difficulty === 'easy') {
-                return questionData.filter(q => q.difficulty === 'easy');
+                questions = questionData.filter(q => q.difficulty === 'easy');
             } else if (game.difficulty === 'hard') {
-                return questionData.filter(q => q.difficulty === 'hard' || q.difficulty === 'medium');
+                questions = questionData.filter(q => q.difficulty === 'hard' || q.difficulty === 'medium');
+            } else {
+                questions = questionData;
             }
-            return questionData;
+            
+            // Shuffle questions to avoid repetition
+            return shuffleArray([...questions]);
+        }
+        
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
         }
 
         function loadQuestion() {
+            console.log('=== LOADING QUESTION ===' );
             game.answered = false;
             selectedAnswerIndex = -1; // Reset selected answer
             
             // Ensure we have the questions array stored in game object
             if (!game.questions) {
                 game.questions = getQuestionsByDifficulty();
+                console.log('Generated new shuffled questions:', game.questions.length);
             }
             
-            const question = game.questions[game.currentQuestion % game.questions.length];
-            console.log('Loading question:', game.currentQuestion, question.question);
+            // Prevent going beyond available questions
+            if (game.currentQuestion >= game.questions.length) {
+                console.log('No more questions, showing results');
+                showResults();
+                return;
+            }
+            
+            const question = game.questions[game.currentQuestion];
+            console.log('Loading question', game.currentQuestion + 1, 'of', game.questions.length, ':', question.question);
             
             // Start timer for challenge mode
             if (game.gameMode === 'challenge') {
@@ -2234,21 +2263,34 @@
                 </div>
             `;
             
-            // Add event listeners for iOS compatibility
+            // Add event listeners for iOS compatibility - CRITICAL: Clean setup every time
             setTimeout(() => {
+                console.log('Setting up button event listeners');
                 const optionButtons = document.querySelectorAll('.option-btn');
-                optionButtons.forEach((button) => {
+                console.log('Found option buttons:', optionButtons.length);
+                
+                optionButtons.forEach((button, buttonIndex) => {
                     const index = parseInt(button.getAttribute('data-index'));
+                    console.log('Setting up button', buttonIndex, 'with data-index:', index);
+                    
+                    // Clear any existing event handlers to prevent conflicts
+                    button.onclick = null;
+                    button.ontouchend = null;
+                    
+                    // Add a unique identifier to debug
+                    button.setAttribute('data-button-id', `btn-${game.currentQuestion}-${index}`);
                     
                     // Simple click handler that works on both desktop and mobile
                     button.onclick = function(e) {
                         e.preventDefault();
+                        console.log('Button clicked:', index, 'Question:', game.currentQuestion);
                         selectAnswer(index);
                     };
                     
                     // Add touch handling for iOS
                     button.ontouchend = function(e) {
                         e.preventDefault();
+                        console.log('Button touched:', index);
                         // Only trigger if this wasn't already handled by onclick
                         if (!button.classList.contains('clicked')) {
                             button.classList.add('clicked');
@@ -2296,9 +2338,13 @@
         let selectedAnswerIndex = -1;
 
         function selectAnswer(index) {
-            if (game.answered) return;
+            console.log('=== SELECT ANSWER ===');
+            console.log('Index:', index, 'Current Question:', game.currentQuestion, 'Already answered:', game.answered);
             
-            console.log('selectAnswer called with index:', index); // Debug log
+            if (game.answered) {
+                console.log('Already answered, ignoring click');
+                return;
+            }
             
             // Remove previous selection
             const buttons = document.querySelectorAll('.option-btn');
