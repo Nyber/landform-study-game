@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.1</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.2</div>
         </nav>
 
         <!-- Home Screen -->
@@ -4808,6 +4808,38 @@
             } else {
                 nameInput.focus();
             }
+        }
+        
+        // Fix missing helper functions
+        function updateWelcomeMessage(name) {
+            const title = document.getElementById('welcomeTitle');
+            if (title) title.textContent = `Welcome, ${name}!`;
+        }
+        
+        function checkPlayerName() {
+            const playerName = localStorage.getItem('playerName');
+            if (playerName) {
+                updateWelcomeMessage(playerName);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+            } else {
+                document.getElementById('nameSetup').style.display = 'block';
+                disableGameModes();
+            }
+        }
+        
+        function enableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            });
+        }
+        
+        function disableGameModes() {
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            });
         }
         
         window.addEventListener('load', initializeApp);
