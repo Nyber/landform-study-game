@@ -2392,7 +2392,15 @@
             
             updateAchievementGrid() {
                 const grid = document.getElementById('achievementsGrid');
+                if (!grid) return; // Safety check
+                
                 const allAchievements = this.getAllAchievements();
+                
+                // Ensure achievements array is valid
+                if (!Array.isArray(this.achievements)) {
+                    console.warn('Achievements not properly loaded, skipping grid update');
+                    this.achievements = JSON.parse(localStorage.getItem('achievements') || '[]');
+                }
                 
                 grid.innerHTML = Object.entries(allAchievements).map(([id, data]) => {
                     const isEarned = this.achievements.includes(id);
@@ -3760,7 +3768,7 @@
             game.playSound('button');
             
             // Trigger dark mode discovery achievement
-            if (newTheme === 'dark') {
+            if (newTheme === 'dark' && !game.achievements.includes('dark_mode_discovery')) {
                 game.showAchievement('dark_mode_discovery', 'Night Owl!', 'You discovered the secret dark mode!');
             }
             
