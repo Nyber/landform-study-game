@@ -1310,46 +1310,25 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        /* Full-Width Scoreboard CTA Button */
-        .scoreboard-cta {
-            width: 100%;
-            padding: 1.25rem 2rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
-            background-size: 200% 200%;
-            animation: gradientShift 3s ease-in-out infinite;
+        /* Apple-style Subtle Link */
+        .scoreboard-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+            cursor: pointer;
         }
 
-        .scoreboard-cta:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(14, 165, 233, 0.4);
-            animation-duration: 1.5s;
+        .scoreboard-link:hover {
+            opacity: 1;
+            text-decoration: none;
         }
 
-        .scoreboard-text {
-            flex: 1;
-            text-align: center;
-        }
-
-        .btn-arrow {
-            font-size: 1.3rem;
-            transition: transform 0.3s ease;
-        }
-
-        .scoreboard-cta:hover .btn-arrow {
-            transform: translateX(5px);
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+        [data-theme="dark"] .scoreboard-link {
+            color: var(--primary-color);
+            opacity: 0.9;
         }
 
         /* Progress Section */
@@ -1911,13 +1890,11 @@
                         <div class="achievements-grid" id="achievementsGrid"></div>
                     </div>
 
-                    <!-- Full-Width Scoreboard Button -->
-                    <div style="margin-top: 2rem;">
-                        <button class="btn btn-primary scoreboard-cta" onclick="showScoreboard()">
-                            <span class="btn-icon">📊</span>
-                            <span class="scoreboard-text">View Detailed Scoreboard & Game History</span>
-                            <span class="btn-arrow">→</span>
-                        </button>
+                    <!-- Subtle Scoreboard Link -->
+                    <div style="text-align: center; margin-top: 1.5rem;">
+                        <a href="#" onclick="showScoreboard(); return false;" class="scoreboard-link">
+                            View detailed game history →
+                        </a>
                     </div>
                 </div>
             </div>
@@ -2419,9 +2396,9 @@
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C7B227E-1DD8-B71B-0BB4C4C8D7EC73A6.jpg',
-                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Mount_McKinley_and_Denali_National_Park_Road_2048px.jpg',
-                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/640px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Mount_McKinley_and_Denali_National_Park_Road_2048px.jpg/640px-Mount_McKinley_and_Denali_National_Park_Road_2048px.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/640px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
                     'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
@@ -2433,9 +2410,9 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'https://www.usgs.gov/sites/default/files/styles/full_width/public/images/2022-05/Kilauea-volcano.jpg',
-                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Stromboli_Eruption.jpg',
-                fallbackUrl2: 'https://images.unsplash.com/photo-1618050411648-d8dd3fa5d2b2?w=640&h=480&fit=crop',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Mount_St._Helens_eruption_on_July_22%2C_1980.jpg/640px-Mount_St._Helens_eruption_on_July_22%2C_1980.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Stromboli_Eruption.jpg/640px-Stromboli_Eruption.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Vesuvius_from_Pompeii_%282%29.jpg/640px-Vesuvius_from_Pompeii_%282%29.jpg',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
                     'There are about 1,500 active volcanoes worldwide',
@@ -2447,9 +2424,9 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C7D2FBB-1DD8-B71B-0BED99731011CFCE.jpg',
-                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Yosemite_Valley_from_Tunnel_View_2010.JPG',
-                fallbackUrl2: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Tunnel_View%2C_Yosemite_Valley%2C_Yosemite_NP_-_Diliff.jpg/640px-Tunnel_View%2C_Yosemite_Valley%2C_Yosemite_NP_-_Diliff.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point.JPG/640px-Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point.JPG',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Death_Valley_from_Dante%27s_View.jpg/640px-Death_Valley_from_Dante%27s_View.jpg',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
                     'The Great Rift Valley stretches 4,000 miles across Africa',
@@ -2461,9 +2438,9 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C7B12D1-1DD8-B71B-0BCE0712F9CEF48C.jpg',
-                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Grand_Canyon_view_from_Hopi_Point_2010.jpg',
-                fallbackUrl2: 'https://images.unsplash.com/photo-1544968503-7ad532b1e42b?w=640&h=480&fit=crop',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg/640px-Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Grand_Canyon_Sunset.JPG/640px-Grand_Canyon_Sunset.JPG',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Canyon_de_Chelly_Navajo.jpg/640px-Canyon_de_Chelly_Navajo.jpg',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
                     'The Grand Canyon is 277 miles long and over 1 mile deep',
@@ -2475,9 +2452,9 @@
             {
                 name: 'Plain',
                 emoji: '🌾',
-                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/A4C88B3F-C0C3-A777-12AEE2F830A3BB1F.jpg',
-                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Great_Plains_panorama.jpg',
-                fallbackUrl2: 'https://images.unsplash.com/photo-1500622944204-b135684e99fd?w=640&h=480&fit=crop',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Great_Plains_Farming.jpg/640px-Great_Plains_Farming.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/American_bison_herd.jpg/640px-American_bison_herd.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wheat_field_in_Palouse_Washington.jpg/640px-Wheat_field_in_Palouse_Washington.jpg',
                 description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
                 facts: [
                     'Plains cover over one-third of Earth\'s land surface',
@@ -2489,9 +2466,9 @@
             {
                 name: 'Plateau',
                 emoji: '🏔️',
-                imageUrl: 'https://www.nps.gov/common/uploads/structured_data/3C79933C-1DD8-B71B-0BF201E3DB540D04.jpg',
-                fallbackUrl: 'https://commons.wikimedia.org/wiki/Special:FilePath/Colorado_Plateau_view.jpg',
-                fallbackUrl2: 'https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=640&h=480&fit=crop',
+                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Colorado_Plateau_from_Green_River_Overlook_%2814322148504%29.jpg/640px-Colorado_Plateau_from_Green_River_Overlook_%2814322148504%29.jpg',
+                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Tibetan_Plateau_NASA.jpg/640px-Tibetan_Plateau_NASA.jpg',
                 description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
                 facts: [
                     'The Tibetan Plateau is called "The Roof of the World"',
