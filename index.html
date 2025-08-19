@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.0</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.1</div>
         </nav>
 
         <!-- Home Screen -->
@@ -4793,6 +4793,21 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(screenId);
             if (target) target.classList.add('active');
+        }
+        
+        // Fix missing saveName function for name input
+        function saveName() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            if (name.length > 0) {
+                localStorage.setItem('playerName', name);
+                updateWelcomeMessage(name);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+                if (game && game.updateXPDisplay) game.updateXPDisplay();
+            } else {
+                nameInput.focus();
+            }
         }
         
         window.addEventListener('load', initializeApp);
