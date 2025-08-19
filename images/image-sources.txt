@@ -1,0 +1,68 @@
+EDUCATIONAL LANDFORM IMAGES - REQUIRED FOR SAFE CLASSROOM USE
+
+To complete the image caching system, add these verified educational images:
+
+1. mountain-rushmore.jpg
+   - Mount Rushmore National Memorial
+   - Source: NPS.gov public domain
+   - Shows clear mountain characteristics
+
+2. volcano-sthelens.jpg  
+   - Mount St. Helens eruption
+   - Source: USGS public domain
+   - Educational volcanic activity
+
+3. valley-yosemite.jpg
+   - Yosemite Valley from Tunnel View
+   - Source: NPS.gov public domain  
+   - Classic U-shaped glacial valley
+
+4. canyon-grand.jpg
+   - Grand Canyon South Rim
+   - Source: NPS.gov public domain
+   - Perfect canyon depth example
+
+5. plain-greatplains.jpg
+   - Kansas wheat fields
+   - Source: USDA public domain
+   - Shows agricultural plains use
+
+6. plateau-colorado.jpg
+   - Colorado Plateau landscape
+   - Source: USGS public domain
+   - Clear elevated flat terrain
+
+7. hill-rolling.jpg
+   - Iowa rolling countryside
+   - Source: USDA public domain
+   - Gentle elevation changes
+
+8. mesa-monument.jpg
+   - Monument Valley mesas
+   - Source: NPS.gov public domain
+   - Classic flat-topped formations
+
+9. delta-mississippi.jpg
+   - Mississippi Delta satellite view
+   - Source: NASA public domain
+   - Clear triangular formation
+
+10. peninsula-florida.jpg
+    - Florida from space
+    - Source: NASA public domain
+    - Land surrounded by water on 3 sides
+
+11. island-hawaii.jpg
+    - Hawaiian islands aerial
+    - Source: USGS public domain
+    - Volcanic island formation
+
+All sources are educational, public domain, and appropriate for K-12 classroom use.
+These images will be hosted directly in the GitHub repository for 100% reliability.
+
+BACKUP EDUCATIONAL FALLBACKS:
+If images fail to load, the system shows educational diagrams with:
+- Landform name and emoji
+- Featured landmark name
+- Educational description
+- Professional appearance

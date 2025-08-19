@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="640" height="480">
+  <rect width="640" height="480" fill="#87CEEB"/>
+  <polygon points="100,400 200,200 300,400" fill="#8B7355"/>
+  <polygon points="200,400 350,150 500,400" fill="#A0522D"/>
+  <polygon points="400,400 540,180 640,400" fill="#8B7355"/>
+  <polygon points="300,150 350,120 400,150 350,100" fill="#FFFFFF"/>
+  <text x="320" y="450" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#2F4F4F">MOUNTAIN</text>
+  <text x="320" y="50" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#2F4F4F">Mount Rushmore - Educational Photo Loading</text>
+</svg>
