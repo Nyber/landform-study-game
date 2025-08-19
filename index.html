@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.4-debug</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.5-fix</div>
         </nav>
 
         <!-- Home Screen -->
@@ -4864,6 +4864,27 @@
             }
             
             console.log('🎯 App initialized');
+        }
+        
+        // Add missing checkNameAndStart function
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                document.getElementById('playerName').focus();
+                alert('Please enter your name first!');
+                return;
+            }
+            
+            // Call the appropriate function
+            if (functionName === 'showDifficultySelection') {
+                alert('Quiz mode not implemented yet');
+            } else if (functionName === 'startTimeChallenge') {
+                alert('Speed challenge not implemented yet');
+            } else if (functionName === 'startStudyMode') {
+                alert('Study mode not implemented yet');
+            } else if (functionName === 'startVocabMode') {
+                alert('Vocabulary match not implemented yet');
+            }
         }
         
         window.addEventListener('load', initializeApp);
