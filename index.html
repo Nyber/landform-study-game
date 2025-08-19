@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.6-force</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.7-save</div>
         </nav>
 
         <!-- Home Screen -->
@@ -4797,16 +4797,31 @@
         
         // Fix missing saveName function for name input
         function saveName() {
+            console.log('💾 saveName called');
             const nameInput = document.getElementById('playerName');
             const name = nameInput.value.trim();
+            console.log('Name entered:', name);
+            
             if (name.length > 0) {
                 localStorage.setItem('playerName', name);
-                updateWelcomeMessage(name);
+                
+                // Update welcome message safely
+                const title = document.getElementById('welcomeTitle');
+                if (title) title.textContent = `Welcome, ${name}!`;
+                
+                // Hide name setup
                 document.getElementById('nameSetup').style.display = 'none';
-                enableGameModes();
-                if (game && game.updateXPDisplay) game.updateXPDisplay();
+                
+                // Enable game modes safely
+                document.querySelectorAll('.mode-card').forEach(card => {
+                    card.style.opacity = '1';
+                    card.style.pointerEvents = 'auto';
+                });
+                
+                console.log('✅ Name saved and game modes enabled');
             } else {
                 nameInput.focus();
+                console.log('❌ Name was empty');
             }
         }
         
