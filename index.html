@@ -131,6 +131,14 @@
             box-shadow: var(--shadow-2xl);
             padding: 2rem;
             transition: var(--transition);
+            color: var(--text-primary);
+        }
+
+        /* Dark mode glass cards */
+        [data-theme="dark"] .glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            color: var(--text-primary);
         }
 
         .glass-card:hover {
@@ -151,6 +159,12 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             position: relative;
+        }
+
+        /* Dark mode navigation */
+        [data-theme="dark"] .nav-bar {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 1px solid rgba(100, 116, 139, 0.3);
         }
         
         .header-content {
@@ -621,6 +635,13 @@
             border: 2px solid transparent;
             position: relative;
             overflow: hidden;
+            color: var(--text-primary);
+        }
+
+        /* Dark mode mode cards */
+        [data-theme="dark"] .mode-card {
+            background: var(--bg-secondary);
+            border: 2px solid rgba(100, 116, 139, 0.3);
         }
 
         .mode-card::before {
@@ -723,6 +744,12 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+
+        /* Dark mode dashboard cards */
+        [data-theme="dark"] .dashboard-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 2px solid rgba(100, 116, 139, 0.3);
         }
         
         .dashboard-card::before {
@@ -843,6 +870,12 @@
             position: relative;
             overflow: hidden;
         }
+
+        /* Dark mode session items */
+        [data-theme="dark"] .session-item {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 2px solid rgba(100, 116, 139, 0.3);
+        }
         
         .session-item::before {
             content: '';
@@ -920,6 +953,13 @@
             border-radius: 20px;
             backdrop-filter: blur(15px);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        /* Dark mode no-sessions */
+        [data-theme="dark"] .no-sessions {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 2px solid rgba(100, 116, 139, 0.3);
+            color: var(--text-secondary);
         }
 
         .no-sessions p {
@@ -1202,6 +1242,12 @@
             text-align: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
+        }
+
+        /* Dark mode progress cards */
+        [data-theme="dark"] .progress-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.6));
+            border: 1px solid rgba(100, 116, 139, 0.3);
         }
         
         .progress-card:hover {
