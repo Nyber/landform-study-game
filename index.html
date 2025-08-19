@@ -1949,7 +1949,7 @@
         <div class="screen active" id="homeScreen">
             <div class="glass-card">
                 <div class="hero-section">
-                    <div class="hero-icon theme-toggle" onclick="toggleTheme()" title="🌙 Click to toggle dark mode">🌎</div>
+                    <div class="hero-icon theme-toggle" onclick="toggleTheme()" title="🌙 Click for dark mode">☀️</div>
                     <h1 class="title" id="welcomeTitle">Welcome, Explorer!</h1>
                     <p class="subtitle">Ready to explore amazing landforms? Let's learn about mountains, valleys, and more! 🏝️</p>
                     <div class="welcome-stats">
@@ -3888,13 +3888,13 @@
             // Save preference
             localStorage.setItem('theme', newTheme);
             
-            // Update globe icon with animation
-            const globe = document.querySelector('.theme-toggle');
-            globe.style.transform = 'scale(1.2) rotate(360deg)';
+            // Update theme icon with animation
+            const themeIcon = document.querySelector('.theme-toggle');
+            themeIcon.style.transform = 'scale(1.2) rotate(360deg)';
             setTimeout(() => {
-                globe.textContent = newTheme === 'dark' ? '🌙' : '🌎';
-                globe.title = newTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
-                globe.style.transform = '';
+                themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+                themeIcon.title = newTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
+                themeIcon.style.transform = '';
             }, 150);
             
             // Play sound feedback
@@ -3957,11 +3957,11 @@
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             
-            // Update globe icon based on current theme
-            const globe = document.querySelector('.theme-toggle');
-            if (globe) {
-                globe.textContent = savedTheme === 'dark' ? '🌙' : '🌎';
-                globe.title = savedTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
+            // Update theme icon based on current theme
+            const themeIcon = document.querySelector('.theme-toggle');
+            if (themeIcon) {
+                themeIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+                themeIcon.title = savedTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
             }
         }
 
