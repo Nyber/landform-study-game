@@ -33,13 +33,42 @@
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Dark mode variables */
+        [data-theme="dark"] {
+            --primary-color: #22d3ee;
+            --secondary-color: #34d399;
+            --accent-color: #fbbf24;
+            --success-color: #4ade80;
+            --warning-color: #fcd34d;
+            --error-color: #f87171;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.7);
+        }
+
+        /* Theme transition for smooth switching */
+        *, *::before, *::after {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+        }
+
         body {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0ea5e9 0%, #059669 25%, #16a34a 50%, #ca8a04 75%, #d97706 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 25%, #16a34a 50%, var(--accent-color) 75%, #d97706 100%);
             min-height: 100vh;
             padding: 1rem;
             position: relative;
             overflow-x: hidden;
+        }
+
+        /* Dark mode background override */
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #334155 50%, #475569 75%, #64748b 100%);
         }
 
         /* Background effects */
@@ -112,14 +141,25 @@
         /* Navigation */
         .nav-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 1rem 2rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(15px);
             border-radius: var(--border-radius);
             margin-bottom: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            width: 100%;
+            max-width: 800px;
+            justify-content: space-between;
         }
 
         .logo {
@@ -228,20 +268,23 @@
 
         .nav-controls {
             display: flex;
-            gap: 1rem;
+            gap: 1.5rem;
             align-items: center;
         }
 
         .user-level {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(5, 150, 105, 0.2));
+            padding: 0.75rem 1.25rem;
             border-radius: 25px;
             color: white;
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         .xp-bar {
@@ -269,6 +312,31 @@
             font-size: 4rem;
             margin-bottom: 1rem;
             animation: float 3s ease-in-out infinite;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            position: relative;
+            border-radius: 50%;
+            padding: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Dark mode theme toggle styling */
+        [data-theme="dark"] .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
         @keyframes float {
@@ -475,6 +543,66 @@
             border-color: rgba(255, 255, 255, 0.5);
         }
 
+        /* Enhanced button styles */
+        .scoreboard-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 1.2rem 2.5rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .scoreboard-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn .btn-icon:first-child {
+            margin-right: 0.5rem;
+        }
+        
+        .btn .btn-icon:last-child {
+            margin-left: 0.5rem;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            color: var(--text-primary);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
         /* Mode selection */
         .mode-grid {
             display: grid;
@@ -577,94 +705,184 @@
         .mode-card:nth-child(2) { animation-delay: 0.2s; }
         .mode-card:nth-child(3) { animation-delay: 0.3s; }
 
-        /* Scoreboard Styles */
-        .scoreboard-summary {
+        /* Challenge Scoreboard Styles */
+        .challenge-dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 2.5rem 0;
         }
 
-        .summary-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: var(--border-radius);
-            padding: 1.5rem;
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .section-subtitle {
+            color: #666;
+            margin: 0;
+            font-size: 1rem;
+        }
+        
+        .quiz-stats::before {
+            background: linear-gradient(90deg, #0ea5e9, #059669);
+        }
+        
+        .speed-stats::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .score-stats::before {
+            background: linear-gradient(90deg, #059669, #16a34a);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
             display: flex;
             align-items: center;
             gap: 1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
         }
-
-        .summary-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .summary-icon {
-            font-size: 2.5rem;
-            width: 60px;
-            height: 60px;
+        
+        .card-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 50%;
+            border-radius: 15px;
             color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
-        .summary-text {
-            flex: 1;
+        
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
         }
-
-        .summary-number {
-            font-size: 2rem;
-            font-weight: 800;
+        
+        .card-stats {
+            text-align: center;
+        }
+        
+        .stat-big {
+            font-size: 3rem;
+            font-weight: 900;
             color: var(--primary-color);
             line-height: 1;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .summary-label {
-            font-size: 0.9rem;
+        
+        .stat-label {
+            font-size: 1rem;
             color: var(--text-secondary);
-            font-weight: 500;
-            margin-top: 0.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .sessions-list {
-            max-height: 400px;
+            max-height: 500px;
             overflow-y: auto;
-            background: rgba(255,255,255,0.5);
-            border-radius: var(--border-radius);
-            padding: 1rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
         .session-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem;
-            margin: 0.5rem 0;
-            background: white;
-            border-radius: var(--border-radius);
-            border-left: 4px solid var(--primary-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 18px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .session-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .session-item:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+            border-color: rgba(139, 195, 74, 0.4);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .session-item:hover::before {
+            opacity: 1;
         }
 
         .session-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
         }
 
         .session-mode {
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            padding: 0.4rem 1rem;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            font-weight: 700;
             color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
         .session-mode.quiz {
@@ -676,19 +894,38 @@
         }
 
         .session-score {
-            font-weight: 700;
-            font-size: 1.1rem;
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.6);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.4);
+            backdrop-filter: blur(5px);
         }
 
         .session-date {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 0.25rem;
         }
 
         .no-sessions {
             text-align: center;
-            padding: 3rem;
-            color: var(--text-secondary);
+            padding: 4rem 2rem;
+            color: #666;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .no-sessions p {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #888;
         }
 
         .mode-icon {
@@ -1240,10 +1477,14 @@
             }
 
             .nav-bar {
-                flex-direction: column;
-                gap: 1rem;
                 padding: 1rem;
                 margin-top: 1rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
             }
 
             .mode-grid {
@@ -1385,22 +1626,24 @@
     <div class="app-container">
         <!-- Navigation -->
         <nav class="nav-bar">
-            <div class="logo">
-                <div class="logo-container">
-                    <div class="logo-icon">🌍</div>
-                    <div class="logo-text">
-                        <div class="logo-title">Landform Explorer</div>
-                        <div class="logo-subtitle">Adventure Awaits</div>
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-container">
+                        <div class="logo-icon">🌍</div>
+                        <div class="logo-text">
+                            <div class="logo-title">Landform Explorer</div>
+                            <div class="logo-subtitle">Adventure Awaits</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="nav-controls">
-                <div class="user-level" id="userLevel">
-                    <span>Level 1</span>
-                    <div class="xp-bar">
-                        <div class="xp-fill" id="xpFill"></div>
+                <div class="nav-controls">
+                    <div class="user-level" id="userLevel">
+                        <span>Level 1</span>
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpFill"></div>
+                        </div>
+                        <span id="xpText">65/100 XP</span>
                     </div>
-                    <span id="xpText">65/100 XP</span>
                 </div>
             </div>
         </nav>
@@ -1409,7 +1652,7 @@
         <div class="screen active" id="homeScreen">
             <div class="glass-card">
                 <div class="hero-section">
-                    <div class="hero-icon">🌎</div>
+                    <div class="hero-icon theme-toggle" onclick="toggleTheme()" title="🌙 Click to toggle dark mode">🌎</div>
                     <h1 class="title" id="welcomeTitle">Welcome, Explorer!</h1>
                     <p class="subtitle">Ready to explore amazing landforms? Let's learn about mountains, valleys, and more! 🏝️</p>
                     <div class="welcome-stats">
@@ -1465,8 +1708,9 @@
 
                 <!-- Quick Actions -->
                 <div style="text-align: center; margin: 2rem 0;">
-                    <button class="btn btn-accent" onclick="showScoreboard()" style="margin: 0 0.5rem;">
-                        📈 View Practice Scores
+                    <button class="btn btn-primary scoreboard-btn" onclick="showScoreboard()">
+                        <span class="btn-icon">🏆</span>
+                        <span>View Challenge Scoreboard</span>
                     </button>
                 </div>
 
@@ -1530,7 +1774,10 @@
                     </div>
                 </div>
                 <div style="text-align: center; margin-top: 2rem;">
-                    <button class="btn btn-ghost" onclick="showScreen('homeScreen')">← Back to Home</button>
+                    <button class="btn btn-secondary" onclick="showScreen('homeScreen')">
+                        <span class="btn-icon">🏠</span>
+                        <span>Back to Home</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1539,49 +1786,70 @@
         <div class="screen" id="scoreboardScreen">
             <div class="glass-card">
                 <div style="text-align: center;">
-                    <h2 class="title">📈 Practice Scoreboard</h2>
-                    <p class="subtitle" id="scoreboardSubtitle">Track your learning progress and achievements!</p>
+                    <h2 class="title">🏆 Challenge Scoreboard</h2>
+                    <p class="subtitle" id="scoreboardSubtitle">Master your landform challenges and track victories!</p>
                     
-                    <!-- Summary Stats -->
-                    <div class="scoreboard-summary">
-                        <div class="summary-card">
-                            <div class="summary-icon">🎯</div>
-                            <div class="summary-text">
-                                <div class="summary-number" id="totalQuizzes">0</div>
-                                <div class="summary-label">Quiz Sessions</div>
+                    <!-- Challenge Stats Dashboard -->
+                    <div class="challenge-dashboard">
+                        <div class="dashboard-card quiz-stats">
+                            <div class="card-header">
+                                <div class="card-icon">🧩</div>
+                                <div class="card-title">Quiz Challenges</div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-big" id="totalQuizzes">0</div>
+                                <div class="stat-label">Completed</div>
                             </div>
                         </div>
-                        <div class="summary-card">
-                            <div class="summary-icon">⚡</div>
-                            <div class="summary-text">
-                                <div class="summary-number" id="totalSpeedRuns">0</div>
-                                <div class="summary-label">Speed Challenges</div>
+                        
+                        <div class="dashboard-card speed-stats">
+                            <div class="card-header">
+                                <div class="card-icon">🚀</div>
+                                <div class="card-title">Speed Challenges</div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-big" id="totalSpeedRuns">0</div>
+                                <div class="stat-label">Completed</div>
                             </div>
                         </div>
-                        <div class="summary-card">
-                            <div class="summary-icon">💯</div>
-                            <div class="summary-text">
-                                <div class="summary-number" id="averageScore">0%</div>
-                                <div class="summary-label">Average Score</div>
+                        
+                        <div class="dashboard-card score-stats">
+                            <div class="card-header">
+                                <div class="card-icon">🏆</div>
+                                <div class="card-title">Overall Performance</div>
+                            </div>
+                            <div class="card-stats">
+                                <div class="stat-big" id="averageScore">0%</div>
+                                <div class="stat-label">Average Score</div>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Recent Sessions -->
                     <div style="margin-top: 3rem;">
-                        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">📅 Recent Practice Sessions</h3>
+                        <div class="section-header">
+                            <h3 class="section-title">📅 Recent Challenge Sessions</h3>
+                            <p class="section-subtitle">Review your progress and achievements</p>
+                        </div>
                         <div id="recentSessionsList" class="sessions-list">
                             <div class="no-sessions">
-                                <div style="font-size: 3rem; margin-bottom: 1rem;">🌱</div>
-                                <p>No practice sessions yet! Start playing to see scores here.</p>
+                                <div style="font-size: 3.5rem; margin-bottom: 1rem;">🌱</div>
+                                <h4 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">Ready to Start?</h4>
+                                <p>No challenge sessions yet! Complete your first quiz or speed challenge to see your achievements here.</p>
                             </div>
                         </div>
                     </div>
                     
                     <!-- Navigation -->
                     <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="showScreen('homeScreen')">🏠 Back to Home</button>
-                        <button class="btn btn-ghost" onclick="clearScoreHistory()">🗑️ Clear History</button>
+                        <button class="btn btn-secondary" onclick="showScreen('homeScreen')">
+                            <span class="btn-icon">🏠</span>
+                            <span>Back to Home</span>
+                        </button>
+                        <button class="btn btn-danger" onclick="clearScoreHistory()">
+                            <span class="btn-icon">🗑️</span>
+                            <span>Clear History</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1590,13 +1858,20 @@
         <!-- Study Mode Screen -->
         <div class="screen" id="studyScreen">
             <div class="glass-card">
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <button class="btn btn-ghost" onclick="showScreen('homeScreen')">← Back to Home</button>
-                </div>
                 <div id="studyContent"></div>
-                <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
-                    <button class="btn btn-primary" onclick="previousLandform()">← Previous</button>
-                    <button class="btn btn-primary" onclick="nextLandform()">Next →</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; gap: 1rem;">
+                    <button class="btn btn-secondary" onclick="previousLandform()">
+                        <span class="btn-icon">⬅️</span>
+                        <span>Previous</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="showScreen('homeScreen')">
+                        <span class="btn-icon">🏠</span>
+                        <span>Home</span>
+                    </button>
+                    <button class="btn btn-primary" onclick="nextLandform()">
+                        <span>Next</span>
+                        <span class="btn-icon">➡️</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1666,9 +1941,18 @@
                     </div>
 
                     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="showScreen('homeScreen')">🏠 Home</button>
-                        <button class="btn btn-success" onclick="restartQuiz()">🔄 Play Again</button>
-                        <button class="btn btn-accent" onclick="shareResults()">📱 Share</button>
+                        <button class="btn btn-secondary" onclick="showScreen('homeScreen')">
+                            <span class="btn-icon">🏠</span>
+                            <span>Home</span>
+                        </button>
+                        <button class="btn btn-success" onclick="restartQuiz()">
+                            <span class="btn-icon">🔄</span>
+                            <span>Play Again</span>
+                        </button>
+                        <button class="btn btn-primary" onclick="shareResults()">
+                            <span class="btn-icon">📱</span>
+                            <span>Share</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1775,9 +2059,9 @@
                     return `
                         <div class="achievement-item ${isEarned ? 'earned' : 'locked'}">
                             ${isEarned ? '<div class="achievement-earned-badge">✓</div>' : ''}
-                            <div class="achievement-icon">${isEarned ? data.emoji : '🔒'}</div>
+                            <div class="achievement-icon">${data.emoji}</div>
                             <div class="achievement-name">${data.name}</div>
-                            <div class="achievement-desc">${isEarned ? data.desc : '???'}</div>
+                            <div class="achievement-desc">${data.desc}</div>
                         </div>
                     `;
                 }).join('');
@@ -1942,7 +2226,8 @@
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3kiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjODdDRUVCIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRTBGNkZGIi8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9Im1vdW50YWluIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZGRkZGRiIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjRjNGNEY2Ii8+PHN0b3Agb2Zmc2V0PSI2MCUiIHN0b3AtY29sb3I9IiM2QjczODAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMzNzQxNTEiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0idXJsKCNza3kpIi8+PHBvbHlnb24gcG9pbnRzPSIyMDAsNTAgMzAwLDI1MCA5MCwyNTAiIGZpbGw9InVybCgjbW91bnRhaW4pIi8+PHBvbHlnb24gcG9pbnRzPSIzMDAsMTAwIDM4MCwyNTAgMjIwLDI1MCIgZmlsbD0idXJsKCNtb3VudGFpbikiLz48cG9seWdvbiBwb2ludHM9IjEwMCwxMjAgMTgwLDI1MCAyMCwyNTAiIGZpbGw9InVybCgjbW91bnRhaW4pIi8+PHJlY3QgeT0iMjUwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjMjJDNTVFIi8+PC9zdmc+',
+                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/640px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
                     'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
@@ -1954,7 +2239,8 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3kyIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFGMkEzNyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzM3NDE1MSIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJ2b2xjYW5vIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzc0MUEyQSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzNGMUExNyIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJsYXZhIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCQkYyNCIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjRkY2QzAwIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjREMyNjI2Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9InVybCgjc2t5MikiLz48cG9seWdvbiBwb2ludHM9IjIwMCw4MCAyODAsMjUwIDEyMCwyNTAiIGZpbGw9InVybCgjdm9sY2FubykiLz48cmVjdCB4PSIxOTAiIHk9IjcwIiB3aWR0aD0iMjAiIGhlaWdodD0iMTAiIGZpbGw9InVybCgjbGF2YSkiLz48Y2lyY2xlIGN4PSIxODUiIGN5PSI1MCIgcj0iNSIgZmlsbD0iI0ZCQkYyNCIgb3BhY2l0eT0iMC44Ii8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iNDAiIHI9IjciIGZpbGw9IiNGRjZDMDAiIG9wYWNpdHk9IjAuNyIvPjxjaXJjbGUgY3g9IjIxNSIgY3k9IjU1IiByPSI0IiBmaWxsPSIjREMyNjI2IiBvcGFjaXR5PSIwLjYiLz48cmVjdCB5PSIyNTAiIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAiIGZpbGw9IiMyMkM1NUUiLz48L3N2Zz4=',
+                imageUrl: 'https://images.unsplash.com/photo-1570993492881-25240ce854f4?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/MtStHelens_SouthFace_HR.jpg/640px-MtStHelens_SouthFace_HR.jpg',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
                     'There are about 1,500 active volcanoes worldwide',
@@ -1966,7 +2252,8 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3kzIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzg3Q0VFQiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0UwRjZGRiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJoaWxscyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiM2MzdCNzciLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0MzZFNDQiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCBpZD0icml2ZXIiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMzY5NEY2Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMUQ0RUQ4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9InVybCgjc2t5MykiLz48cG9seWdvbiBwb2ludHM9IjAsMTUwIDEwMCwyNTAgMCwyNTAiIGZpbGw9InVybCgjaGlsbHMpIi8+PHBvbHlnb24gcG9pbnRzPSI0MDAsMTIwIDMwMCwyNTAgNDAwLDI1MCIgZmlsbD0idXJsKCNoaWxscykiLz48cGF0aCBkPSJNMTAwIDI1MFEyMDAgMjAwIDMwMCAyNTAiIHN0cm9rZT0idXJsKCNyaXZlcikiIHN0cm9rZS13aWR0aD0iMTAiIGZpbGw9Im5vbmUiLz48cmVjdCB5PSIyNTAiIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAiIGZpbGw9IiMyMkM1NUUiLz48L3N2Zz4=',
+                imageUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point..JPG/640px-Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point..JPG',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
                     'The Great Rift Valley stretches 4,000 miles across Africa',
@@ -1978,7 +2265,8 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3k0IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0ZCOUY0QSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0Y1OUUwQiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJyb2NrIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0Y0NzMzMyIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSIjRUE1OTBDIS8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjOTIyNzA5Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjQwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9InVybCgjc2t5NCkiLz48cmVjdCB4PSIwIiB5PSI1MCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSIyMDAiIGZpbGw9InVybCgjcm9jaykiLz48cmVjdCB4PSIyNTAiIHk9IjUwIiB3aWR0aD0iMTUwIiBoZWlnaHQ9IjIwMCIgZmlsbD0idXJsKCNyb2NrKSIvPjxyZWN0IHg9IjE1MCIgeT0iMjMwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIwIiBmaWxsPSIjM0I4MkY2Ii8+PC9zdmc+',
+                imageUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Grand_Canyon_Desert_View_Watchtower_2013.jpg/640px-Grand_Canyon_Desert_View_Watchtower_2013.jpg',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
                     'The Grand Canyon is 277 miles long and over 1 mile deep',
@@ -1990,7 +2278,8 @@
             {
                 name: 'Plain',
                 emoji: '🌾',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3k1IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzg3Q0VFQiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0UwRjZGRiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSJ1cmwoI3NreTUpIi8+PHJlY3QgeT0iMTgwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjEyMCIgZmlsbD0iIzIyQzU1RSIvPjxyZWN0IHg9IjUwIiB5PSIxNjAiIHdpZHRoPSI0IiBoZWlnaHQ9IjIwIiBmaWxsPSIjRkJCRjI0Ii8+PHJlY3QgeD0iMTAwIiB5PSIxNTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjMwIiBmaWxsPSIjRkJCRjI0Ii8+PHJlY3QgeD0iMjAwIiB5PSIxNDAiIHdpZHRoPSI0IiBoZWlnaHQ9IjQwIiBmaWxsPSIjRkJCRjI0Ii8+PHJlY3QgeD0iMzAwIiB5PSIxNTAiIHdpZHRoPSI0IiBoZWlnaHQ9IjMwIiBmaWxsPSIjRkJCRjI0Ii8+PHJlY3QgeD0iMzUwIiB5PSIxNjUiIHdpZHRoPSI0IiBoZWlnaHQ9IjE1IiBmaWxsPSIjRkJCRjI0Ii8+PGNpcmNsZSBjeD0iODAiIGN5PSI4MCIgcj0iMjAiIGZpbGw9IiNGQkJGMjQiIG9wYWNpdHk9IjAuOCIvPjwvc3ZnPg==',
+                imageUrl: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Great_Plains_Farming.jpg/640px-Great_Plains_Farming.jpg',
                 description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
                 facts: [
                     'Plains cover over one-third of Earth\'s land surface',
@@ -2002,7 +2291,8 @@
             {
                 name: 'Plateau',
                 emoji: '🏔️',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3k2IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzg3Q0VFQiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0UwRjZGRiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJwbGF0ZWF1IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzkyODA2RiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzc4NzE2QyIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSJ1cmwoI3NreTYpIi8+PHJlY3QgeD0iNTAiIHk9IjEwMCIgd2lkdGg9IjMwMCIgaGVpZ2h0PSIxNTAiIGZpbGw9InVybCgjcGxhdGVhdSkiLz48cmVjdCB4PSI1MCIgeT0iOTAiIHdpZHRoPSIzMDAiIGhlaWdodD0iMTAiIGZpbGw9IiMyMkM1NUUiLz48cmVjdCB5PSIyNTAiIHdpZHRoPSI0MDAiIGhlaWdodD0iNTAiIGZpbGw9IiMyMkM1NUUiLz48L3N2Zz4=',
+                imageUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg',
                 description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
                 facts: [
                     'The Tibetan Plateau is called "The Roof of the World"',
@@ -2014,7 +2304,8 @@
             {
                 name: 'Hill',
                 emoji: '⛰️',
-                imageUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJza3k3IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzg3Q0VFQiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0UwRjZGRiIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJoaWxsIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzIyQzU1RSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzE2QTM0QSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSJ1cmwoI3NreTcpIi8+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjIwMCIgcng9IjgwIiByeT0iNTAiIGZpbGw9InVybCgjaGlsbCkiLz48ZWxsaXBzZSBjeD0iMjAwIiBjeT0iMTgwIiByeD0iOTAiIHJ5PSI3MCIgZmlsbD0idXJsKCNoaWxsKSIvPjxlbGxpcHNlIGN4PSIzMjAiIGN5PSIyMTAiIHJ4PSI3MCIgcnk9IjQwIiBmaWxsPSJ1cmwoI2hpbGwpIi8+PHJlY3QgeT0iMjUwIiB3aWR0aD0iNDAwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjMjJDNTVFIi8+PC9zdmc+',
+                imageUrl: 'https://images.unsplash.com/photo-1464822759356-8d6106e78f86?w=640&h=480&fit=crop&auto=format',
+                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Tuscany_Landscape.jpg/640px-Tuscany_Landscape.jpg',
                 description: 'Hills are rounded elevations smaller than mountains, typically under 2,000 feet tall. They provide gentle slopes perfect for recreation and settlements.',
                 facts: [
                     'Hills are generally considered smaller than mountains',
@@ -2128,6 +2419,7 @@
 
         // Initialize the app
         function initializeApp() {
+            initializeTheme();
             createBackgroundParticles();
             game.updateXPDisplay();
             game.updateProgressDisplay();
@@ -2159,6 +2451,11 @@
 
         // Study Mode
         function startStudyMode() {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
             showScreen('studyScreen');
             game.currentStudyIndex = 0;
             displayLandformInfo();
@@ -2172,7 +2469,9 @@
                 <div style="text-align: center;">
                     <h2 class="title">${landform.emoji} ${landform.name}</h2>
                     <div class="landform-image-container">
-                        <img src="${landform.imageUrl}" alt="${landform.name}" class="landform-image">
+                        <div class="image-loading" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); height: 300px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; border-radius: var(--border-radius);">
+                            📷 Loading image...
+                        </div>
                         <div class="image-overlay">${landform.name}</div>
                     </div>
                     <p class="subtitle">${landform.description}</p>
@@ -2182,6 +2481,39 @@
                     </div>
                 </div>
             `;
+            
+            // Load the image after setting innerHTML
+            loadLandformImage(landform);
+        }
+
+        function loadLandformImage(landform) {
+            const container = document.querySelector('.landform-image-container');
+            const loading = container.querySelector('.image-loading');
+            
+            const img = document.createElement('img');
+            img.src = landform.imageUrl;
+            img.alt = landform.name;
+            img.className = 'landform-image';
+            img.style.display = 'none';
+            
+            img.onload = function() {
+                this.style.display = 'block';
+                loading.style.display = 'none';
+            };
+            
+            img.onerror = function() {
+                console.log('Primary image failed for', landform.name, 'trying fallback...');
+                if (landform.fallbackUrl && this.src !== landform.fallbackUrl) {
+                    this.src = landform.fallbackUrl;
+                } else {
+                    console.log('All images failed for', landform.name);
+                    loading.innerHTML = `🖼️ ${landform.name}<br><small style="font-size: 1rem;">Real photo loading...</small>`;
+                }
+            };
+            
+            // Insert image before overlay
+            const overlay = container.querySelector('.image-overlay');
+            container.insertBefore(img, overlay);
         }
 
         function nextLandform() {
@@ -2203,6 +2535,11 @@
         }
 
         function startQuiz(difficulty) {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
             game.difficulty = difficulty;
             game.gameMode = 'normal';
             resetQuizState();
@@ -2211,6 +2548,11 @@
         }
 
         function startTimeChallenge() {
+            // Show welcome achievement for first-time users
+            if (!game.achievements.includes('welcome')) {
+                game.showAchievement('welcome', 'Welcome Explorer!', 'Welcome to your landform adventure!');
+            }
+            
             game.difficulty = 'medium';
             game.gameMode = 'challenge';
             resetQuizState();
@@ -2691,6 +3033,89 @@
             game.playSound('button');
         }
 
+        // Theme toggle function
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // Apply theme
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+            
+            // Update globe icon with animation
+            const globe = document.querySelector('.theme-toggle');
+            globe.style.transform = 'scale(1.2) rotate(360deg)';
+            setTimeout(() => {
+                globe.textContent = newTheme === 'dark' ? '🌙' : '🌎';
+                globe.title = newTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
+                globe.style.transform = '';
+            }, 150);
+            
+            // Play sound feedback
+            game.playSound('button');
+            
+            // Show subtle notification
+            showThemeNotification(newTheme);
+        }
+
+        function showThemeNotification(theme) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                color: white;
+                padding: 0.75rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                z-index: 10000;
+                box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+                opacity: 0;
+                transition: all 0.3s ease;
+                pointer-events: none;
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255,255,255,0.3);
+            `;
+            notification.textContent = `${theme === 'dark' ? '🌙' : '☀️'} ${theme === 'dark' ? 'Dark' : 'Light'} mode activated`;
+            
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.opacity = '1';
+                notification.style.transform = 'translateX(-50%) translateY(10px)';
+            }, 10);
+            
+            // Animate out and remove
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(-50%) translateY(-10px)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 2000);
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            // Update globe icon based on current theme
+            const globe = document.querySelector('.theme-toggle');
+            if (globe) {
+                globe.textContent = savedTheme === 'dark' ? '🌙' : '🌎';
+                globe.title = savedTheme === 'dark' ? '☀️ Click for light mode' : '🌙 Click for dark mode';
+            }
+        }
+
 
         // Scoreboard Functions
         function showScoreboard() {
@@ -2902,10 +3327,7 @@
                 enableGameModes();
                 game.playSound('button');
                 
-                // Show a welcome achievement
-                setTimeout(() => {
-                    game.showAchievement('welcome', 'Welcome Explorer!', `Welcome to Landform Explorer, ${name}!`);
-                }, 500);
+                // Welcome achievement will be shown when they start their first game
             } else {
                 nameInput.focus();
             }
