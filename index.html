@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.7-save</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.8-fixed</div>
         </nav>
 
         <!-- Home Screen -->
@@ -4523,14 +4523,7 @@
             initVocabGame();
         }
         
-        // Vocabulary game implementation
-        let vocabGame = {
-            selectedTerm: null,
-            selectedDef: null,
-            matches: [],
-            score: 0,
-            total: 9
-        };
+        // Vocabulary game implementation - REMOVED DUPLICATE
         
         function initVocabGame() {
             vocabGame.selectedTerm = null;

@@ -15,7 +15,8 @@
       "Bash(git ls-tree:*)",
       "WebFetch(domain:images.unsplash.com)",
       "WebFetch(domain:upload.wikimedia.org)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
