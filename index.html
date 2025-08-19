@@ -1210,34 +1210,6 @@
             color: white;
         }
 
-        /* Home button - always visible */
-        .home-btn {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: var(--shadow-lg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .home-btn:hover, .home-btn:active {
-            transform: scale(1.1);
-            background: var(--primary-color);
-            color: white;
-        }
 
         /* Loading states */
         .loading-spinner {
@@ -1298,13 +1270,6 @@
                 font-size: 1.2rem;
             }
 
-            .home-btn {
-                top: 1rem;
-                left: 1rem;
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
         }
 
         /* iPad specific optimizations */
@@ -1349,7 +1314,7 @@
             }
 
             /* Make all interactive elements larger for touch */
-            .control-btn, .home-btn {
+            .control-btn {
                 width: 65px;
                 height: 65px;
                 font-size: 1.8rem;
@@ -1416,8 +1381,6 @@
     <div class="floating-landform" style="bottom: 20%; right: 5%; animation-delay: 9s;">🏜️</div>
     <div class="floating-landform" style="top: 60%; left: 3%; animation-delay: 12s;">⛰️</div>
 
-    <!-- Home Button - Always Visible -->
-    <button class="home-btn" onclick="goHome()" title="Go Home">🏠</button>
 
     <div class="app-container">
         <!-- Navigation -->
@@ -1714,10 +1677,9 @@
 
     <!-- Control Buttons -->
     <div class="controls">
+        <button class="control-btn" onclick="goHome()" title="Home">🏠</button>
         <button class="control-btn" id="soundToggle" onclick="toggleSound()" title="Toggle Sound">🔊</button>
         <button class="control-btn" onclick="showScoreboard()" title="Scoreboard">📈</button>
-        <button class="control-btn" onclick="showHints()" title="Hints">💡</button>
-        <button class="control-btn" onclick="showSettings()" title="Settings">⚙️</button>
     </div>
 
     <!-- Achievement Popup -->
@@ -2729,17 +2691,6 @@
             game.playSound('button');
         }
 
-        function showHints() {
-            // Could implement a hints system
-            alert('💡 Hint: Look for key words in questions like "flat" for plains or "erupt" for volcanoes!');
-            game.playSound('button');
-        }
-
-        function showSettings() {
-            // Could implement settings panel
-            alert('⚙️ Settings coming soon! For now, use the sound toggle button.');
-            game.playSound('button');
-        }
 
         // Scoreboard Functions
         function showScoreboard() {
