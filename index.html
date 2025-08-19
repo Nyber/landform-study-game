@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.8-fixed</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.4.0-debug</div>
         </nav>
 
         <!-- Home Screen -->
@@ -2071,7 +2071,7 @@
                         <p style="margin-bottom: 1.5rem; color: var(--text-primary);">First, tell us your name so we can track your amazing progress!</p>
                         <div class="name-input-container">
                             <input type="text" id="playerName" class="name-input" placeholder="Your name here" maxlength="20">
-                            <button class="btn btn-primary" onclick="saveName()" style="margin-left: 1rem;">Let's Go!</button>
+                            <button class="btn btn-primary" onclick="alert('Lets Go clicked! Clicking works'); saveName();" style="margin-left: 1rem;">Let's Go!</button>
                         </div>
                         <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">Your name helps us save your scores and track your learning journey 🏆</p>
                     </div>
@@ -2099,7 +2099,7 @@
                         <div class="mode-badge learn">Learn!</div>
                     </div>
 
-                    <div class="mode-card vocab-card" onclick="checkNameAndStart('startVocabMode')">
+                    <div class="mode-card vocab-card" onclick="alert('Vocabulary Match clicked! This means clicking works.')">
                         <div class="mode-icon vocab-icon">📝</div>
                         <h3 class="mode-title">Vocabulary Match</h3>
                         <p class="mode-description">🎯 Match landforms with their descriptions!</p>
