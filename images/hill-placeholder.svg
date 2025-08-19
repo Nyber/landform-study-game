@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" width="640" height="480">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B0E0E6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="hillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#90EE90;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#228B22;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Sky background -->
+  <rect width="640" height="480" fill="url(#skyGrad)"/>
+  
+  <!-- Rolling hills with gentle curves -->
+  <path d="M 0,350 Q 80,300 160,320 Q 240,340 320,310 Q 400,280 480,300 Q 560,320 640,290 L 640,480 L 0,480 Z" fill="url(#hillGrad)"/>
+  
+  <!-- Second layer of hills in background -->
+  <path d="M 0,380 Q 100,340 200,360 Q 300,380 400,350 Q 500,320 600,340 Q 620,350 640,345 L 640,480 L 0,480 Z" fill="url(#hillGrad)" opacity="0.8"/>
+  
+  <!-- Gentle rolling contours -->
+  <path d="M 0,350 Q 80,300 160,320 Q 240,340 320,310 Q 400,280 480,300 Q 560,320 640,290" stroke="#228B22" stroke-width="2" fill="none" opacity="0.6"/>
+  
+  <!-- Grass texture and details -->
+  <circle cx="120" cy="335" r="3" fill="#32CD32" opacity="0.8"/>
+  <circle cx="180" cy="345" r="2" fill="#32CD32" opacity="0.8"/>
+  <circle cx="350" cy="315" r="4" fill="#32CD32" opacity="0.8"/>
+  <circle cx="450" cy="305" r="3" fill="#32CD32" opacity="0.8"/>
+  <circle cx="520" cy="325" r="2" fill="#32CD32" opacity="0.8"/>
+  
+  <!-- Small trees on hills -->
+  <ellipse cx="200" cy="340" rx="8" ry="15" fill="#228B22"/>
+  <rect x="198" y="350" width="4" height="10" fill="#8B4513"/>
+  
+  <ellipse cx="380" cy="300" rx="10" ry="18" fill="#228B22"/>
+  <rect x="378" y="315" width="4" height="12" fill="#8B4513"/>
+  
+  <ellipse cx="500" cy="315" rx="6" ry="12" fill="#228B22"/>
+  <rect x="498" y="325" width="4" height="8" fill="#8B4513"/>
+  
+  <!-- Clouds for depth -->
+  <ellipse cx="150" cy="80" rx="40" ry="20" fill="#FFFFFF" opacity="0.8"/>
+  <ellipse cx="170" cy="85" rx="35" ry="18" fill="#FFFFFF" opacity="0.8"/>
+  <ellipse cx="130" cy="85" rx="30" ry="15" fill="#FFFFFF" opacity="0.8"/>
+  
+  <ellipse cx="500" cy="100" rx="45" ry="22" fill="#FFFFFF" opacity="0.7"/>
+  <ellipse cx="520" cy="105" rx="40" ry="20" fill="#FFFFFF" opacity="0.7"/>
+  <ellipse cx="480" cy="105" rx="35" ry="18" fill="#FFFFFF" opacity="0.7"/>
+  
+  <!-- Educational info box -->
+  <rect x="120" y="380" width="400" height="80" fill="rgba(255,255,255,0.95)" rx="10" ry="10"/>
+  <text x="320" y="405" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#2F4F4F">⛰️ ROLLING HILLS</text>
+  <text x="320" y="425" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#2F4F4F">Gentle elevated landforms with rounded tops</text>
+  <text x="320" y="445" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#666">Loading countryside hills educational photo...</text>
+</svg>
