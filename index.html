@@ -1307,6 +1307,77 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
+
+        /* Section Navigation Tabs */
+        .section-nav {
+            display: flex;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.1));
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 0.5rem;
+            margin: 2rem 0 1rem 0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .section-tab {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: calc(var(--border-radius) - 0.25rem);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .section-tab:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .section-tab.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .section-icon {
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Dark mode section nav */
+        [data-theme="dark"] .section-nav {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.4)) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
+        [data-theme="dark"] .section-tab:hover {
+            background: linear-gradient(135deg, rgba(100, 116, 139, 0.3), rgba(71, 85, 105, 0.2)) !important;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         
         .progress-icon {
             font-size: 2rem;
@@ -1495,11 +1566,26 @@
         .feedback-card.success {
             border-left-color: var(--success-color);
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            color: #166534; /* Dark green text for light mode */
         }
 
         .feedback-card.error {
             border-left-color: var(--error-color);
             background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #dc2626; /* Dark red text for light mode */
+        }
+
+        /* Dark mode feedback overrides */
+        [data-theme="dark"] .feedback-card.success {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1)) !important;
+            color: #86efac !important; /* Light green text for dark mode */
+            border-left-color: #22c55e !important;
+        }
+
+        [data-theme="dark"] .feedback-card.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.1)) !important;
+            color: #fca5a5 !important; /* Light red text for dark mode */
+            border-left-color: #ef4444 !important;
         }
 
         .fun-fact {
@@ -1509,6 +1595,14 @@
             padding: 1rem;
             margin-top: 1rem;
             font-style: italic;
+            color: #7c3aed; /* Purple text for light mode */
+        }
+
+        /* Dark mode fun fact override */
+        [data-theme="dark"] .fun-fact {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(168, 85, 247, 0.1)) !important;
+            border: 2px solid rgba(196, 132, 252, 0.5) !important;
+            color: #c4b5fd !important; /* Light purple text for dark mode */
         }
 
         /* Control buttons */
@@ -1805,10 +1899,20 @@
                     </div>
                 </div>
 
+                <!-- Section Navigation -->
+                <div class="section-nav">
+                    <div class="section-tab active" data-section="progress">
+                        <span class="section-icon">📊</span>
+                        <span class="section-title">Progress</span>
+                    </div>
+                    <div class="section-tab" data-section="scoreboard">
+                        <span class="section-icon">🏆</span>
+                        <span class="section-title">Scoreboard</span>
+                    </div>
+                </div>
+
                 <!-- Progress Section -->
-                <div class="progress-section">
-                    <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🎆 Learning Progress</h3>
-                    
+                <div id="progressSection" class="tab-content active">
                     <!-- Quick Stats -->
                     <div class="progress-cards">
                         <div class="progress-card">
@@ -1833,19 +1937,25 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Scoreboard Action -->
-                    <div style="text-align: center; margin: 1.5rem 0;">
-                        <button class="btn btn-primary scoreboard-btn" onclick="showScoreboard()">
-                            <span class="btn-icon">🏆</span>
-                            <span>View Detailed Scoreboard</span>
-                        </button>
-                    </div>
 
                     <!-- Achievement Grid -->
                     <div style="margin-top: 2rem;">
-                        <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🏆 Achievement Showcase</h3>
                         <div class="achievements-grid" id="achievementsGrid"></div>
+                    </div>
+                </div>
+
+                <!-- Scoreboard Section -->
+                <div id="scoreboardSection" class="tab-content">
+                    <div class="scoreboard-preview">
+                        <p style="color: var(--text-secondary); text-align: center; margin: 2rem 0;">
+                            Click to view your detailed game history and statistics
+                        </p>
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary" onclick="showScoreboard()">
+                                <span class="btn-icon">📊</span>
+                                <span>Open Full Scoreboard</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3496,6 +3606,34 @@
             });
         }
 
+        // Section Tab Functionality
+        function setupSectionTabs() {
+            const tabs = document.querySelectorAll('.section-tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetSection = tab.getAttribute('data-section');
+                    
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const targetContent = document.getElementById(targetSection + 'Section');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                    
+                    // Play sound feedback
+                    if (window.game) {
+                        game.playSound('button');
+                    }
+                });
+            });
+        }
+
         // Initialize the app when page loads
         function initializeApp() {
             // Create game instance
@@ -3509,6 +3647,9 @@
             
             // Setup name input
             setupNameInput();
+            
+            // Setup section tabs
+            setupSectionTabs();
             
             // Load saved player name
             const savedName = localStorage.getItem('playerName');
