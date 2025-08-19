@@ -2578,14 +2578,14 @@
             }
         }
 
-        // Enhanced landform data with real image URLs
+        // Enhanced landform data with verified landmark images
         const landformData = [
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/640px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Mount_McKinley_and_Denali_National_Park_Road_2048px.jpg/640px-Mount_McKinley_and_Denali_National_Park_Road_2048px.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg/640px-Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/mountain-rushmore.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://cdn.britannica.com/85/25785-050-10C622E1/Mount-Rushmore-National-Memorial-South-Dakota.jpg',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
                     'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
@@ -2597,9 +2597,9 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Mount_St._Helens_eruption_on_July_22%2C_1980.jpg/640px-Mount_St._Helens_eruption_on_July_22%2C_1980.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Stromboli_Eruption.jpg/640px-Stromboli_Eruption.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Vesuvius_from_Pompeii_%282%29.jpg/640px-Vesuvius_from_Pompeii_%282%29.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/volcano-sthelens.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.nps.gov/mosh/learn/nature/images/MSH82_st_helens_plume_from_harrys_ridge_05-19-82_med_res_credit_mike_doukas_cvo.jpg',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
                     'There are about 1,500 active volcanoes worldwide',
@@ -2611,9 +2611,9 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Tunnel_View%2C_Yosemite_Valley%2C_Yosemite_NP_-_Diliff.jpg/640px-Tunnel_View%2C_Yosemite_Valley%2C_Yosemite_NP_-_Diliff.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point.JPG/640px-Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point.JPG',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Death_Valley_from_Dante%27s_View.jpg/640px-Death_Valley_from_Dante%27s_View.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/valley-yosemite.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.nps.gov/yose/learn/nature/images/tunnel-view-valley-2016.jpg',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
                     'The Great Rift Valley stretches 4,000 miles across Africa',
@@ -2625,9 +2625,9 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg/640px-Dawn_on_the_S_rim_of_the_Grand_Canyon_%288645178272%29.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Grand_Canyon_Sunset.JPG/640px-Grand_Canyon_Sunset.JPG',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Canyon_de_Chelly_Navajo.jpg/640px-Canyon_de_Chelly_Navajo.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/canyon-grand.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.nps.gov/grca/learn/nature/images/GrandCanyon_2012_0573.jpg',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
                     'The Grand Canyon is 277 miles long and over 1 mile deep',
@@ -2639,9 +2639,9 @@
             {
                 name: 'Plain',
                 emoji: '🌾',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Great_Plains_Farming.jpg/640px-Great_Plains_Farming.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/American_bison_herd.jpg/640px-American_bison_herd.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Wheat_field_in_Palouse_Washington.jpg/640px-Wheat_field_in_Palouse_Washington.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/plain-greatplains.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.usgs.gov/media/images/great-plains-wheat-field-kansas',
                 description: 'Plains are vast, flat expanses of land with minimal elevation changes. They are ideal for agriculture and support much of the world\'s food production.',
                 facts: [
                     'Plains cover over one-third of Earth\'s land surface',
@@ -2653,9 +2653,9 @@
             {
                 name: 'Plateau',
                 emoji: '🏔️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_Right_Part_2006_09_12.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Colorado_Plateau_from_Green_River_Overlook_%2814322148504%29.jpg/640px-Colorado_Plateau_from_Green_River_Overlook_%2814322148504%29.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Tibetan_Plateau_NASA.jpg/640px-Tibetan_Plateau_NASA.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/plateau-colorado.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1586348943529-beaae6c28db9?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.nps.gov/cany/learn/nature/images/Green-River-Overlook_2016.jpg',
                 description: 'Plateaus are elevated flatlands that rise sharply above surrounding areas. Often called "tablelands," they can be found at various elevations around the world.',
                 facts: [
                     'The Tibetan Plateau is called "The Roof of the World"',
@@ -2667,9 +2667,9 @@
             {
                 name: 'Hill',
                 emoji: '⛰️',
-                imageUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Tuscany_Landscape.jpg/640px-Tuscany_Landscape.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Rolling_hills_near_Marquette%2C_IA.jpg/640px-Rolling_hills_near_Marquette%2C_IA.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/hill-rolling.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.nrcs.usda.gov/wps/portal/nrcs/detail/ia/newsroom/releases/?cid=nrcs142p2_008305',
                 description: 'Hills are rounded elevations smaller than mountains, typically under 2,000 feet tall. They provide gentle slopes perfect for recreation and settlements.',
                 facts: [
                     'Hills are generally considered smaller than mountains',
@@ -2681,9 +2681,9 @@
             {
                 name: 'Mesa',
                 emoji: '🗻',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/Devils_Tower_CROP.jpg/640px-Devils_Tower_CROP.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Mesa_Verde_National_Park_Cliff_Palace_2006_09_12.jpg/640px-Mesa_Verde_National_Park_Cliff_Palace_2006_09_12.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Monument_Valley_2.jpg/640px-Monument_Valley_2.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/mesa-monument.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.nps.gov/nava/learn/nature/images/Monument-Valley-4.jpg',
                 description: 'Mesas are isolated, flat-topped hills with steep sides. These table-like landforms are created when harder rock layers protect softer rock below from erosion.',
                 facts: [
                     'Mesa means "table" in Spanish because of their flat tops',
@@ -2695,9 +2695,9 @@
             {
                 name: 'Delta',
                 emoji: '🏞️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Nile_River_Delta_at_Night.JPG/640px-Nile_River_Delta_at_Night.JPG',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Mississippi_River_Delta_Landsat.jpg/640px-Mississippi_River_Delta_Landsat.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Ganges_Delta.jpg/640px-Ganges_Delta.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/delta-mississippi.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1473773508845-188df298d2d1?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.usgs.gov/media/images/mississippi-river-delta-satellite-image',
                 description: 'Deltas are triangular areas of land formed where rivers meet the sea. Rivers slow down and drop sediment, creating fertile land perfect for farming.',
                 facts: [
                     'The Nile Delta has been called "the gift of the Nile" for thousands of years',
@@ -2709,9 +2709,9 @@
             {
                 name: 'Peninsula',
                 emoji: '🏝️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Florida_peninsula.jpg/640px-Florida_peninsula.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Iberian_Peninsula_location_map.svg/640px-Iberian_Peninsula_location_map.svg.png',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/Cape_Cod_aerial_view.jpg/640px-Cape_Cod_aerial_view.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/peninsula-florida.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://earthobservatory.nasa.gov/images/3866/florida-from-space',
                 description: 'Peninsulas are pieces of land surrounded by water on three sides and connected to the mainland on one side. They extend out into oceans, lakes, or rivers.',
                 facts: [
                     'Florida is a famous peninsula extending into the Atlantic Ocean and Gulf of Mexico',
@@ -2723,9 +2723,9 @@
             {
                 name: 'Island',
                 emoji: '🏝️',
-                imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Maui_Hawaii.jpg/640px-Maui_Hawaii.jpg',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Statue_of_Liberty_7.jpg/640px-Statue_of_Liberty_7.jpg',
-                fallbackUrl2: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Manhattan_from_top_of_rock.jpg/640px-Manhattan_from_top_of_rock.jpg',
+                imageUrl: 'https://raw.githubusercontent.com/Nyber/landform-study-game/main/images/island-hawaii.jpg',
+                fallbackUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=640&h=480&fit=crop',
+                fallbackUrl2: 'https://www.usgs.gov/observatories/hawaiian-volcano-observatory/multimedia-data-products',
                 description: 'Islands are pieces of land completely surrounded by water. They can be formed by volcanoes, coral reefs, or by rising sea levels separating land from continents.',
                 facts: [
                     'Hawaii\'s islands were formed by underwater volcanoes',
@@ -3025,11 +3025,31 @@
         }
         
         function showFallbackDisplay(landform, loading) {
+            const landmarkNames = {
+                'Mountain': 'Mount Rushmore',
+                'Volcano': 'Mount St. Helens',
+                'Valley': 'Yosemite Valley', 
+                'Canyon': 'Grand Canyon',
+                'Plain': 'Great Plains',
+                'Plateau': 'Colorado Plateau',
+                'Hill': 'Rolling Hills',
+                'Mesa': 'Monument Valley',
+                'Delta': 'Mississippi Delta',
+                'Peninsula': 'Florida Peninsula',
+                'Island': 'Hawaiian Islands'
+            };
+            
             loading.innerHTML = `
-                <div style="text-align: center; color: var(--text-primary);">
-                    <div style="font-size: 4rem; margin-bottom: 0.5rem;">${landform.emoji}</div>
+                <div style="text-align: center; color: var(--text-primary); padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">${landform.emoji}</div>
                     <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">${landform.name}</div>
-                    <div style="font-size: 1rem; opacity: 0.8;">Educational illustration</div>
+                    <div style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--primary-color);">
+                        📍 Featured: ${landmarkNames[landform.name] || 'Famous landmark'}
+                    </div>
+                    <div style="font-size: 0.9rem; opacity: 0.8; max-width: 300px; margin: 0 auto;">
+                        High-resolution educational photo loading...
+                        <br>Showing diagram while we fetch the landmark image.
+                    </div>
                 </div>
             `;
             loading.style.display = 'flex';
