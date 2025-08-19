@@ -2039,7 +2039,7 @@
                     </div>
                 </div>
             </div>
-            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.5-fix</div>
+            <div style="position: absolute; bottom: 5px; right: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5); pointer-events: none;">v1.3.6-force</div>
         </nav>
 
         <!-- Home Screen -->
@@ -2065,7 +2065,7 @@
                     </div>
                     
                     <!-- Name Input -->
-                    <div id="nameSetup" class="name-setup" style="display: none;">
+                    <div id="nameSetup" class="name-setup" style="display: block;">
                         <div style="font-size: 2rem; margin-bottom: 1rem;">🚀</div>
                         <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">Ready for Adventure?</h3>
                         <p style="margin-bottom: 1.5rem; color: var(--text-primary);">First, tell us your name so we can track your amazing progress!</p>
@@ -4925,6 +4925,19 @@
             }
             lastTouchEnd = now;
         }, false);
+    </script>
+    <!-- Force initialization script -->
+    <script>
+        // Force show name input and disable game modes
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 Force init running...');
+            document.getElementById('nameSetup').style.display = 'block';
+            document.querySelectorAll('.mode-card').forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.pointerEvents = 'none';
+            });
+            console.log('🎯 Force init complete');
+        });
     </script>
 </body>
 </html>
