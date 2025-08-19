@@ -487,6 +487,18 @@
             box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
         }
 
+        /* Dark mode input styling */
+        [data-theme="dark"] .name-input {
+            background: var(--bg-secondary) !important;
+            border: 2px solid rgba(100, 116, 139, 0.3) !important;
+            color: var(--text-primary) !important;
+        }
+
+        [data-theme="dark"] .name-input:focus {
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.2) !important;
+        }
+
         /* Button styles */
         .btn {
             display: inline-flex;
@@ -1793,17 +1805,9 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div style="text-align: center; margin: 2rem 0;">
-                    <button class="btn btn-primary scoreboard-btn" onclick="showScoreboard()">
-                        <span class="btn-icon">🏆</span>
-                        <span>View Challenge Scoreboard</span>
-                    </button>
-                </div>
-
                 <!-- Progress Section -->
                 <div class="progress-section">
-                    <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🎆 Your Explorer Journey</h3>
+                    <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🎆 Learning Progress</h3>
                     
                     <!-- Quick Stats -->
                     <div class="progress-cards">
@@ -1830,9 +1834,17 @@
                         </div>
                     </div>
                     
+                    <!-- Scoreboard Action -->
+                    <div style="text-align: center; margin: 1.5rem 0;">
+                        <button class="btn btn-primary scoreboard-btn" onclick="showScoreboard()">
+                            <span class="btn-icon">🏆</span>
+                            <span>View Detailed Scoreboard</span>
+                        </button>
+                    </div>
+
                     <!-- Achievement Grid -->
                     <div style="margin-top: 2rem;">
-                        <h4 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🏆 Achievement Collection</h4>
+                        <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">🏆 Achievement Showcase</h3>
                         <div class="achievements-grid" id="achievementsGrid"></div>
                     </div>
                 </div>
@@ -2028,7 +2040,7 @@
                     </div>
 
                     <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                        <button class="btn btn-secondary" onclick="showScreen('homeScreen')">
+                        <button class="btn btn-primary" onclick="showScreen('homeScreen')">
                             <span class="btn-icon">🏠</span>
                             <span>Home</span>
                         </button>
@@ -2110,6 +2122,22 @@
             updateProgressDisplay() {
                 // Update achievement count
                 const totalAchievements = Object.keys(this.getAllAchievements()).length;
+                const uniqueAchievements = [...new Set(this.achievements)]; // Remove duplicates
+                
+                console.log('Progress Display:', {
+                    totalPossible: totalAchievements,
+                    currentCount: this.achievements.length,
+                    uniqueCount: uniqueAchievements.length,
+                    achievements: this.achievements
+                });
+                
+                // Fix any duplicates in the achievements array
+                if (this.achievements.length !== uniqueAchievements.length) {
+                    console.log('Found duplicate achievements, cleaning up...');
+                    this.achievements = uniqueAchievements;
+                    this.save();
+                }
+                
                 document.getElementById('achievementCount').textContent = `${this.achievements.length}/${totalAchievements}`;
                 
                 // Update best streak (track it in localStorage)
@@ -2133,7 +2161,8 @@
                     'perfect_score': { name: 'Perfect Explorer', desc: '100% quiz score!', emoji: '⭐' },
                     'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
                     'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
-                    'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' }
+                    'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
+                    'dark_mode_discovery': { name: 'Night Owl', desc: 'Discovered the secret dark mode!', emoji: '🌙' }
                 };
             }
             
@@ -2164,15 +2193,20 @@
                     'speed_demon': { name: 'Speed Demon', desc: 'Lightning fast answers!', emoji: '⚡' },
                     'time_master': { name: 'Time Master', desc: 'Completed speed challenge!', emoji: '⏰' },
                     'study_master': { name: 'Study Master', desc: 'Learned about all landforms!', emoji: '📚' },
-                    'level_up': { name: 'Level Up', desc: 'Reached a new level!', emoji: '🆙' }
+                    'level_up': { name: 'Level Up', desc: 'Reached a new level!', emoji: '🆙' },
+                    'dark_mode_discovery': { name: 'Night Owl', desc: 'Discovered the secret dark mode!', emoji: '🌙' }
                 };
                 return achievements[id] || { name: 'Achievement', desc: 'Well done!', emoji: '🏆' };
             }
             
 
             showAchievement(id, title, description = '') {
-                if (this.achievements.includes(id)) return;
+                if (this.achievements.includes(id)) {
+                    console.log('Achievement already earned:', id);
+                    return;
+                }
                 
+                console.log('Awarding achievement:', id, 'Current achievements:', this.achievements.length);
                 this.achievements.push(id);
                 this.save();
                 this.updateProgressDisplay();
@@ -2313,8 +2347,8 @@
             {
                 name: 'Mountain',
                 emoji: '🏔️',
-                imageUrl: 'https://images.unsplash.com/photo-1464822759356-8d6106e78f86?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg/640px-Mount_Everest_as_seen_from_Drukair2_PLW_edit.jpg',
+                imageUrl: 'https://picsum.photos/640/480?random=1',
+                fallbackUrl: 'https://via.placeholder.com/640x480/059669/ffffff?text=Mountain+🏔️',
                 description: 'Mountains are massive landforms that rise dramatically above the surrounding terrain. They are formed through tectonic forces and can reach incredible heights with snow-capped peaks.',
                 facts: [
                     'Mount Everest is 29,032 feet tall - taller than 20 Empire State Buildings stacked!',
@@ -2326,8 +2360,8 @@
             {
                 name: 'Volcano',
                 emoji: '🌋',
-                imageUrl: 'https://images.unsplash.com/photo-1618050411648-d8dd3fa5d2b2?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/MtStHelens_SouthFace_HR.jpg/640px-MtStHelens_SouthFace_HR.jpg',
+                imageUrl: 'https://picsum.photos/640/480?random=2',
+                fallbackUrl: 'https://via.placeholder.com/640x480/ef4444/ffffff?text=Volcano+🌋',
                 description: 'Volcanoes are openings in Earth\'s crust where molten rock, gases, and debris can escape. They create spectacular mountains and islands through repeated eruptions.',
                 facts: [
                     'There are about 1,500 active volcanoes worldwide',
@@ -2339,8 +2373,8 @@
             {
                 name: 'Valley',
                 emoji: '🏞️',
-                imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point..JPG/640px-Yosemite_Valley_from_Wawona_Tunnel_view%2C_vista_point..JPG',
+                imageUrl: 'https://picsum.photos/640/480?random=3',
+                fallbackUrl: 'https://via.placeholder.com/640x480/10b981/ffffff?text=Valley+🏞️',
                 description: 'Valleys are low-lying areas between hills or mountains, often carved by rivers or formed by glacial activity. They provide fertile ground for agriculture and settlements.',
                 facts: [
                     'The Great Rift Valley stretches 4,000 miles across Africa',
@@ -2352,8 +2386,8 @@
             {
                 name: 'Canyon',
                 emoji: '🏜️',
-                imageUrl: 'https://images.unsplash.com/photo-1544968503-7ad532b1e42b?w=640&h=480&fit=crop&auto=format',
-                fallbackUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Grand_Canyon_Desert_View_Watchtower_2013.jpg/640px-Grand_Canyon_Desert_View_Watchtower_2013.jpg',
+                imageUrl: 'https://picsum.photos/640/480?random=4',
+                fallbackUrl: 'https://via.placeholder.com/640x480/f59e0b/ffffff?text=Canyon+🏜️',
                 description: 'Canyons are deep, narrow valleys with steep cliff walls, typically carved by rivers over millions of years. They reveal layers of Earth\'s geological history.',
                 facts: [
                     'The Grand Canyon is 277 miles long and over 1 mile deep',
@@ -2577,13 +2611,19 @@
             const container = document.querySelector('.landform-image-container');
             const loading = container.querySelector('.image-loading');
             
+            // Start with a timeout in case images never load/fail silently
+            const timeout = setTimeout(() => {
+                console.log('Image load timeout for', landform.name);
+                showFallbackDisplay(landform, loading);
+            }, 5000); // 5 second timeout
+            
             const img = document.createElement('img');
-            img.src = landform.imageUrl;
             img.alt = landform.name;
             img.className = 'landform-image';
             img.style.display = 'none';
             
             img.onload = function() {
+                clearTimeout(timeout);
                 this.style.display = 'block';
                 loading.style.display = 'none';
             };
@@ -2593,14 +2633,31 @@
                 if (landform.fallbackUrl && this.src !== landform.fallbackUrl) {
                     this.src = landform.fallbackUrl;
                 } else {
+                    clearTimeout(timeout);
                     console.log('All images failed for', landform.name);
-                    loading.innerHTML = `🖼️ ${landform.name}<br><small style="font-size: 1rem;">Real photo loading...</small>`;
+                    showFallbackDisplay(landform, loading);
                 }
             };
+            
+            // Try primary image first
+            img.src = landform.imageUrl;
             
             // Insert image before overlay
             const overlay = container.querySelector('.image-overlay');
             container.insertBefore(img, overlay);
+        }
+        
+        function showFallbackDisplay(landform, loading) {
+            loading.innerHTML = `
+                <div style="text-align: center; color: var(--text-primary);">
+                    <div style="font-size: 4rem; margin-bottom: 0.5rem;">${landform.emoji}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 0.5rem;">${landform.name}</div>
+                    <div style="font-size: 1rem; opacity: 0.8;">Educational illustration</div>
+                </div>
+            `;
+            loading.style.display = 'flex';
+            loading.style.alignItems = 'center';
+            loading.style.justifyContent = 'center';
         }
 
         function nextLandform() {
@@ -3082,7 +3139,7 @@
             }
             
             list.innerHTML = game.highScores.map((score, index) => `
-                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: white; border-radius: 8px; margin: 0.5rem 0; border: 2px solid ${index === 0 ? '#fbbf24' : '#e2e8f0'};">
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; margin: 0.5rem 0; border: 2px solid ${index === 0 ? 'var(--warning-color)' : 'rgba(255,255,255,0.2)'}; color: var(--text-primary);">
                     <span>${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🏅'} ${score.percentage}% (${score.score}/${score.total})</span>
                     <span style="color: var(--text-secondary);">${score.date}</span>
                 </div>
@@ -3142,6 +3199,11 @@
             
             // Play sound feedback
             game.playSound('button');
+            
+            // Trigger dark mode discovery achievement
+            if (newTheme === 'dark') {
+                game.showAchievement('dark_mode_discovery', 'Night Owl!', 'You discovered the secret dark mode!');
+            }
             
             // Show subtle notification
             showThemeNotification(newTheme);
@@ -3435,6 +3497,53 @@
         }
 
         // Initialize the app when page loads
+        function initializeApp() {
+            // Create game instance
+            window.game = new GameState();
+            
+            // Clean up any duplicate achievements on startup
+            game.updateProgressDisplay();
+            
+            // Initialize theme
+            initializeTheme();
+            
+            // Setup name input
+            setupNameInput();
+            
+            // Load saved player name
+            const savedName = localStorage.getItem('playerName');
+            if (savedName) {
+                updateWelcomeMessage(savedName);
+                document.getElementById('playerName').value = savedName;
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+            } else {
+                disableGameModes();
+            }
+            
+            console.log('App initialized successfully');
+            
+            // Developer functions (accessible via console)
+            window.resetAchievements = function() {
+                console.log('Resetting achievements...');
+                localStorage.removeItem('achievements');
+                game.achievements = [];
+                game.save();
+                game.updateProgressDisplay();
+                console.log('Achievements reset successfully');
+            };
+            
+            window.debugAchievements = function() {
+                console.log('Achievement Debug Info:', {
+                    stored: game.achievements,
+                    count: game.achievements.length,
+                    unique: [...new Set(game.achievements)].length,
+                    totalPossible: Object.keys(game.getAllAchievements()).length,
+                    allPossible: Object.keys(game.getAllAchievements())
+                });
+            };
+        }
+        
         window.addEventListener('load', initializeApp);
 
         // Add some fun keyboard shortcuts
