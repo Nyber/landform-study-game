@@ -18,7 +18,10 @@
       "Bash(rm:*)",
       "Bash(grep:*)",
       "Bash(start index_clean.html)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(sed:*)",
+      "Bash(start index.html)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

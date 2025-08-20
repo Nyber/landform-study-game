@@ -3460,7 +3460,9 @@
         }
 
         function selectTerm(element, term) {
+            console.log('selectTerm called:', term, element);
             if (element.classList.contains('matched')) {
+                console.log('Term already matched, ignoring');
                 return;
             }
             
@@ -3648,32 +3650,25 @@
         }
 
         function loadQuestion() {
-            try {
-                game.answered = false;
-                selectedAnswerIndex = -1; // Reset selected answer
-                
-                // Ensure we have the questions array stored in game object
-                if (!game.questions) {
-                    game.questions = getQuestionsByDifficulty();
-                }
-                
-                // Check if questionData is available
-                if (!questionData || questionData.length === 0) {
-                    throw new Error('Question data not available');
-                }
-                
-                // Prevent going beyond available questions
-                if (game.currentQuestion >= game.questions.length) {
-                    showResults();
-                    return;
-                }
-                
-                // Validate current question exists
-                if (!game.questions[game.currentQuestion]) {
-                    throw new Error('Current question not found');
-                }
+            console.log('=== LOADING QUESTION ===' );
+            game.answered = false;
+            selectedAnswerIndex = -1; // Reset selected answer
+            
+            // Ensure we have the questions array stored in game object
+            if (!game.questions) {
+                game.questions = getQuestionsByDifficulty();
+                console.log('Generated new shuffled questions:', game.questions.length);
+            }
+            
+            // Prevent going beyond available questions
+            if (game.currentQuestion >= game.questions.length) {
+                console.log('No more questions, showing results');
+                showResults();
+                return;
+            }
             
             const question = game.questions[game.currentQuestion];
+            console.log('Loading question', game.currentQuestion + 1, 'of', game.questions.length, ':', question.question);
             
             // Start timer for challenge mode
             if (game.gameMode === 'challenge') {
@@ -3747,12 +3742,6 @@
                     button.style.webkitTapHighlightColor = 'transparent';
                 });
             }, 50);
-            } catch (error) {
-                console.error('Failed to load question:', error);
-                alert('Something went wrong loading the question. Please try again.');
-                // Try to go back to home screen
-                goHome();
-            }
         }
 
         function startTimer() {
@@ -4342,59 +4331,56 @@
             });
         }
         
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                // Scroll to name input and highlight it
+                document.getElementById('playerName').focus();
+                document.getElementById('nameSetup').style.animation = 'shake 0.5s ease';
+                
+                // Add shake animation
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes shake {
+                        0%, 100% { transform: translateX(0); }
+                        25% { transform: translateX(-5px); }
+                        75% { transform: translateX(5px); }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                setTimeout(() => {
+                    document.getElementById('nameSetup').style.animation = '';
+                    style.remove();
+                }, 500);
+                
+                return;
+            }
+            
+            // Call the actual function
+            if (functionName === 'showDifficultySelection') {
+                showDifficultySelection();
+            } else if (functionName === 'startTimeChallenge') {
+                startTimeChallenge();
+            } else if (functionName === 'startStudyMode') {
+                startStudyMode();
+            }
+        }
         
         function saveName() {
             const nameInput = document.getElementById('playerName');
             const name = nameInput.value.trim();
             
-            // Validate name length
-            if (name.length < 2) {
-                showError('Name must be at least 2 characters long');
+            if (name.length > 0) {
+                localStorage.setItem('playerName', name);
+                updateWelcomeMessage(name);
+                document.getElementById('nameSetup').style.display = 'none';
+                enableGameModes();
+                game.playSound('button');
+                
+                // Welcome achievement will be shown when they start their first game
+            } else {
                 nameInput.focus();
-                return false;
-            }
-            
-            if (name.length > 20) {
-                showError('Name must be 20 characters or less');
-                nameInput.focus();
-                return false;
-            }
-            
-            // Validate characters (letters, spaces, and basic punctuation)
-            if (!/^[a-zA-Z\s\-'\.]+$/.test(name)) {
-                showError('Name can only contain letters, spaces, hyphens, apostrophes, and periods');
-                nameInput.focus();
-                return false;
-            }
-            
-            // Save valid name
-            localStorage.setItem('playerName', name);
-            updateWelcomeMessage(name);
-            document.getElementById('nameSetup').style.display = 'none';
-            enableGameModes();
-            game.playSound('button');
-            
-            // Clear any previous error messages
-            clearError();
-            return true;
-        }
-        
-        function showError(message) {
-            let errorDiv = document.getElementById('nameError');
-            if (!errorDiv) {
-                errorDiv = document.createElement('div');
-                errorDiv.id = 'nameError';
-                errorDiv.style.cssText = 'color: var(--error-color); font-size: 0.9rem; margin-top: 0.5rem; text-align: center;';
-                document.getElementById('nameSetup').appendChild(errorDiv);
-            }
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-        
-        function clearError() {
-            const errorDiv = document.getElementById('nameError');
-            if (errorDiv) {
-                errorDiv.style.display = 'none';
             }
         }
         
@@ -4473,6 +4459,64 @@
             };
         }
         
+        // Missing game mode functions
+        function checkNameAndStart(functionName) {
+            const playerName = localStorage.getItem('playerName');
+            if (!playerName) {
+                document.getElementById('playerName').focus();
+                document.getElementById('nameSetup').style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    document.getElementById('nameSetup').style.animation = '';
+                }, 500);
+                game.playSound('incorrect');
+                return;
+            }
+            
+            // Call the appropriate function
+            if (functionName === 'showDifficultySelection') {
+                showScreen('difficultyScreen');
+            } else if (functionName === 'startTimeChallenge') {
+                startTimeChallenge();
+            } else if (functionName === 'startStudyMode') {
+                startStudyMode();
+            } else if (functionName === 'startVocabMode') {
+                startVocabMode();
+            }
+        }
+        
+        function showDifficultySelection() {
+            showScreen('difficultyScreen');
+        }
+        
+        function startTimeChallenge() {
+            // For now, just start a medium difficulty quiz with time pressure
+            game.gameMode = 'challenge';
+            startQuiz('medium');
+        }
+        
+        function startQuiz(difficulty) {
+            game.difficulty = difficulty;
+            game.gameMode = game.gameMode || 'quiz';
+            game.currentQuestion = 0;
+            game.score = 0;
+            game.streak = 0;
+            game.totalAnswered = 0;
+            game.correctAnswers = 0;
+            
+            // Filter questions by difficulty
+            const availableQuestions = questionData.filter(q => q.difficulty === difficulty);
+            game.questions = availableQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
+            game.totalQuestions = game.questions.length;
+            
+            showScreen('quizScreen');
+            loadQuestion();
+        }
+        
+        function startStudyMode() {
+            // Show explore/study screen
+            showScreen('studyScreen');
+            loadStudyCard();
+        }
         
         function startVocabMode() {
             showScreen('vocabScreen');
@@ -4840,21 +4884,14 @@
             }
             
             // Call the appropriate function
-            try {
-                if (functionName === 'showDifficultySelection') {
-                    showDifficultySelection();
-                } else if (functionName === 'startTimeChallenge') {
-                    startTimeChallenge();
-                } else if (functionName === 'startStudyMode') {
-                    startStudyMode();
-                } else if (functionName === 'startVocabMode') {
-                    startVocabMode();
-                } else {
-                    console.error('Unknown function:', functionName);
-                }
-            } catch (error) {
-                console.error('Error starting game mode:', error);
-                alert('Something went wrong. Please try again.');
+            if (functionName === 'showDifficultySelection') {
+                alert('Quiz mode not implemented yet');
+            } else if (functionName === 'startTimeChallenge') {
+                alert('Speed challenge not implemented yet');
+            } else if (functionName === 'startStudyMode') {
+                alert('Study mode not implemented yet');
+            } else if (functionName === 'startVocabMode') {
+                alert('Vocabulary match not implemented yet');
             }
         }
         
